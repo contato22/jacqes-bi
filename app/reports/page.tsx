@@ -95,8 +95,8 @@ export default function ReportsPage() {
   return (
     <>
       <Header
-        title="Reports"
-        subtitle="Generated reports and data exports for JACQES stakeholders"
+        title="Relatórios"
+        subtitle="Relatórios gerados e exportações de dados — AWQ Group"
       />
 
       <div className="px-8 py-6 space-y-6">

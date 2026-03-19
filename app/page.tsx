@@ -1,18 +1,18 @@
 import Header from "@/components/Header";
 import KPICard from "@/components/KPICard";
-import RevenueChart from "@/components/RevenueChart";
-import CustomerSegmentChart from "@/components/CustomerSegmentChart";
-import TopProductsTable from "@/components/TopProductsTable";
-import RegionTable from "@/components/RegionTable";
+import ScoreChart from "@/components/RevenueChart";
+import AccountHealthChart from "@/components/CustomerSegmentChart";
+import ContasTable from "@/components/TopProductsTable";
+import ScoreDimensionsPanel from "@/components/RegionTable";
 import AlertBanner from "@/components/AlertBanner";
-import { kpis, alerts } from "@/lib/data";
+import { kpis, alerts, scoreMensal } from "@/lib/data";
 
 export default function DashboardPage() {
   return (
     <>
       <Header
-        title="Overview"
-        subtitle="JACQES · Business Intelligence Dashboard · March 2026"
+        title="Visão Geral"
+        subtitle="Danilo · CS & Operações · AWQ Group · Março 2026"
       />
 
       <div className="px-8 py-6 space-y-6">
@@ -23,25 +23,25 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Main charts row */}
+        {/* Score chart + Account health */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
           <div className="xl:col-span-2">
-            <RevenueChart />
+            <ScoreChart />
           </div>
-          <CustomerSegmentChart />
+          <AccountHealthChart />
         </div>
 
-        {/* Products & Alerts row */}
+        {/* Accounts table + Alerts */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
           <div className="xl:col-span-2">
-            <TopProductsTable />
+            <ContasTable />
           </div>
 
           <div className="space-y-4">
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-semibold text-white">Alerts</h2>
-                <span className="badge badge-red">{alerts.length} active</span>
+                <h2 className="text-sm font-semibold text-white">Alertas</h2>
+                <span className="badge badge-red">{alerts.length} ativos</span>
               </div>
               <div className="space-y-3">
                 {alerts.map((alert) => (
@@ -52,8 +52,59 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Region table */}
-        <RegionTable />
+        {/* Insights row */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          {/* Principal Avanço / Falha */}
+          <div className="card p-5 space-y-4">
+            <h2 className="text-sm font-semibold text-white">
+              Retrospectiva — Março 2026
+            </h2>
+            <div className="space-y-3">
+              <div className="flex gap-3 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20">
+                <span className="text-emerald-400 text-base shrink-0">✓</span>
+                <div>
+                  <div className="text-xs font-semibold text-emerald-400 mb-0.5">
+                    Principal Avanço
+                  </div>
+                  <div className="text-sm text-gray-300">
+                    {scoreMensal.principalAvanco}
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
+                <span className="text-red-400 text-base shrink-0">✗</span>
+                <div>
+                  <div className="text-xs font-semibold text-red-400 mb-0.5">
+                    Principal Falha
+                  </div>
+                  <div className="text-sm text-gray-300">
+                    {scoreMensal.principalFalha}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Score dimensions panel */}
+          <ScoreDimensionsPanel />
+        </div>
+
+        {/* Foco do próximo mês */}
+        <div className="card p-5">
+          <div className="flex items-start gap-4">
+            <div className="w-9 h-9 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 shrink-0">
+              🎯
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">
+                Foco do Próximo Mês
+              </div>
+              <div className="text-sm text-gray-300 leading-relaxed">
+                {scoreMensal.focoProximoMes}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

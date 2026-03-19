@@ -15,22 +15,22 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Overview",
+    label: "Visão Geral",
     href: "/",
     icon: LayoutDashboard,
   },
   {
-    label: "Revenue",
+    label: "Desempenho",
     href: "/revenue",
     icon: TrendingUp,
   },
   {
-    label: "Customers",
+    label: "Carteira",
     href: "/customers",
     icon: Users,
   },
   {
-    label: "Reports",
+    label: "Relatórios",
     href: "/reports",
     icon: FileBarChart,
   },
@@ -58,7 +58,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         <div className="px-3 mb-3">
           <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">
-            Analytics
+            Operações
           </span>
         </div>
 

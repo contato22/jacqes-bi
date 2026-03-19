@@ -1,47 +1,56 @@
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { topProducts } from "@/lib/data";
-import { formatCurrency, formatNumber } from "@/lib/utils";
+import { contasData } from "@/lib/data";
 
-const statusConfig = {
-  trending: { label: "Trending", classes: "badge-green" },
-  stable: { label: "Stable", classes: "badge-blue" },
-  declining: { label: "Declining", classes: "badge-red" },
+const saudeConfig = {
+  Saudável: { label: "Saudável", classes: "badge-green" },
+  "Estável com Atenção": { label: "Estável", classes: "badge-yellow" },
+  Sensível: { label: "Sensível", classes: "badge-red" },
+  "Em Risco": { label: "Em Risco", classes: "badge-red" },
 };
 
-export default function TopProductsTable() {
+const riscoConfig = {
+  Baixo: { label: "Baixo", classes: "badge-green" },
+  Médio: { label: "Médio", classes: "badge-yellow" },
+  Alto: { label: "Alto", classes: "badge-red" },
+};
+
+const oportunidadeConfig = {
+  "Sem Oportunidade": { label: "—", classes: "badge-blue" },
+  Leve: { label: "Leve", classes: "badge-blue" },
+  Média: { label: "Média", classes: "badge-yellow" },
+  Forte: { label: "Forte", classes: "badge-green" },
+};
+
+export default function ContasTable() {
   return (
     <div className="card p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-sm font-semibold text-white">Top Products</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Revenue by product line</p>
+          <h2 className="text-sm font-semibold text-white">
+            Contas & Carteira
+          </h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Saúde, risco e oportunidade por conta
+          </p>
         </div>
-        <button className="text-xs text-brand-400 hover:text-brand-300 transition-colors font-medium">
-          View all →
-        </button>
       </div>
 
       <div className="space-y-0">
         <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-4 px-3 py-2 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-800">
-          <span>Product</span>
-          <span className="text-right">Revenue</span>
-          <span className="text-right">Units</span>
-          <span className="text-right">Growth</span>
-          <span className="text-right">Status</span>
+          <span>Conta</span>
+          <span className="text-right">Saúde</span>
+          <span className="text-right">Risco</span>
+          <span className="text-right">Oportun.</span>
+          <span className="text-right">Pendências</span>
         </div>
 
-        {topProducts.map((product, idx) => {
-          const status = statusConfig[product.status];
-          const GrowthIcon =
-            product.growth > 0
-              ? TrendingUp
-              : product.growth < 0
-              ? TrendingDown
-              : Minus;
+        {contasData.map((conta, idx) => {
+          const saude = saudeConfig[conta.saude];
+          const risco = riscoConfig[conta.risco];
+          const oportunidade = oportunidadeConfig[conta.oportunidade];
 
           return (
             <div
-              key={product.id}
+              key={conta.id}
               className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-4 px-3 py-3 items-center hover:bg-gray-800/50 rounded-lg transition-colors cursor-default"
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -50,37 +59,40 @@ export default function TopProductsTable() {
                 </div>
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-gray-200 truncate">
-                    {product.name}
+                    {conta.nome}
                   </div>
-                  <div className="text-xs text-gray-600">{product.category}</div>
+                  <div className="text-xs text-gray-600">{conta.segmento}</div>
                 </div>
               </div>
 
-              <div className="text-sm font-semibold text-white text-right tabular-nums">
-                {formatCurrency(product.revenue, "USD", true)}
-              </div>
-
-              <div className="text-xs text-gray-400 text-right tabular-nums">
-                {formatNumber(product.units, true)}
-              </div>
-
-              <div
-                className={`flex items-center justify-end gap-1 text-xs font-semibold tabular-nums ${
-                  product.growth > 0
-                    ? "text-emerald-400"
-                    : product.growth < 0
-                    ? "text-red-400"
-                    : "text-gray-500"
-                }`}
-              >
-                <GrowthIcon size={12} />
-                {Math.abs(product.growth).toFixed(1)}%
+              <div className="flex justify-end">
+                <span className={`badge text-[10px] ${saude.classes}`}>
+                  {saude.label}
+                </span>
               </div>
 
               <div className="flex justify-end">
-                <span className={`badge text-[10px] ${status.classes}`}>
-                  {status.label}
+                <span className={`badge text-[10px] ${risco.classes}`}>
+                  {risco.label}
                 </span>
+              </div>
+
+              <div className="flex justify-end">
+                <span className={`badge text-[10px] ${oportunidade.classes}`}>
+                  {oportunidade.label}
+                </span>
+              </div>
+
+              <div
+                className={`text-sm font-semibold text-right tabular-nums ${
+                  conta.pendencias >= 4
+                    ? "text-red-400"
+                    : conta.pendencias >= 2
+                    ? "text-yellow-400"
+                    : "text-emerald-400"
+                }`}
+              >
+                {conta.pendencias}
               </div>
             </div>
           );

@@ -1,17 +1,15 @@
 "use client";
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { customerSegments } from "@/lib/data";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { accountHealthData } from "@/lib/data";
 
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: Array<{ name: string; value: number; payload: { color: string } }>;
+  payload?: Array<{
+    name: string;
+    value: number;
+    payload: { color: string };
+  }>;
 }
 
 function CustomTooltip({ active, payload }: CustomTooltipProps) {
@@ -25,24 +23,30 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
           style={{ backgroundColor: item.payload.color }}
         />
         <span className="text-gray-400">{item.name}</span>
-        <span className="font-semibold text-white ml-1">{item.value}%</span>
+        <span className="font-semibold text-white ml-1">
+          {item.value} conta{item.value !== 1 ? "s" : ""}
+        </span>
       </div>
     </div>
   );
 }
 
-export default function CustomerSegmentChart() {
+export default function AccountHealthChart() {
+  const total = accountHealthData.reduce((s, d) => s + d.value, 0);
+
   return (
     <div className="card p-6">
       <div className="mb-4">
-        <h2 className="text-sm font-semibold text-white">Customer Segments</h2>
-        <p className="text-xs text-gray-500 mt-0.5">Revenue distribution by tier</p>
+        <h2 className="text-sm font-semibold text-white">Saúde da Carteira</h2>
+        <p className="text-xs text-gray-500 mt-0.5">
+          Distribuição por status de saúde
+        </p>
       </div>
 
       <ResponsiveContainer width="100%" height={180}>
         <PieChart>
           <Pie
-            data={customerSegments}
+            data={accountHealthData}
             cx="50%"
             cy="50%"
             innerRadius={52}
@@ -50,8 +54,12 @@ export default function CustomerSegmentChart() {
             paddingAngle={3}
             dataKey="value"
           >
-            {customerSegments.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
+            {accountHealthData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                stroke="transparent"
+              />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
@@ -59,7 +67,7 @@ export default function CustomerSegmentChart() {
       </ResponsiveContainer>
 
       <div className="mt-3 space-y-2">
-        {customerSegments.map((seg) => (
+        {accountHealthData.map((seg) => (
           <div key={seg.name} className="flex items-center gap-2.5">
             <span
               className="w-2.5 h-2.5 rounded-sm shrink-0"
@@ -70,11 +78,14 @@ export default function CustomerSegmentChart() {
               <div className="w-20 h-1.5 bg-gray-800 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full"
-                  style={{ width: `${seg.value}%`, backgroundColor: seg.color }}
+                  style={{
+                    width: `${(seg.value / total) * 100}%`,
+                    backgroundColor: seg.color,
+                  }}
                 />
               </div>
               <span className="text-xs font-semibold text-gray-300 w-8 text-right">
-                {seg.value}%
+                {seg.value}/{total}
               </span>
             </div>
           </div>

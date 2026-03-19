@@ -1,43 +1,48 @@
 import Header from "@/components/Header";
-import { customers } from "@/lib/data";
-import { formatCurrency, formatDate } from "@/lib/utils";
-import { UserCheck, UserX, AlertTriangle, Users } from "lucide-react";
+import { contasData } from "@/lib/data";
+import { Briefcase, AlertTriangle, TrendingUp, Clock } from "lucide-react";
 
-const statusConfig = {
-  active: {
-    label: "Active",
-    classes: "badge-green",
-    Icon: UserCheck,
-  },
-  "at-risk": {
-    label: "At Risk",
-    classes: "badge-yellow",
-    Icon: AlertTriangle,
-  },
-  churned: {
-    label: "Churned",
-    classes: "badge-red",
-    Icon: UserX,
-  },
+const saudeConfig = {
+  Saudável: { classes: "badge-green", dot: "bg-emerald-400" },
+  "Estável com Atenção": { classes: "badge-yellow", dot: "bg-yellow-400" },
+  Sensível: { classes: "badge-red", dot: "bg-orange-400" },
+  "Em Risco": { classes: "badge-red", dot: "bg-red-500" },
 };
 
-const segmentConfig = {
-  Enterprise: "badge-blue",
-  SMB: "badge-green",
-  Startup: "badge-yellow",
+const riscoConfig = {
+  Baixo: "badge-green",
+  Médio: "badge-yellow",
+  Alto: "badge-red",
 };
 
-const activeCount = customers.filter((c) => c.status === "active").length;
-const atRiskCount = customers.filter((c) => c.status === "at-risk").length;
-const churnedCount = customers.filter((c) => c.status === "churned").length;
-const totalLTV = customers.reduce((sum, c) => sum + c.ltv, 0);
+const oportunidadeConfig = {
+  "Sem Oportunidade": "badge-blue",
+  Leve: "badge-blue",
+  Média: "badge-yellow",
+  Forte: "badge-green",
+};
 
-export default function CustomersPage() {
+const saudavelCount = contasData.filter((c) => c.saude === "Saudável").length;
+const atencaoCount = contasData.filter(
+  (c) => c.saude === "Estável com Atenção"
+).length;
+const sensivelCount = contasData.filter(
+  (c) => c.saude === "Sensível" || c.saude === "Em Risco"
+).length;
+const totalPendencias = contasData.reduce((s, c) => s + c.pendencias, 0);
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return "—";
+  const [year, month, day] = dateStr.split("-");
+  return `${day}/${month}/${year}`;
+}
+
+export default function CarteiraPage() {
   return (
     <>
       <Header
-        title="Customers"
-        subtitle="Customer directory, health scores, and lifetime value"
+        title="Carteira"
+        subtitle="Contas & Carteira — saúde, risco e oportunidade por cliente"
       />
 
       <div className="px-8 py-6 space-y-6">
@@ -45,20 +50,26 @@ export default function CustomersPage() {
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
           <div className="card p-5 flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
-              <Users size={18} />
+              <Briefcase size={18} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{customers.length}</div>
-              <div className="text-xs text-gray-500 mt-0.5">Total Accounts</div>
+              <div className="text-2xl font-bold text-white">
+                {contasData.length}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">
+                Contas Ativas
+              </div>
             </div>
           </div>
           <div className="card p-5 flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <UserCheck size={18} />
+              <TrendingUp size={18} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{activeCount}</div>
-              <div className="text-xs text-gray-500 mt-0.5">Active</div>
+              <div className="text-2xl font-bold text-white">
+                {saudavelCount}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">Saudáveis</div>
             </div>
           </div>
           <div className="card p-5 flex items-center gap-4">
@@ -66,103 +77,141 @@ export default function CustomersPage() {
               <AlertTriangle size={18} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{atRiskCount}</div>
-              <div className="text-xs text-gray-500 mt-0.5">At Risk</div>
+              <div className="text-2xl font-bold text-white">
+                {atencaoCount + sensivelCount}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">
+                Atenção / Risco
+              </div>
             </div>
           </div>
           <div className="card p-5 flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
-              <UserX size={18} />
+              <Clock size={18} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{churnedCount}</div>
-              <div className="text-xs text-gray-500 mt-0.5">Churned</div>
+              <div className="text-2xl font-bold text-white">
+                {totalPendencias}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">
+                Pendências Totais
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Total LTV highlight */}
-        <div className="card p-5 flex items-center justify-between">
-          <div>
-            <div className="text-xs text-gray-500 uppercase tracking-widest font-semibold">
-              Portfolio Lifetime Value
-            </div>
-            <div className="text-3xl font-bold text-white mt-1 tabular-nums">
-              {formatCurrency(totalLTV)}
-            </div>
-          </div>
-          <div className="text-xs text-gray-600 text-right">
-            <div>Avg LTV per account</div>
-            <div className="text-lg font-bold text-gray-300 mt-1">
-              {formatCurrency(Math.round(totalLTV / customers.length))}
-            </div>
-          </div>
-        </div>
-
-        {/* Customer table */}
+        {/* Accounts table */}
         <div className="card p-6">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="text-sm font-semibold text-white">Customer Directory</h2>
-              <p className="text-xs text-gray-500 mt-0.5">All accounts with health status</p>
-            </div>
+          <div className="mb-5">
+            <h2 className="text-sm font-semibold text-white">
+              Contas & Carteira
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Situação completa por conta — fonte: Notion
+            </p>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-800">
-                  {["Customer", "Company", "Segment", "LTV", "Last Order", "Country", "Status"].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider"
-                      >
-                        {h}
-                      </th>
-                    )
-                  )}
+                  {[
+                    "Conta",
+                    "Segmento",
+                    "Saúde",
+                    "Risco",
+                    "Oportunidade",
+                    "Pendências",
+                    "Última Visita",
+                    "Próxima Visita",
+                    "Dono Ação",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {customers.map((c) => {
-                  const status = statusConfig[c.status];
-                  const segClass = segmentConfig[c.segment];
+                {contasData.map((conta) => {
+                  const saude = saudeConfig[conta.saude];
+                  const riscoClass = riscoConfig[conta.risco];
+                  const oportunidadeClass =
+                    oportunidadeConfig[conta.oportunidade];
 
                   return (
                     <tr
-                      key={c.id}
+                      key={conta.id}
                       className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors"
                     >
                       <td className="py-3 pr-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
-                            {c.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`w-2 h-2 rounded-full shrink-0 ${saude.dot}`}
+                          />
                           <div>
-                            <div className="font-medium text-gray-200">{c.name}</div>
-                            <div className="text-xs text-gray-600">{c.email}</div>
+                            <div className="font-medium text-gray-200 whitespace-nowrap">
+                              {conta.nome}
+                            </div>
+                            <div
+                              className="text-[10px] text-gray-600 max-w-[200px] truncate"
+                              title={conta.observacoes}
+                            >
+                              {conta.observacoes}
+                            </div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 pr-4 text-gray-400">{c.company}</td>
+                      <td className="py-3 pr-4 text-gray-400 text-xs whitespace-nowrap">
+                        {conta.segmento}
+                      </td>
                       <td className="py-3 pr-4">
-                        <span className={`badge ${segClass}`}>{c.segment}</span>
+                        <span className={`badge ${saude.classes}`}>
+                          {conta.saude}
+                        </span>
                       </td>
-                      <td className="py-3 pr-4 font-semibold text-white tabular-nums">
-                        {formatCurrency(c.ltv, "USD", true)}
+                      <td className="py-3 pr-4">
+                        <span className={`badge ${riscoClass}`}>
+                          {conta.risco}
+                        </span>
                       </td>
-                      <td className="py-3 pr-4 text-gray-400 tabular-nums">
-                        {formatDate(c.lastOrder)}
+                      <td className="py-3 pr-4">
+                        <span className={`badge ${oportunidadeClass}`}>
+                          {conta.oportunidade}
+                        </span>
                       </td>
-                      <td className="py-3 pr-4 text-gray-400 font-mono text-xs">
-                        {c.country}
+                      <td className="py-3 pr-4 text-center">
+                        <span
+                          className={`text-sm font-bold tabular-nums ${
+                            conta.pendencias >= 4
+                              ? "text-red-400"
+                              : conta.pendencias >= 2
+                              ? "text-yellow-400"
+                              : "text-emerald-400"
+                          }`}
+                        >
+                          {conta.pendencias}
+                        </span>
+                      </td>
+                      <td className="py-3 pr-4 text-gray-400 text-xs tabular-nums">
+                        {formatDate(conta.ultimaVisita)}
+                      </td>
+                      <td className="py-3 pr-4 text-gray-400 text-xs tabular-nums">
+                        {formatDate(conta.proximaVisita)}
                       </td>
                       <td className="py-3">
-                        <span className={`badge ${status.classes}`}>{status.label}</span>
+                        <span
+                          className={`badge text-[10px] ${
+                            conta.donoProximaAcao === "Danilo"
+                              ? "badge-blue"
+                              : "badge-yellow"
+                          }`}
+                        >
+                          {conta.donoProximaAcao}
+                        </span>
                       </td>
                     </tr>
                   );

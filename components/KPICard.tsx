@@ -1,20 +1,21 @@
 import {
   TrendingUp,
   TrendingDown,
-  DollarSign,
-  Users,
-  ShoppingCart,
+  Briefcase,
+  MapPin,
+  AlertCircle,
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
 import { KPI } from "@/lib/data";
-import { cn, formatCurrency, formatNumber, formatPercent } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 
 const iconMap: Record<string, React.ElementType> = {
-  DollarSign,
-  Users,
-  ShoppingCart,
+  Briefcase,
+  MapPin,
+  AlertCircle,
   TrendingUp,
+  TrendingDown,
 };
 
 const colorMap: Record<string, string> = {
@@ -22,12 +23,12 @@ const colorMap: Record<string, string> = {
   emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   blue: "text-blue-400 bg-blue-500/10 border-blue-500/20",
   purple: "text-purple-400 bg-purple-500/10 border-purple-500/20",
+  red: "text-red-400 bg-red-500/10 border-red-500/20",
 };
 
 function formatValue(kpi: KPI): string {
-  if (kpi.unit === "currency") return formatCurrency(kpi.value, "USD", true);
   if (kpi.unit === "percent") return `${kpi.value.toFixed(1)}%`;
-  return formatNumber(kpi.value, true);
+  return formatNumber(kpi.value) + (kpi.suffix ?? "");
 }
 
 interface KPICardProps {
@@ -36,14 +37,23 @@ interface KPICardProps {
 
 export default function KPICard({ kpi }: KPICardProps) {
   const Icon = iconMap[kpi.icon] ?? TrendingUp;
-  const delta = ((kpi.value - kpi.previousValue) / kpi.previousValue) * 100;
-  const isPositive = delta >= 0;
+  const delta =
+    kpi.previousValue !== 0
+      ? ((kpi.value - kpi.previousValue) / kpi.previousValue) * 100
+      : 0;
+  const isPositive = kpi.lowerIsBetter ? delta <= 0 : delta >= 0;
   const colorClasses = colorMap[kpi.color] ?? colorMap.brand;
+  const diff = kpi.value - kpi.previousValue;
 
   return (
     <div className="card card-hover p-5">
       <div className="flex items-start justify-between mb-4">
-        <div className={cn("w-10 h-10 rounded-xl border flex items-center justify-center", colorClasses)}>
+        <div
+          className={cn(
+            "w-10 h-10 rounded-xl border flex items-center justify-center",
+            colorClasses
+          )}
+        >
           <Icon size={18} />
         </div>
         <div
@@ -59,7 +69,7 @@ export default function KPICard({ kpi }: KPICardProps) {
           ) : (
             <ArrowDownRight size={12} />
           )}
-          {formatPercent(Math.abs(delta), 1).replace("+", "")}
+          {Math.abs(delta).toFixed(1)}%
         </div>
       </div>
 
@@ -72,14 +82,17 @@ export default function KPICard({ kpi }: KPICardProps) {
 
       <div className="mt-4 pt-4 border-t border-gray-800">
         <span className="text-xs text-gray-600">
-          vs prev period:{" "}
-          <span className={cn("font-medium", isPositive ? "text-emerald-500" : "text-red-500")}>
-            {isPositive ? "+" : ""}
-            {kpi.unit === "currency"
-              ? formatCurrency(kpi.value - kpi.previousValue, "USD", true)
-              : kpi.unit === "percent"
-              ? `${(kpi.value - kpi.previousValue).toFixed(1)}pp`
-              : formatNumber(kpi.value - kpi.previousValue, true)}
+          {kpi.comparisonLabel ?? "vs prev period"}:{" "}
+          <span
+            className={cn(
+              "font-medium",
+              isPositive ? "text-emerald-500" : "text-red-500"
+            )}
+          >
+            {diff >= 0 ? "+" : ""}
+            {kpi.unit === "percent"
+              ? `${diff.toFixed(1)}pp`
+              : formatNumber(diff)}
           </span>
         </span>
       </div>

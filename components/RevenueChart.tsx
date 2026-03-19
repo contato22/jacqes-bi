@@ -1,151 +1,120 @@
 "use client";
 
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
+  Cell,
 } from "recharts";
-import { revenueData } from "@/lib/data";
+import { scoreDimensions, scoreMensal } from "@/lib/data";
 
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: Array<{ name: string; value: number; color: string }>;
+  payload?: Array<{ name: string; value: number }>;
   label?: string;
 }
 
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
-
-  const fmt = (v: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      notation: "compact",
-      maximumFractionDigits: 1,
-    }).format(v);
-
+  const score = payload.find((p) => p.name === "score")?.value ?? 0;
+  const max = 20;
+  const pct = ((score / max) * 100).toFixed(0);
   return (
-    <div className="bg-gray-900 border border-gray-700 rounded-xl p-3.5 shadow-xl shadow-black/40 min-w-[160px]">
-      <div className="text-xs font-semibold text-gray-400 mb-2">{label} 2025</div>
-      {payload.map((entry) => (
-        <div key={entry.name} className="flex items-center justify-between gap-4 text-xs py-0.5">
-          <div className="flex items-center gap-2">
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            />
-            <span className="text-gray-400 capitalize">{entry.name}</span>
-          </div>
-          <span className="font-semibold text-white">{fmt(entry.value)}</span>
-        </div>
-      ))}
+    <div className="bg-gray-900 border border-gray-700 rounded-xl p-3.5 shadow-xl shadow-black/40 min-w-[140px]">
+      <div className="text-xs font-semibold text-gray-400 mb-2">{label}</div>
+      <div className="text-sm font-bold text-white">
+        {score} / {max} pts
+      </div>
+      <div className="text-xs text-gray-500 mt-1">{pct}% atingido</div>
     </div>
   );
 }
 
-export default function RevenueChart() {
+const dimensionColors: Record<string, string> = {
+  Atendimento: "#6366f1",
+  "Operação": "#22d3ee",
+  Visitas: "#22c55e",
+  Risco: "#f59e0b",
+  Processo: "#ec4899",
+};
+
+export default function ScoreChart() {
+  const chartData = scoreDimensions.map((d) => ({
+    dimensao: d.dimensao,
+    score: d.score,
+    remaining: d.max - d.score,
+  }));
+
   return (
     <div className="card p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-sm font-semibold text-white">Revenue Overview</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Monthly P&amp;L — FY 2025</p>
+          <h2 className="text-sm font-semibold text-white">Score por Dimensão</h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Março 2026 — 5 dimensões × 20 pts cada
+          </p>
         </div>
-        <div className="flex gap-1">
-          {["6M", "9M", "1Y"].map((range, i) => (
-            <button
-              key={range}
-              className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
-                i === 2
-                  ? "bg-brand-600/20 text-brand-400 border border-brand-500/20"
-                  : "text-gray-500 hover:text-gray-300"
-              }`}
-            >
-              {range}
-            </button>
-          ))}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700">
+          <span className="text-xl font-bold text-white tabular-nums">
+            {scoreMensal.scoreTotal}
+          </span>
+          <span className="text-xs text-gray-500">/ 100</span>
+          <span className="text-sm ml-1">🟡</span>
         </div>
       </div>
 
       <ResponsiveContainer width="100%" height={280}>
-        <AreaChart
-          data={revenueData}
+        <BarChart
+          data={chartData}
           margin={{ top: 4, right: 4, left: -10, bottom: 0 }}
+          barCategoryGap="30%"
         >
-          <defs>
-            <linearGradient id="gradRevenue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.25} />
-              <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="gradProfit" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.2} />
-              <stop offset="95%" stopColor="#22d3ee" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="gradExpenses" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="#1f2937"
             vertical={false}
           />
           <XAxis
-            dataKey="month"
+            dataKey="dimensao"
             tick={{ fill: "#6b7280", fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
+            domain={[0, 20]}
             tick={{ fill: "#6b7280", fontSize: 11 }}
             axisLine={false}
             tickLine={false}
-            tickFormatter={(v) =>
-              new Intl.NumberFormat("en-US", {
-                notation: "compact",
-                style: "currency",
-                currency: "USD",
-                maximumFractionDigits: 1,
-              }).format(v)
-            }
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#374151", strokeWidth: 1 }} />
-
-          <Area
-            type="monotone"
-            dataKey="expenses"
-            name="expenses"
-            stroke="#f59e0b"
-            strokeWidth={1.5}
-            fill="url(#gradExpenses)"
-            dot={false}
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ fill: "rgba(255,255,255,0.03)" }}
           />
-          <Area
-            type="monotone"
-            dataKey="profit"
-            name="profit"
-            stroke="#22d3ee"
-            strokeWidth={1.5}
-            fill="url(#gradProfit)"
-            dot={false}
+          <Bar
+            dataKey="score"
+            name="score"
+            radius={[3, 3, 0, 0]}
+            stackId="a"
+          >
+            {chartData.map((entry) => (
+              <Cell
+                key={entry.dimensao}
+                fill={dimensionColors[entry.dimensao] ?? "#6366f1"}
+              />
+            ))}
+          </Bar>
+          <Bar
+            dataKey="remaining"
+            name="remaining"
+            fill="#1f2937"
+            radius={[3, 3, 0, 0]}
+            stackId="a"
           />
-          <Area
-            type="monotone"
-            dataKey="revenue"
-            name="revenue"
-            stroke="#6366f1"
-            strokeWidth={2}
-            fill="url(#gradRevenue)"
-            dot={false}
-          />
-        </AreaChart>
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );
