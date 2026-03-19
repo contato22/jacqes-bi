@@ -10,6 +10,7 @@ import {
   Settings,
   ChevronRight,
   Zap,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +29,11 @@ const navItems = [
     label: "Carteira",
     href: "/customers",
     icon: Users,
+  },
+  {
+    label: "Análise",
+    href: "/analise",
+    icon: Activity,
   },
   {
     label: "Relatórios",

@@ -19,11 +19,12 @@ Construído em Next.js 14 + Recharts + Tailwind CSS. Todos os dados vêm do **No
 
 ```
 app/
-  page.tsx          → Visão Geral (overview do score mensal)
-  revenue/page.tsx  → Desempenho (radar chart, faixas de score)
+  page.tsx           → Visão Geral (overview do score mensal)
+  revenue/page.tsx   → Desempenho (radar chart, faixas de score)
   customers/page.tsx → Carteira (tabela de contas)
-  reports/page.tsx  → Relatórios
-  settings/page.tsx → Configurações
+  analise/page.tsx   → Análise Recorrente (briefing semanal — "use client", checklist interativo)
+  reports/page.tsx   → Relatórios
+  settings/page.tsx  → Configurações
 
 components/
   Sidebar.tsx           → Navegação lateral
