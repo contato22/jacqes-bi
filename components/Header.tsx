@@ -1,6 +1,7 @@
 "use client";
 
-import { Bell, Search, RefreshCw } from "lucide-react";
+import { Bell, Search, RefreshCw, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { alerts } from "@/lib/data";
 
 interface HeaderProps {
@@ -9,7 +10,14 @@ interface HeaderProps {
 }
 
 export default function Header({ title, subtitle }: HeaderProps) {
+  const router = useRouter();
   const unreadCount = alerts.filter((a) => a.type === "warning" || a.type === "error").length;
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <header className="px-8 py-5 border-b border-gray-800 bg-gray-950 flex items-center justify-between gap-4">
@@ -52,6 +60,15 @@ export default function Header({ title, subtitle }: HeaderProps) {
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           Live · Mar 2026
         </div>
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+          title="Sair"
+        >
+          <LogOut size={15} />
+        </button>
       </div>
     </header>
   );
