@@ -21,25 +21,20 @@ function LoginForm() {
     setError("");
     setLoading(true);
 
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+    await new Promise((r) => setTimeout(r, 300));
 
-      if (res.ok) {
-        router.push(from);
-        router.refresh();
-      } else {
-        const data = await res.json();
-        setError(data.error ?? "Erro ao autenticar.");
-      }
-    } catch {
-      setError("Erro de conexão. Tente novamente.");
-    } finally {
-      setLoading(false);
+    const validUsername = process.env.NEXT_PUBLIC_AUTH_USERNAME ?? "danilo";
+    const validPassword = process.env.NEXT_PUBLIC_AUTH_PASSWORD ?? "awqgroup2026";
+    const sessionToken = process.env.NEXT_PUBLIC_SESSION_TOKEN ?? "jacqes-bi-danilo-awq";
+
+    if (username === validUsername && password === validPassword) {
+      localStorage.setItem("jacqes_session", sessionToken);
+      router.push(from);
+    } else {
+      setError("Credenciais inválidas.");
     }
+
+    setLoading(false);
   }
 
   return (
