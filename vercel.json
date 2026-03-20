@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "env": {
+    "AUTH_USERNAME": "@auth_username",
+    "AUTH_PASSWORD": "@auth_password",
+    "SESSION_TOKEN": "@session_token"
+  }
+}
