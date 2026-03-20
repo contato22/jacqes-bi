@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   output: "export",
-  basePath: "/jacqes-bi",
+  basePath: process.env.NODE_ENV === "production" ? "/jacqes-bi" : "",
   images: {
     unoptimized: true,
   },
