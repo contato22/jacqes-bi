@@ -84,15 +84,15 @@ export const scoreMensal: ScoreMensal = {
   fase: "Operador em Formação",
   visitasRealizadas: 4,
   visitasPrevistas: 6,
-  contasSobAcompanhamento: 4,
-  contaMaisSaudavel: "JACQES",
-  contaMaisSensivel: "Conta 04 — Prospecção",
+  contasSobAcompanhamento: 5,
+  contaMaisSaudavel: "André Vieira",
+  contaMaisSensivel: "Tati Simões",
   principalAvanco:
-    "Consistência no follow-up com JACQES e estruturação inicial da carteira",
+    "Consistência no follow-up com André Vieira e Carol Bertolini. Estruturação da carteira com 5 clientes ativos.",
   principalFalha:
     "2 visitas não realizadas sem reagendamento. Relatório pós-visita pendente em 1 caso.",
   focoProximoMes:
-    "Zerar pendências abertas na Conta 04. Criar checklist de visita padrão. Aumentar autonomia operacional.",
+    "Zerar pendências abertas com Tati Simões. Criar checklist de visita padrão. Aumentar autonomia operacional.",
   variavelPaga: false,
 };
 
@@ -114,8 +114,8 @@ export const kpis: KPI[] = [
   {
     id: "contas",
     label: "Contas Ativas",
-    value: 4,
-    previousValue: 3,
+    value: 5,
+    previousValue: 4,
     unit: "number",
     icon: "Briefcase",
     color: "emerald",
@@ -136,8 +136,8 @@ export const kpis: KPI[] = [
   {
     id: "pendencias",
     label: "Pendências Abertas",
-    value: 11,
-    previousValue: 9,
+    value: 13,
+    previousValue: 11,
     unit: "number",
     icon: "AlertCircle",
     color: "red",
@@ -163,8 +163,8 @@ export const scoreDimensions: ScoreDimension[] = [
 export const contasData: ContaData[] = [
   {
     id: "1",
-    nome: "JACQES",
-    segmento: "D2C / E-commerce",
+    nome: "André Vieira",
+    segmento: "Pessoa Física / Consultoria",
     saude: "Saudável",
     risco: "Baixo",
     oportunidade: "Forte",
@@ -173,12 +173,12 @@ export const contasData: ContaData[] = [
     proximaVisita: "2026-03-25",
     donoProximaAcao: "Danilo",
     observacoes:
-      "Conta âncora do portfólio AWQ M4E. Faturamento em crescimento consistente. Tranche 1 de vesting conquistada.",
+      "Cliente saudável com alto potencial de expansão. Follow-up consistente e boa percepção de valor.",
   },
   {
     id: "2",
-    nome: "AWQ - Agência",
-    segmento: "Agência de Marketing",
+    nome: "Luis Vieira",
+    segmento: "Pessoa Física / Consultoria",
     saude: "Estável com Atenção",
     risco: "Médio",
     oportunidade: "Leve",
@@ -187,25 +187,26 @@ export const contasData: ContaData[] = [
     proximaVisita: "2026-03-28",
     donoProximaAcao: "Danilo",
     observacoes:
-      "Renda mensal R$ 4.5k. Atenção para alinhamento de expectativas com clientes da carteira.",
+      "Atenção para alinhamento de expectativas. 3 pendências abertas precisam de resolução.",
   },
   {
     id: "3",
-    nome: "AWQ - Produtora",
-    segmento: "Produção de Conteúdo",
+    nome: "Carol Bertolini",
+    segmento: "Pessoa Física / Consultoria",
     saude: "Saudável",
     risco: "Baixo",
     oportunidade: "Média",
     pendencias: 1,
     ultimaVisita: "2026-03-05",
     proximaVisita: "2026-04-02",
-    donoProximaAcao: "Miguel",
-    observacoes: "Operação interna. Renda mensal estável R$ 10k.",
+    donoProximaAcao: "Danilo",
+    observacoes:
+      "Boa saúde de conta. 1 pendência em aberto. Oportunidade de expansão a ser explorada.",
   },
   {
     id: "4",
-    nome: "Conta 04 — Prospecção",
-    segmento: "PME / Varejo",
+    nome: "Tati Simões",
+    segmento: "Pessoa Física / Consultoria",
     saude: "Sensível",
     risco: "Alto",
     oportunidade: "Forte",
@@ -214,7 +215,21 @@ export const contasData: ContaData[] = [
     proximaVisita: "2026-03-22",
     donoProximaAcao: "Danilo",
     observacoes:
-      "Conta em análise para entrada no portfólio M4E. Expectativa desalinhada identificada na última conversa.",
+      "Conta em situação sensível. 5 pendências abertas sem resolução. Expectativa desalinhada identificada.",
+  },
+  {
+    id: "5",
+    nome: "CEM",
+    segmento: "Empresa / Institucional",
+    saude: "Estável com Atenção",
+    risco: "Médio",
+    oportunidade: "Média",
+    pendencias: 2,
+    ultimaVisita: "2026-03-08",
+    proximaVisita: "2026-03-30",
+    donoProximaAcao: "Danilo",
+    observacoes:
+      "Conta institucional com potencial de crescimento. Monitorar engajamento e alinhar próximos passos.",
   },
 ];
 
@@ -222,7 +237,7 @@ export const contasData: ContaData[] = [
 
 export const accountHealthData: AccountHealthSegment[] = [
   { name: "Saudável", value: 2, color: "#22c55e" },
-  { name: "Estável c/ Atenção", value: 1, color: "#eab308" },
+  { name: "Estável c/ Atenção", value: 2, color: "#eab308" },
   { name: "Sensível", value: 1, color: "#f97316" },
 ];
 
@@ -233,7 +248,7 @@ export const alerts: Alert[] = [
   {
     id: "A1",
     type: "error",
-    title: "Conta 04 — Risco Alto",
+    title: "Tati Simões — Risco Alto",
     message:
       "Expectativa desalinhada identificada. 5 pendências abertas sem resolução. Próxima visita: 22/03.",
     timestamp: "2026-03-19T14:00:00Z",
