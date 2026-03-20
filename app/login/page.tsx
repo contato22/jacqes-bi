@@ -2,19 +2,40 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Lock, User, Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react";
+import { Lock, User, Eye, EyeOff, AlertCircle, Loader2, ShieldCheck } from "lucide-react";
 import { Suspense } from "react";
 
-function LoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const from = searchParams.get("from") ?? "/";
+const SESSION_KEY = "jacqes_session";
+const USER_KEY    = "jacqes_user";
+const ROLE_KEY    = "jacqes_role";
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const USERS = [
+  {
+    username:    process.env.NEXT_PUBLIC_AUTH_USERNAME    ?? "danilo",
+    password:    process.env.NEXT_PUBLIC_AUTH_PASSWORD    ?? "awqgroup2026",
+    token:       process.env.NEXT_PUBLIC_SESSION_TOKEN    ?? "jacqes-bi-danilo-awq",
+    role:        "user" as const,
+    displayName: "Danilo",
+  },
+  {
+    username:    process.env.NEXT_PUBLIC_ADMIN_USERNAME   ?? "admin",
+    password:    process.env.NEXT_PUBLIC_ADMIN_PASSWORD   ?? "awqadmin2026",
+    token:       process.env.NEXT_PUBLIC_ADMIN_TOKEN      ?? "jacqes-bi-admin-awq",
+    role:        "admin" as const,
+    displayName: "Admin",
+  },
+];
+
+function LoginForm() {
+  const router       = useRouter();
+  const searchParams = useSearchParams();
+  const from         = searchParams.get("from") ?? "/";
+
+  const [username, setUsername]       = useState("");
+  const [password, setPassword]       = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError]             = useState("");
+  const [loading, setLoading]         = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -23,12 +44,14 @@ function LoginForm() {
 
     await new Promise((r) => setTimeout(r, 300));
 
-    const validUsername = process.env.NEXT_PUBLIC_AUTH_USERNAME ?? "danilo";
-    const validPassword = process.env.NEXT_PUBLIC_AUTH_PASSWORD ?? "awqgroup2026";
-    const sessionToken = process.env.NEXT_PUBLIC_SESSION_TOKEN ?? "jacqes-bi-danilo-awq";
+    const match = USERS.find(
+      (u) => u.username === username && u.password === password,
+    );
 
-    if (username === validUsername && password === validPassword) {
-      localStorage.setItem("jacqes_session", sessionToken);
+    if (match) {
+      localStorage.setItem(SESSION_KEY, match.token);
+      localStorage.setItem(USER_KEY, match.username);
+      localStorage.setItem(ROLE_KEY, match.role);
       router.push(from);
     } else {
       setError("Credenciais inválidas.");
@@ -41,21 +64,18 @@ function LoginForm() {
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
 
-        {/* Logo / Brand */}
+        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-600/20 border border-brand-500/30 mb-4">
             <Lock size={22} className="text-brand-400" />
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">JACQES BI</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Acesso restrito · AWQ Group
-          </p>
+          <p className="text-sm text-gray-500 mt-1">Acesso restrito · AWQ Group</p>
         </div>
 
         {/* Card */}
         <div className="card p-6 space-y-5">
 
-          {/* Error */}
           {error && (
             <div className="flex items-center gap-2.5 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               <AlertCircle size={15} className="shrink-0" />
@@ -64,16 +84,10 @@ function LoginForm() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Username */}
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Usuário
-              </label>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5">Usuário</label>
               <div className="relative">
-                <User
-                  size={14}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
-                />
+                <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                 <input
                   type="text"
                   value={username}
@@ -86,16 +100,10 @@ function LoginForm() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Senha
-              </label>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5">Senha</label>
               <div className="relative">
-                <Lock
-                  size={14}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
-                />
+                <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -126,9 +134,11 @@ function LoginForm() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-gray-700 mt-6">
-          Acesso restrito. Apenas membros autorizados.
-        </p>
+        {/* Admin hint */}
+        <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-gray-700">
+          <ShieldCheck size={11} />
+          <span>Acesso restrito · Apenas membros autorizados</span>
+        </div>
       </div>
     </div>
   );
