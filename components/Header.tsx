@@ -13,10 +13,9 @@ export default function Header({ title, subtitle }: HeaderProps) {
   const router = useRouter();
   const unreadCount = alerts.filter((a) => a.type === "warning" || a.type === "error").length;
 
-  async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+  function handleLogout() {
+    localStorage.removeItem("jacqes_session");
     router.push("/login");
-    router.refresh();
   }
 
   return (
