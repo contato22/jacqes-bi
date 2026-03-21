@@ -137,8 +137,8 @@ function KeySetup({ onSave }: { onSave: (key: string) => void }) {
 
   async function handleSave() {
     const key = val.trim();
-    if (!key.startsWith("sk-ant-")) {
-      setErr("Chave inválida. Deve começar com sk-ant-");
+    if (!key.startsWith("sk-")) {
+      setErr("Chave inválida. Deve começar com sk-");
       return;
     }
     setLoading(true);
@@ -187,7 +187,7 @@ function KeySetup({ onSave }: { onSave: (key: string) => void }) {
             type={show ? "text" : "password"}
             value={val}
             onChange={(e) => { setVal(e.target.value); setErr(""); }}
-            placeholder="sk-ant-api03-..."
+            placeholder="sk-ant-... ou sk-..."
             className="w-full pr-10 pl-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 placeholder:text-gray-600 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30 transition-all"
           />
           <button
