@@ -33,6 +33,11 @@ export interface ContaData {
   donoProximaAcao: string;
   observacoes: string;
   tendencia: "subindo" | "estavel" | "descendo";
+  motivoRisco: "Atraso da AWQ" | "Baixa resposta do cliente" | "Desalinhamento de expectativa" | "Baixa percepção de valor" | "Operação travada" | "Comunicação" | "Indefinido" | null;
+  pendenciasVencidas: number;
+  pendenciasCriticas: number;
+  responsividadeCliente: "Alta" | "Média" | "Baixa";
+  gestaoRiscoDanilo: "Boa" | "Média" | "Fraca";
 }
 
 export interface AccountHealthSegment {
@@ -47,6 +52,10 @@ export interface Alert {
   title: string;
   message: string;
   timestamp: string;
+  criticidade: "critico" | "atencao" | "informativo";
+  owner: string;
+  prazo?: string;
+  status: "aberto" | "em_andamento" | "resolvido";
 }
 
 export interface ScoreMensal {
@@ -68,6 +77,12 @@ export interface ScoreMensal {
   principalFalha: string;
   focoProximoMes: string;
   variavelPaga: boolean;
+  scorePotencial: number;
+  gapParaVariavel: number;
+  dimensoesGap: { dimensao: string; gap: number }[];
+  faseAnterior: string;
+  condicaoProximaFase: string[];
+  autonomiaIndex: number; // 1–5
 }
 
 // ─── Score Mensal · Março 2026 ────────────────────────────────────────────────
@@ -95,6 +110,20 @@ export const scoreMensal: ScoreMensal = {
   focoProximoMes:
     "Zerar pendências abertas com Tati Simões. Criar checklist de visita padrão. Aumentar autonomia operacional.",
   variavelPaga: false,
+  scorePotencial: 75,
+  gapParaVariavel: 6,
+  dimensoesGap: [
+    { dimensao: "Processo", gap: 4 },
+    { dimensao: "Visitas", gap: 2 },
+  ],
+  faseAnterior: "Apoio Operacional",
+  condicaoProximaFase: [
+    "Score 75+ por 2 meses consecutivos",
+    "Visitas 6/6 realizadas ou reagendadas",
+    "Processo 15+ pts",
+    "Autonomia índice ≥ 4",
+  ],
+  autonomiaIndex: 3,
 };
 
 // ─── KPIs ─────────────────────────────────────────────────────────────────────
@@ -176,6 +205,11 @@ export const contasData: ContaData[] = [
     observacoes:
       "Cliente saudável com alto potencial de expansão. Follow-up consistente e boa percepção de valor.",
     tendencia: "subindo",
+    motivoRisco: null,
+    pendenciasVencidas: 0,
+    pendenciasCriticas: 0,
+    responsividadeCliente: "Alta",
+    gestaoRiscoDanilo: "Boa",
   },
   {
     id: "2",
@@ -191,6 +225,11 @@ export const contasData: ContaData[] = [
     observacoes:
       "Atenção para alinhamento de expectativas. 3 pendências abertas precisam de resolução.",
     tendencia: "estavel",
+    motivoRisco: "Baixa resposta do cliente",
+    pendenciasVencidas: 1,
+    pendenciasCriticas: 0,
+    responsividadeCliente: "Média",
+    gestaoRiscoDanilo: "Boa",
   },
   {
     id: "3",
@@ -206,6 +245,11 @@ export const contasData: ContaData[] = [
     observacoes:
       "Boa saúde de conta. 1 pendência em aberto. Oportunidade de expansão a ser explorada.",
     tendencia: "subindo",
+    motivoRisco: null,
+    pendenciasVencidas: 0,
+    pendenciasCriticas: 0,
+    responsividadeCliente: "Alta",
+    gestaoRiscoDanilo: "Boa",
   },
   {
     id: "4",
@@ -221,6 +265,11 @@ export const contasData: ContaData[] = [
     observacoes:
       "Conta em situação sensível. 5 pendências abertas sem resolução. Expectativa desalinhada identificada.",
     tendencia: "descendo",
+    motivoRisco: "Desalinhamento de expectativa",
+    pendenciasVencidas: 3,
+    pendenciasCriticas: 2,
+    responsividadeCliente: "Baixa",
+    gestaoRiscoDanilo: "Média",
   },
   {
     id: "5",
@@ -236,6 +285,11 @@ export const contasData: ContaData[] = [
     observacoes:
       "Conta institucional com potencial de crescimento. Monitorar engajamento e alinhar próximos passos.",
     tendencia: "estavel",
+    motivoRisco: null,
+    pendenciasVencidas: 0,
+    pendenciasCriticas: 0,
+    responsividadeCliente: "Alta",
+    gestaoRiscoDanilo: "Boa",
   },
 ];
 
@@ -258,6 +312,10 @@ export const alerts: Alert[] = [
     message:
       "Expectativa desalinhada identificada. 5 pendências abertas sem resolução. Próxima visita: 22/03.",
     timestamp: "2026-03-19T14:00:00Z",
+    criticidade: "critico",
+    owner: "Danilo",
+    prazo: "2026-03-28",
+    status: "aberto",
   },
   {
     id: "A2",
@@ -266,6 +324,10 @@ export const alerts: Alert[] = [
     message:
       "Visitas previstas em março não realizadas e sem reagendamento confirmado.",
     timestamp: "2026-03-19T09:00:00Z",
+    criticidade: "atencao",
+    owner: "Danilo",
+    prazo: "2026-03-25",
+    status: "aberto",
   },
   {
     id: "A3",
@@ -273,6 +335,10 @@ export const alerts: Alert[] = [
     title: "Relatório Pós-Visita Pendente",
     message: "1 relatório pós-visita ainda não preenchido neste mês.",
     timestamp: "2026-03-18T16:00:00Z",
+    criticidade: "atencao",
+    owner: "Danilo",
+    prazo: "2026-03-22",
+    status: "em_andamento",
   },
   {
     id: "A4",
@@ -281,6 +347,9 @@ export const alerts: Alert[] = [
     message:
       "Score 69/100 está abaixo do threshold de 75 pts para pagamento da variável mensal.",
     timestamp: "2026-03-18T08:00:00Z",
+    criticidade: "informativo",
+    owner: "AWQ",
+    status: "aberto",
   },
 ];
 
@@ -427,7 +496,9 @@ export interface FollowUpItem {
 export interface FollowUpData {
   totalPrevistos: number;
   totalRealizados: number;
+  realizados: number;
   totalVencidos: number;
+  vencidos: number;
   totalSemRetorno: number;
   totalSemFechamento: number;
   porConta: FollowUpItem[];
@@ -436,7 +507,9 @@ export interface FollowUpData {
 export const followUpData: FollowUpData = {
   totalPrevistos: 12,
   totalRealizados: 9,
+  realizados: 9,
   totalVencidos: 3,
+  vencidos: 3,
   totalSemRetorno: 2,
   totalSemFechamento: 4,
   porConta: [
