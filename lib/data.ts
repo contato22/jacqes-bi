@@ -284,10 +284,28 @@ export const alerts: Alert[] = [
   },
 ];
 
-// ─── Mini P&L — Financeiro (JACQES BU) ───────────────────────────────────────
-// Source: Notion · JACQES ERP Financeiro · Contas a Receber + Contas a Pagar
-// Page ID: 326e9381-f175-8116-aac7-d99ee5847315
-// Status: databases configuradas, sem lançamentos ainda — aguardando primeiros registros
+// ─── Mini P&L — JACQES BU · Março 2026 ───────────────────────────────────────
+// Source: Notion · Mini P&L database (workspace JACQES)
+// Colunas: FEE (receita), Danilo (custo alocado), COGS, OPEX, Freelancer
+
+export interface MiniPLConta {
+  conta: string;
+  fee: number;
+  danilo: number;
+  cogs: number;
+  opex: number;
+  freelancer: number;
+}
+
+export const miniPLContas: MiniPLConta[] = [
+  { conta: "CEM",             fee: 3200,   danilo: 960,  cogs: 160,  opex: 140, freelancer: 0  },
+  { conta: "André Vieira",    fee: 1500,   danilo: 450,  cogs: 60,   opex: 140, freelancer: 15 },
+  { conta: "Carol Bertolini", fee: 1790,   danilo: 537,  cogs: 89.5, opex: 140, freelancer: 0  },
+  { conta: "Tati Simões",     fee: 1790,   danilo: 537,  cogs: 74.5, opex: 140, freelancer: 15 },
+  { conta: "Luis Vieira",     fee: 0,      danilo: 0,    cogs: 0,    opex: 0,   freelancer: 0  },
+];
+
+export const miniPLMes = "Março 2026";
 
 // ─── Score Auditável — Critérios por Dimensão ────────────────────────────────
 // Source: Modelo M4E · 4 critérios × 5 pts = 20 pts por dimensão

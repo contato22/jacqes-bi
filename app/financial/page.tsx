@@ -1,116 +1,204 @@
-import { Database, ArrowRight, Info } from "lucide-react";
+import { miniPLContas, miniPLMes } from "@/lib/data";
+import { formatCurrency } from "@/lib/utils";
 
-const plStructure = [
-  { label: "Receita Bruta", indent: false, positive: true },
-  { label: "CMV (Custo das Mercadorias Vendidas)", indent: true, positive: false },
-  { label: "Lucro Bruto", indent: false, positive: true, divider: true },
-  { label: "Despesas Operacionais", indent: true, positive: false },
-  { label: "EBITDA", indent: false, positive: true, divider: true },
-  { label: "Depreciação / Amortização", indent: true, positive: false },
-  { label: "Resultado Líquido", indent: false, positive: true, divider: true, bold: true },
-];
+function pct(value: number, total: number) {
+  if (!total) return "—";
+  return ((value / total) * 100).toFixed(1) + "%";
+}
 
 export default function FinancialPage() {
+  // ── totais ──────────────────────────────────────────────────────────────────
+  const contasAtivas = miniPLContas.filter((c) => c.fee > 0);
+
+  const totalFee        = miniPLContas.reduce((s, c) => s + c.fee,        0);
+  const totalDanilo     = miniPLContas.reduce((s, c) => s + c.danilo,     0);
+  const totalCogs       = miniPLContas.reduce((s, c) => s + c.cogs,       0);
+  const totalFreelancer = miniPLContas.reduce((s, c) => s + c.freelancer, 0);
+  const totalOpex       = miniPLContas.reduce((s, c) => s + c.opex,       0);
+
+  const custoDireto  = totalDanilo + totalCogs + totalFreelancer;
+  const lucroBruto   = totalFee - custoDireto;
+  const ebitda       = lucroBruto - totalOpex;
+
   return (
     <div className="p-6 space-y-6">
 
       {/* Header */}
       <div>
         <h1 className="text-xl font-bold text-white">Mini P&L · JACQES BU</h1>
-        <p className="text-sm text-gray-500 mt-0.5">
-          JACQES ERP Financeiro · Estrutura pronta, aguardando lançamentos
-        </p>
+        <p className="text-sm text-gray-500 mt-0.5">{miniPLMes} · {contasAtivas.length} contas ativas</p>
       </div>
 
-      {/* Empty state callout */}
-      <div className="card p-5 border-yellow-500/30 bg-yellow-500/5">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center shrink-0">
-            <Info size={16} className="text-yellow-400" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-sm font-semibold text-yellow-300 mb-1">
-              Databases configurados — sem registros ainda
-            </h2>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              O ERP Financeiro da JACQES BU está estruturado no Notion com as databases de
-              Contas a Receber e Contas a Pagar, mas ainda não possui lançamentos. Os dados
-              aparecerão aqui assim que os primeiros registros forem adicionados.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* How to fill */}
+      {/* ── P&L Consolidado ─────────────────────────────────────────────────── */}
       <div className="card p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <Database size={15} className="text-brand-400" />
-          <h2 className="text-sm font-semibold text-white">Como preencher</h2>
-        </div>
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-brand-500/5 border border-brand-500/20">
-          <div className="text-xs text-gray-300 flex-1">
-            Acesse <span className="font-semibold text-brand-300">JACQES ERP Financeiro</span> no
-            Notion e adicione registros nas databases{" "}
-            <span className="font-medium text-white">Contas a Receber</span> e{" "}
-            <span className="font-medium text-white">Contas a Pagar</span>.
+        <h2 className="text-sm font-semibold text-white mb-4">P&L Consolidado</h2>
+
+        <div className="space-y-0 divide-y divide-gray-800/60">
+
+          {/* Receita Bruta */}
+          <div className="flex items-center justify-between py-3">
+            <span className="text-sm text-gray-300">Receita Bruta (FEE)</span>
+            <span className="text-sm font-semibold text-emerald-400 tabular-nums">
+              {formatCurrency(totalFee)}
+            </span>
           </div>
-          <ArrowRight size={14} className="text-brand-400 shrink-0" />
+
+          {/* Custo Danilo */}
+          <div className="flex items-center justify-between py-2.5">
+            <span className="text-sm text-gray-500 pl-4">(-) Custo Danilo</span>
+            <span className="text-sm text-red-400/80 tabular-nums">
+              ({formatCurrency(totalDanilo)})
+            </span>
+          </div>
+
+          {/* COGS */}
+          <div className="flex items-center justify-between py-2.5">
+            <span className="text-sm text-gray-500 pl-4">(-) COGS</span>
+            <span className="text-sm text-red-400/80 tabular-nums">
+              ({formatCurrency(totalCogs)})
+            </span>
+          </div>
+
+          {/* Freelancer */}
+          <div className="flex items-center justify-between py-2.5">
+            <span className="text-sm text-gray-500 pl-4">(-) Freelancer</span>
+            <span className="text-sm text-red-400/80 tabular-nums">
+              ({formatCurrency(totalFreelancer)})
+            </span>
+          </div>
+
+          {/* Lucro Bruto */}
+          <div className="flex items-center justify-between py-3 border-t border-gray-700 mt-1">
+            <span className="text-sm font-semibold text-white">Lucro Bruto</span>
+            <div className="text-right">
+              <span className={`text-sm font-bold tabular-nums ${lucroBruto >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                {formatCurrency(lucroBruto)}
+              </span>
+              <span className="text-xs text-gray-600 ml-2">{pct(lucroBruto, totalFee)}</span>
+            </div>
+          </div>
+
+          {/* OPEX */}
+          <div className="flex items-center justify-between py-2.5">
+            <span className="text-sm text-gray-500 pl-4">(-) OPEX</span>
+            <span className="text-sm text-red-400/80 tabular-nums">
+              ({formatCurrency(totalOpex)})
+            </span>
+          </div>
+
+          {/* EBITDA */}
+          <div className="flex items-center justify-between py-3 border-t border-gray-700 mt-1">
+            <span className="text-sm font-bold text-white">EBITDA</span>
+            <div className="text-right">
+              <span className={`text-sm font-bold tabular-nums ${ebitda >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                {formatCurrency(ebitda)}
+              </span>
+              <span className="text-xs text-gray-600 ml-2">{pct(ebitda, totalFee)}</span>
+            </div>
+          </div>
+
         </div>
-        <p className="text-xs text-gray-600 mt-3">
-          Página Notion: <span className="font-mono text-gray-500">326e9381f1758116aac7d99ee5847315</span>
-        </p>
       </div>
 
-      {/* P&L Structure Template */}
+      {/* ── Por Conta ───────────────────────────────────────────────────────── */}
       <div className="card p-5">
-        <div className="mb-4">
-          <h2 className="text-sm font-semibold text-white">Estrutura do P&L</h2>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Template — valores serão preenchidos quando os dados estiverem disponíveis
-          </p>
-        </div>
+        <h2 className="text-sm font-semibold text-white mb-4">Por Conta</h2>
 
-        <div className="space-y-0 divide-y divide-gray-800">
-          {plStructure.map((row) => (
-            <div
-              key={row.label}
-              className={`flex items-center justify-between py-2.5 ${
-                row.divider ? "border-t border-gray-700 mt-1 pt-3" : ""
-              }`}
-            >
-              <span
-                className={`text-sm ${
-                  row.bold
-                    ? "font-bold text-white"
-                    : row.indent
-                    ? "text-gray-500 pl-4"
-                    : "text-gray-300"
-                }`}
-              >
-                {row.label}
-              </span>
-              <span
-                className={`text-sm tabular-nums font-medium ${
-                  row.bold
-                    ? "font-bold text-gray-400"
-                    : row.positive
-                    ? "text-gray-500"
-                    : "text-gray-600"
-                }`}
-              >
-                —
-              </span>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-gray-600 border-b border-gray-800">
+                <th className="text-left pb-2 font-medium">Conta</th>
+                <th className="text-right pb-2 font-medium">FEE</th>
+                <th className="text-right pb-2 font-medium">Danilo</th>
+                <th className="text-right pb-2 font-medium">COGS</th>
+                <th className="text-right pb-2 font-medium">OPEX</th>
+                <th className="text-right pb-2 font-medium">Freelancer</th>
+                <th className="text-right pb-2 font-medium">Resultado</th>
+                <th className="text-right pb-2 font-medium">Margem</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-800/40">
+              {miniPLContas.map((c) => {
+                const resultado = c.fee - c.danilo - c.cogs - c.opex - c.freelancer;
+                const margem = c.fee > 0 ? (resultado / c.fee) * 100 : null;
+                return (
+                  <tr key={c.conta} className="text-gray-300">
+                    <td className="py-2.5 font-medium text-white">{c.conta}</td>
+                    <td className="py-2.5 text-right tabular-nums text-emerald-400/90">
+                      {c.fee > 0 ? formatCurrency(c.fee) : <span className="text-gray-700">—</span>}
+                    </td>
+                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                      {c.danilo > 0 ? formatCurrency(c.danilo) : <span className="text-gray-700">—</span>}
+                    </td>
+                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                      {c.cogs > 0 ? formatCurrency(c.cogs) : <span className="text-gray-700">—</span>}
+                    </td>
+                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                      {c.opex > 0 ? formatCurrency(c.opex) : <span className="text-gray-700">—</span>}
+                    </td>
+                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                      {c.freelancer > 0 ? formatCurrency(c.freelancer) : <span className="text-gray-700">—</span>}
+                    </td>
+                    <td className={`py-2.5 text-right tabular-nums font-semibold ${
+                      c.fee === 0 ? "text-gray-700" : resultado >= 0 ? "text-emerald-400" : "text-red-400"
+                    }`}>
+                      {c.fee > 0 ? formatCurrency(resultado) : "—"}
+                    </td>
+                    <td className={`py-2.5 text-right tabular-nums text-xs ${
+                      margem === null ? "text-gray-700" : margem >= 50 ? "text-emerald-500" : margem >= 30 ? "text-yellow-500" : "text-red-500"
+                    }`}>
+                      {margem !== null ? margem.toFixed(1) + "%" : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr className="border-t border-gray-700 text-white font-semibold">
+                <td className="pt-3 text-xs text-gray-400">TOTAL</td>
+                <td className="pt-3 text-right tabular-nums text-emerald-400">{formatCurrency(totalFee)}</td>
+                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalDanilo)}</td>
+                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalCogs)}</td>
+                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalOpex)}</td>
+                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalFreelancer)}</td>
+                <td className="pt-3 text-right tabular-nums text-emerald-400">{formatCurrency(ebitda)}</td>
+                <td className="pt-3 text-right tabular-nums text-emerald-500 text-xs">{pct(ebitda, totalFee)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      {/* ── Composição do Custo ─────────────────────────────────────────────── */}
+      <div className="card p-5">
+        <h2 className="text-sm font-semibold text-white mb-4">Composição do Custo Direto</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { label: "Danilo", valor: totalDanilo, color: "bg-brand-500" },
+            { label: "COGS",   valor: totalCogs,   color: "bg-yellow-500" },
+            { label: "Freelancer", valor: totalFreelancer, color: "bg-purple-500" },
+          ].map((item) => (
+            <div key={item.label} className="space-y-2">
+              <div className="flex justify-between text-xs text-gray-400">
+                <span>{item.label}</span>
+                <span className="tabular-nums">{pct(item.valor, custoDireto)}</span>
+              </div>
+              <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full ${item.color} rounded-full`}
+                  style={{ width: custoDireto > 0 ? `${(item.valor / custoDireto) * 100}%` : "0%" }}
+                />
+              </div>
+              <div className="text-xs text-gray-500 tabular-nums">{formatCurrency(item.valor)}</div>
             </div>
           ))}
         </div>
-
-        <div className="mt-5 pt-4 border-t border-gray-800 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-gray-600" />
-          <span className="text-xs text-gray-600">
-            Dados serão atualizados automaticamente via Notion assim que disponíveis
-          </span>
-        </div>
       </div>
+
+      <p className="text-xs text-gray-700 text-center">
+        Fonte: Notion · Mini P&L · {miniPLMes}
+      </p>
 
     </div>
   );
