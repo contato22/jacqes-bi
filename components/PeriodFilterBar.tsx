@@ -1,6 +1,7 @@
 "use client";
 
-import { Calendar } from "lucide-react";
+import { useState } from "react";
+import { Calendar, BarChart2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePeriod, type Period } from "@/contexts/PeriodContext";
 import ComparativoPanel from "@/components/ComparativoPanel";
@@ -22,6 +23,7 @@ interface Props {
 
 function PeriodFilterBarUI({ children, available = ["mensal"], label }: Props) {
   const { period, setPeriod } = usePeriod();
+  const [showComparativo, setShowComparativo] = useState(false);
   const hasData = available.includes(period);
 
   return (
@@ -47,18 +49,37 @@ function PeriodFilterBarUI({ children, available = ["mensal"], label }: Props) {
           ))}
         </div>
 
-        {label && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-600">
-            <Calendar size={11} />
-            <span>{label}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Toggle Previsto × Realizado */}
+          <button
+            onClick={() => setShowComparativo((v) => !v)}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border",
+              showComparativo
+                ? "bg-brand-600/20 text-brand-400 border-brand-500/20"
+                : "text-gray-500 border-gray-800 hover:text-gray-300 hover:bg-gray-800",
+            )}
+            title="Previsto × Realizado"
+          >
+            <BarChart2 size={12} />
+            Previsto × Realizado
+          </button>
+
+          {label && (
+            <div className="flex items-center gap-1.5 text-xs text-gray-600">
+              <Calendar size={11} />
+              <span>{label}</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* ── Comparativo sempre visível ─────────────────────────────────── */}
-      <div className="px-8 pt-6">
-        <ComparativoPanel />
-      </div>
+      {/* ── Comparativo (colapsável) ────────────────────────────────────── */}
+      {showComparativo && (
+        <div className="px-8 pt-6">
+          <ComparativoPanel />
+        </div>
+      )}
 
       {/* ── Conteúdo detalhado (apenas no período com dados) ───────────── */}
       {hasData ? (

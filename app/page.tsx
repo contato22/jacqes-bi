@@ -6,7 +6,7 @@ import ScoreChart from "@/components/RevenueChart";
 import AccountHealthChart from "@/components/CustomerSegmentChart";
 import AlertBanner from "@/components/AlertBanner";
 import { alerts, scoreMensal, contasData, slaData, followUpData } from "@/lib/data";
-import { TrendingDown, TrendingUp, AlertOctagon, Target, ChevronRight, Clock, Minus, XCircle } from "lucide-react";
+import { TrendingDown, TrendingUp, ChevronRight, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const criticosCount = alerts.filter((a) => a.criticidade === "critico").length;

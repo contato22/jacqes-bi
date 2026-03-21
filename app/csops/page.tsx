@@ -142,12 +142,7 @@ export default function CSOpsPage() {
                 <thead>
                   <tr className="border-b border-gray-800">
                     {["Conta", "Dias sem contato", "Tempo médio resp.", "Pendências vencidas"].map((h) => (
-                      <th
-                        key={h}
-                        className="text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
-                      >
-                        {h}
-                      </th>
+                      <th key={h} className="table-th">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -261,12 +256,7 @@ export default function CSOpsPage() {
                 <thead>
                   <tr className="border-b border-gray-800">
                     {["Conta", "Previstos", "Realizados", "Vencidos", "Sem Retorno", "Sem Fechamento"].map((h) => (
-                      <th
-                        key={h}
-                        className="text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
-                      >
-                        {h}
-                      </th>
+                      <th key={h} className="table-th">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -316,12 +306,7 @@ export default function CSOpsPage() {
                 <thead>
                   <tr className="border-b border-gray-800">
                     {["Conta", "Pendências", "Saúde", "Urgência"].map((h) => (
-                      <th
-                        key={h}
-                        className="text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
-                      >
-                        {h}
-                      </th>
+                      <th key={h} className="table-th">{h}</th>
                     ))}
                   </tr>
                 </thead>

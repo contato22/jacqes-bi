@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { Settings, Bell, Shield, Palette, Database, Users } from "lucide-react";
+import { Settings, Bell, Shield, Database, Info } from "lucide-react";
 
 interface SettingsSectionProps {
   icon: React.ElementType;
@@ -56,18 +56,28 @@ function ToggleRow({ label, description, defaultChecked = false }: ToggleRowProp
 export default function SettingsPage() {
   return (
     <>
-      <Header title="Settings" subtitle="Manage your JACQES BI workspace preferences" />
+      <Header title="Configurações" subtitle="Preferências e configurações do JACQES BI — AWQ Group" />
 
       <div className="px-8 py-6 space-y-4">
+
+        {/* Info banner */}
+        <div className="flex items-start gap-2 p-4 rounded-xl border border-brand-500/20 bg-brand-500/5">
+          <Info size={14} className="text-brand-400 mt-0.5 shrink-0" />
+          <p className="text-xs text-gray-400">
+            As configurações abaixo são informativas. As atualizações de dados devem ser feitas diretamente no{" "}
+            <span className="text-brand-400">Notion</span> — o BI sincroniza automaticamente via MCP.
+          </p>
+        </div>
+
         <SettingsSection
           icon={Settings}
-          title="General"
-          description="Workspace and display preferences"
+          title="Geral"
+          description="Preferências do workspace e visualização"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Workspace Name
+                Nome do workspace
               </label>
               <input
                 type="text"
@@ -77,31 +87,29 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Default Currency
+                Moeda padrão
               </label>
               <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
-                <option>USD — US Dollar</option>
+                <option>BRL — Real Brasileiro</option>
+                <option>USD — Dólar Americano</option>
                 <option>EUR — Euro</option>
-                <option>GBP — British Pound</option>
               </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Fiscal Year Start
+                Início do exercício fiscal
               </label>
               <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
-                <option>January</option>
-                <option>April</option>
-                <option>July</option>
-                <option>October</option>
+                <option>Janeiro</option>
+                <option>Julho</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1.5">Time Zone</label>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5">Fuso horário</label>
               <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
-                <option>UTC+0 — London</option>
-                <option>UTC-5 — New York</option>
-                <option>UTC+8 — Singapore</option>
+                <option>UTC-3 — Brasília (BRT)</option>
+                <option>UTC-4 — Manaus (AMT)</option>
+                <option>UTC+0 — Londres</option>
               </select>
             </div>
           </div>
@@ -109,60 +117,68 @@ export default function SettingsPage() {
 
         <SettingsSection
           icon={Bell}
-          title="Notifications"
-          description="Configure alerts and notification delivery"
+          title="Alertas"
+          description="Configure quais alertas são exibidos no BI"
         >
-          <ToggleRow label="Revenue milestone alerts" defaultChecked={true} />
-          <ToggleRow label="At-risk customer warnings" description="Alert when churn probability > 70%" defaultChecked={true} />
-          <ToggleRow label="Weekly digest email" defaultChecked={true} />
-          <ToggleRow label="Slack integration alerts" description="Post to #analytics channel" defaultChecked={false} />
-          <ToggleRow label="Data refresh notifications" defaultChecked={false} />
+          <ToggleRow label="Alertas críticos de conta" description="Exibir alerta quando conta está em risco alto" defaultChecked={true} />
+          <ToggleRow label="Pendências vencidas" description="Mostrar banner ao acessar o BI com pendências vencidas" defaultChecked={true} />
+          <ToggleRow label="Gap para variável" description="Lembrete quando score < meta de 75 pts" defaultChecked={true} />
+          <ToggleRow label="Visitas não reagendadas" description="Alertar ao ter visitas pendentes de reagendamento" defaultChecked={true} />
+          <ToggleRow label="Relatório pós-visita pendente" description="Lembrar de preencher relatório após cada visita" defaultChecked={false} />
         </SettingsSection>
 
         <SettingsSection
           icon={Shield}
-          title="Security & Access"
-          description="Manage team permissions and data access"
+          title="Acesso"
+          description="Usuários com acesso ao JACQES BI"
         >
           <div className="space-y-2">
             {[
-              { name: "Alex Whitmore", email: "alex@awqgroup.com", role: "Owner" },
-              { name: "Sam Chen", email: "s.chen@jacqes.com", role: "Admin" },
-              { name: "Priya Nair", email: "p.nair@jacqes.com", role: "Analyst" },
+              { name: "Miguel", initials: "M", role: "Admin", email: "Founder · AWQ Group" },
+              { name: "Danilo", initials: "D", role: "Usuário", email: "CS & Operações · AWQ Group" },
             ].map((member) => (
-              <div key={member.email} className="flex items-center gap-3 py-2 border-b border-gray-800 last:border-0">
+              <div key={member.name} className="flex items-center gap-3 py-2 border-b border-gray-800 last:border-0">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 flex items-center justify-center text-[10px] font-bold text-white">
-                  {member.name.split(" ").map((n) => n[0]).join("")}
+                  {member.initials}
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-gray-300">{member.name}</div>
                   <div className="text-xs text-gray-600">{member.email}</div>
                 </div>
-                <span className="badge badge-blue">{member.role}</span>
+                <span className={`badge ${member.role === "Admin" ? "badge-blue" : "badge-green"}`}>
+                  {member.role}
+                </span>
               </div>
             ))}
           </div>
-          <button className="btn-secondary text-xs mt-2">+ Invite Member</button>
         </SettingsSection>
 
         <SettingsSection
           icon={Database}
-          title="Data Sources"
-          description="Connected integrations and data pipelines"
+          title="Fontes de dados"
+          description="Integrações e pipelines de dados conectados ao BI"
         >
           {[
-            { name: "Stripe", status: "Connected", lastSync: "2 min ago" },
-            { name: "Salesforce CRM", status: "Connected", lastSync: "15 min ago" },
-            { name: "Google Analytics", status: "Connected", lastSync: "1 hr ago" },
-            { name: "HubSpot", status: "Disconnected", lastSync: "—" },
+            { name: "Notion — Contas & Carteira",   status: "Conectado",     lastSync: "via MCP" },
+            { name: "Notion — Score Mensal",         status: "Conectado",     lastSync: "via MCP" },
+            { name: "Notion — Visitas",              status: "Mapeado",       lastSync: "Em uso futuro" },
+            { name: "Notion — Atendimento",          status: "Mapeado",       lastSync: "Em uso futuro" },
+            { name: "Notion — Execução Operacional", status: "Mapeado",       lastSync: "Em uso futuro" },
+            { name: "GitHub Pages",                  status: "Deploy ativo",  lastSync: "contato22/jacqes-bi" },
           ].map((source) => (
             <div key={source.name} className="flex items-center justify-between py-2 border-b border-gray-800 last:border-0">
               <div>
                 <div className="text-sm font-medium text-gray-300">{source.name}</div>
-                <div className="text-xs text-gray-600">Last sync: {source.lastSync}</div>
+                <div className="text-xs text-gray-600">{source.lastSync}</div>
               </div>
               <span
-                className={`badge ${source.status === "Connected" ? "badge-green" : "badge-red"}`}
+                className={`badge ${
+                  source.status === "Conectado"
+                    ? "badge-green"
+                    : source.status === "Deploy ativo"
+                    ? "badge-blue"
+                    : "badge-yellow"
+                }`}
               >
                 {source.status}
               </span>
@@ -170,10 +186,6 @@ export default function SettingsPage() {
           ))}
         </SettingsSection>
 
-        {/* Save button */}
-        <div className="flex justify-end">
-          <button className="btn-primary">Save Changes</button>
-        </div>
       </div>
     </>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { Bell, Search, RefreshCw, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { alerts } from "@/lib/data";
 
 interface HeaderProps {
@@ -10,12 +9,14 @@ interface HeaderProps {
 }
 
 export default function Header({ title, subtitle }: HeaderProps) {
-  const router = useRouter();
   const unreadCount = alerts.filter((a) => a.type === "warning" || a.type === "error").length;
 
   function handleLogout() {
     localStorage.removeItem("jacqes_session");
-    router.push("/login");
+    localStorage.removeItem("jacqes_user");
+    localStorage.removeItem("jacqes_role");
+    const base = process.env.NODE_ENV === "production" ? "/jacqes-bi" : "";
+    window.location.href = base + "/login";
   }
 
   return (
