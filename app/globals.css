@@ -71,4 +71,41 @@
   .btn-secondary {
     @apply px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-lg text-sm font-medium transition-colors border border-gray-700;
   }
+
+  /* ── Layout de página padrão ───────────────────────────────────────────── */
+  .page-content {
+    @apply px-8 py-6 space-y-6;
+  }
+
+  /* ── Card header padronizado (h2 + descrição) ──────────────────────────── */
+  .card-title {
+    @apply text-sm font-semibold text-white;
+  }
+
+  .card-subtitle {
+    @apply text-xs text-gray-500 mt-0.5;
+  }
+
+  /* ── Stat cards (KPI-style) ────────────────────────────────────────────── */
+  .stat-value {
+    @apply text-2xl font-bold text-white tabular-nums;
+  }
+
+  .stat-label {
+    @apply text-xs text-gray-500 font-medium;
+  }
+
+  /* ── Tabelas padrão ────────────────────────────────────────────────────── */
+  .table-th {
+    @apply text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap;
+  }
+
+  .table-td {
+    @apply py-3 pr-4 text-sm text-gray-300;
+  }
+
+  /* ── Divisor de seção ──────────────────────────────────────────────────── */
+  .section-divider {
+    @apply border-t border-gray-800 pt-4 mt-4;
+  }
 }

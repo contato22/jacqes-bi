@@ -11,14 +11,12 @@ import {
 import Header from "@/components/Header";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
 import { scoreMensal, scoreDimensions, scoreCriterios } from "@/lib/data";
+import { dimensionColors, scoreThresholds } from "@/lib/colors";
 
-const thresholdBands = [
-  { range: "95–100", label: "Owner em Formação", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
-  { range: "85–94", label: "Operador Sólido", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20" },
-  { range: "75–84", label: "Bom Nível", color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/20" },
-  { range: "60–74", label: "Operação Mínima", color: "text-yellow-400", bg: "bg-yellow-500/10 border-yellow-500/20" },
-  { range: "0–59", label: "Abaixo do Esperado", color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" },
-];
+const thresholdBands = scoreThresholds.map((t, i) => {
+  const ranges = ["95–100", "85–94", "75–84", "60–74", "0–59"];
+  return { range: ranges[i], label: t.label, color: t.color, bg: t.bg };
+});
 
 const summaryStats = [
   {

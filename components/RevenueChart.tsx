@@ -11,6 +11,7 @@ import {
   Cell,
 } from "recharts";
 import { scoreDimensions, scoreMensal } from "@/lib/data";
+import { dimensionColors } from "@/lib/colors";
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -34,13 +35,6 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
-const dimensionColors: Record<string, string> = {
-  Atendimento: "#6366f1",
-  "Operação": "#22d3ee",
-  Visitas: "#22c55e",
-  Risco: "#f59e0b",
-  Processo: "#ec4899",
-};
 
 export default function ScoreChart() {
   const chartData = scoreDimensions.map((d) => ({

@@ -1,23 +1,8 @@
 import { scoreDimensions, scoreMensal } from "@/lib/data";
-
-const dimensionColors: Record<string, string> = {
-  Atendimento: "#6366f1",
-  "Operação": "#22d3ee",
-  Visitas: "#22c55e",
-  Risco: "#f59e0b",
-  Processo: "#ec4899",
-};
-
-const thresholds = [
-  { min: 95, label: "Owner em Formação", color: "text-emerald-400" },
-  { min: 85, label: "Operador Sólido", color: "text-blue-400" },
-  { min: 75, label: "Bom Nível", color: "text-cyan-400" },
-  { min: 60, label: "Operação Mínima", color: "text-yellow-400" },
-  { min: 0, label: "Abaixo do Esperado", color: "text-red-400" },
-];
+import { dimensionColors, getScoreThreshold } from "@/lib/colors";
 
 function getCurrentThreshold(score: number) {
-  return thresholds.find((t) => score >= t.min) ?? thresholds[thresholds.length - 1];
+  return getScoreThreshold(score);
 }
 
 export default function ScoreDimensionsPanel() {

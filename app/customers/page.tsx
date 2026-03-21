@@ -1,27 +1,8 @@
 import Header from "@/components/Header";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
 import { contasData } from "@/lib/data";
+import { saudeConfig, riscoConfig, oportunidadeConfig, tendenciaConfig } from "@/lib/colors";
 import { Briefcase, AlertTriangle, TrendingUp, TrendingDown, Minus, Clock } from "lucide-react";
-
-const saudeConfig = {
-  Saudável: { classes: "badge-green", dot: "bg-emerald-400" },
-  "Estável com Atenção": { classes: "badge-yellow", dot: "bg-yellow-400" },
-  Sensível: { classes: "badge-red", dot: "bg-orange-400" },
-  "Em Risco": { classes: "badge-red", dot: "bg-red-500" },
-};
-
-const riscoConfig = {
-  Baixo: "badge-green",
-  Médio: "badge-yellow",
-  Alto: "badge-red",
-};
-
-const oportunidadeConfig = {
-  "Sem Oportunidade": "badge-blue",
-  Leve: "badge-blue",
-  Média: "badge-yellow",
-  Forte: "badge-green",
-};
 
 const saudavelCount = contasData.filter((c) => c.saude === "Saudável").length;
 const atencaoCount = contasData.filter(
@@ -129,10 +110,7 @@ export default function CarteiraPage() {
                     "Próxima Visita",
                     "Dono Ação",
                   ].map((h) => (
-                    <th
-                      key={h}
-                      className="text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
-                    >
+                    <th key={h} className="table-th">
                       {h}
                     </th>
                   ))}
@@ -153,7 +131,7 @@ export default function CarteiraPage() {
                       <td className="py-3 pr-4">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`w-2 h-2 rounded-full shrink-0 ${saude.dot}`}
+                            className={`w-2 h-2 rounded-full shrink-0 ${saude?.dot}`}
                           />
                           <div>
                             <div className="font-medium text-gray-200 whitespace-nowrap">
@@ -172,7 +150,7 @@ export default function CarteiraPage() {
                         {conta.segmento}
                       </td>
                       <td className="py-3 pr-4">
-                        <span className={`badge ${saude.classes}`}>
+                        <span className={`badge ${saude?.badge}`}>
                           {conta.saude}
                         </span>
                       </td>
@@ -195,18 +173,8 @@ export default function CarteiraPage() {
                           ) : (
                             <Minus size={14} className="text-gray-400" />
                           )}
-                          <span className={`text-xs ${
-                            conta.tendencia === "subindo"
-                              ? "text-emerald-400"
-                              : conta.tendencia === "descendo"
-                              ? "text-red-400"
-                              : "text-gray-400"
-                          }`}>
-                            {conta.tendencia === "subindo"
-                              ? "Subindo"
-                              : conta.tendencia === "descendo"
-                              ? "Descendo"
-                              : "Estável"}
+                          <span className={`text-xs ${tendenciaConfig[conta.tendencia].color}`}>
+                            {tendenciaConfig[conta.tendencia].label}
                           </span>
                         </div>
                       </td>

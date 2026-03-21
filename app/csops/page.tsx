@@ -199,7 +199,7 @@ export default function CSOpsPage() {
           </div>
 
           {/* Follow-up KPI cards */}
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
             <div className="card p-5">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar size={14} className="text-gray-500" />

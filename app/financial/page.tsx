@@ -1,5 +1,6 @@
 import { miniPLContas, miniPLMes } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
 
 function pct(value: number, total: number) {
@@ -23,7 +24,7 @@ export default function FinancialPage() {
 
   return (
     <PeriodFilterBar available={["mensal"]} label={miniPLMes}>
-    <div className="p-6 space-y-6">
+    <div className="page-content">
 
       {/* Header */}
       <div>
@@ -107,49 +108,49 @@ export default function FinancialPage() {
         <h2 className="text-sm font-semibold text-white mb-4">Por Conta</h2>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full">
             <thead>
-              <tr className="text-gray-600 border-b border-gray-800">
-                <th className="text-left pb-2 font-medium">Conta</th>
-                <th className="text-right pb-2 font-medium">FEE</th>
-                <th className="text-right pb-2 font-medium">Danilo</th>
-                <th className="text-right pb-2 font-medium">COGS</th>
-                <th className="text-right pb-2 font-medium">OPEX</th>
-                <th className="text-right pb-2 font-medium">Freelancer</th>
-                <th className="text-right pb-2 font-medium">Resultado</th>
-                <th className="text-right pb-2 font-medium">Margem</th>
+              <tr className="border-b border-gray-800">
+                <th className="table-th">Conta</th>
+                <th className="table-th text-right">FEE</th>
+                <th className="table-th text-right">Danilo</th>
+                <th className="table-th text-right">COGS</th>
+                <th className="table-th text-right">OPEX</th>
+                <th className="table-th text-right">Freelancer</th>
+                <th className="table-th text-right">Resultado</th>
+                <th className="table-th text-right">Margem</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800/40">
+            <tbody className="divide-y divide-gray-800">
               {miniPLContas.map((c) => {
                 const resultado = c.fee - c.danilo - c.cogs - c.opex - c.freelancer;
                 const margem = c.fee > 0 ? (resultado / c.fee) * 100 : null;
                 return (
-                  <tr key={c.conta} className="text-gray-300">
-                    <td className="py-2.5 font-medium text-white">{c.conta}</td>
-                    <td className="py-2.5 text-right tabular-nums text-emerald-400/90">
+                  <tr key={c.conta}>
+                    <td className="table-td font-medium text-white">{c.conta}</td>
+                    <td className="table-td text-right tabular-nums text-emerald-400">
                       {c.fee > 0 ? formatCurrency(c.fee) : <span className="text-gray-700">—</span>}
                     </td>
-                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                    <td className="table-td text-right tabular-nums text-gray-400">
                       {c.danilo > 0 ? formatCurrency(c.danilo) : <span className="text-gray-700">—</span>}
                     </td>
-                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                    <td className="table-td text-right tabular-nums text-gray-400">
                       {c.cogs > 0 ? formatCurrency(c.cogs) : <span className="text-gray-700">—</span>}
                     </td>
-                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                    <td className="table-td text-right tabular-nums text-gray-400">
                       {c.opex > 0 ? formatCurrency(c.opex) : <span className="text-gray-700">—</span>}
                     </td>
-                    <td className="py-2.5 text-right tabular-nums text-gray-400">
+                    <td className="table-td text-right tabular-nums text-gray-400">
                       {c.freelancer > 0 ? formatCurrency(c.freelancer) : <span className="text-gray-700">—</span>}
                     </td>
-                    <td className={`py-2.5 text-right tabular-nums font-semibold ${
+                    <td className={cn("table-td text-right tabular-nums font-semibold",
                       c.fee === 0 ? "text-gray-700" : resultado >= 0 ? "text-emerald-400" : "text-red-400"
-                    }`}>
+                    )}>
                       {c.fee > 0 ? formatCurrency(resultado) : "—"}
                     </td>
-                    <td className={`py-2.5 text-right tabular-nums text-xs ${
-                      margem === null ? "text-gray-700" : margem >= 50 ? "text-emerald-500" : margem >= 30 ? "text-yellow-500" : "text-red-500"
-                    }`}>
+                    <td className={cn("table-td text-right tabular-nums",
+                      margem === null ? "text-gray-700" : margem >= 50 ? "text-emerald-400" : margem >= 30 ? "text-yellow-400" : "text-red-400"
+                    )}>
                       {margem !== null ? margem.toFixed(1) + "%" : "—"}
                     </td>
                   </tr>
@@ -157,15 +158,15 @@ export default function FinancialPage() {
               })}
             </tbody>
             <tfoot>
-              <tr className="border-t border-gray-700 text-white font-semibold">
-                <td className="pt-3 text-xs text-gray-400">TOTAL</td>
-                <td className="pt-3 text-right tabular-nums text-emerald-400">{formatCurrency(totalFee)}</td>
-                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalDanilo)}</td>
-                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalCogs)}</td>
-                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalOpex)}</td>
-                <td className="pt-3 text-right tabular-nums text-gray-400">{formatCurrency(totalFreelancer)}</td>
-                <td className="pt-3 text-right tabular-nums text-emerald-400">{formatCurrency(ebitda)}</td>
-                <td className="pt-3 text-right tabular-nums text-emerald-500 text-xs">{pct(ebitda, totalFee)}</td>
+              <tr className="border-t border-gray-700 font-semibold">
+                <td className="table-td text-gray-500">TOTAL</td>
+                <td className="table-td text-right tabular-nums text-emerald-400">{formatCurrency(totalFee)}</td>
+                <td className="table-td text-right tabular-nums text-gray-400">{formatCurrency(totalDanilo)}</td>
+                <td className="table-td text-right tabular-nums text-gray-400">{formatCurrency(totalCogs)}</td>
+                <td className="table-td text-right tabular-nums text-gray-400">{formatCurrency(totalOpex)}</td>
+                <td className="table-td text-right tabular-nums text-gray-400">{formatCurrency(totalFreelancer)}</td>
+                <td className="table-td text-right tabular-nums text-emerald-400">{formatCurrency(ebitda)}</td>
+                <td className="table-td text-right tabular-nums text-emerald-400">{pct(ebitda, totalFee)}</td>
               </tr>
             </tfoot>
           </table>
