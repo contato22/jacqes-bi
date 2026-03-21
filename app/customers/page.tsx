@@ -100,13 +100,14 @@ export default function CarteiraPage() {
 
         {/* Accounts table */}
         <div className="card p-6">
-          <div className="mb-5">
-            <h2 className="text-sm font-semibold text-white">
-              Contas & Carteira
-            </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Situação completa por conta — fonte: Notion
-            </p>
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="w-7 h-7 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 shrink-0">
+              <Briefcase size={14} />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-white">Contas & Carteira</h2>
+              <p className="text-xs text-gray-500">Situação completa por conta — fonte: Notion</p>
+            </div>
           </div>
 
           <div className="overflow-x-auto">

@@ -97,13 +97,14 @@ export default function DesempenhoPage() {
         {/* Radar chart + thresholds */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
           <div className="xl:col-span-2 card p-6">
-            <div className="mb-6">
-              <h2 className="text-sm font-semibold text-white">
-                Radar de Performance
-              </h2>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Cobertura por dimensão — máx. 20 pts por eixo
-              </p>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-6 h-6 rounded-md bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 shrink-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-white">Radar de Performance</h2>
+                <p className="text-xs text-gray-500">Cobertura por dimensão — máx. 20 pts por eixo</p>
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <RadarChart data={radarData}>
@@ -127,13 +128,14 @@ export default function DesempenhoPage() {
 
           {/* Threshold bands */}
           <div className="card p-6">
-            <div className="mb-4">
-              <h2 className="text-sm font-semibold text-white">
-                Faixas de Performance
-              </h2>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Modelo de score — 100 pts total
-              </p>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-6 h-6 rounded-md bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-400 shrink-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-white">Faixas de Performance</h2>
+                <p className="text-xs text-gray-500">Modelo de score — 100 pts total</p>
+              </div>
             </div>
             <div className="space-y-2">
               {thresholdBands.map((band) => {

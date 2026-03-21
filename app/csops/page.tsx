@@ -34,9 +34,14 @@ export default function CSOpsPage() {
 
         {/* ─── SLA Block ─────────────────────────────────────────────────────── */}
         <section className="space-y-4">
-          <div>
-            <h2 className="text-sm font-semibold text-white">SLA de Atendimento</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Tempo de resposta e cobertura de contato</p>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 shrink-0">
+              <Clock size={14} />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-white">SLA de Atendimento</h2>
+              <p className="text-xs text-gray-500">Tempo de resposta e cobertura de contato</p>
+            </div>
           </div>
 
           {/* SLA KPI cards */}
@@ -134,7 +139,8 @@ export default function CSOpsPage() {
 
           {/* SLA por conta table */}
           <div className="card p-6">
-            <div className="mb-4">
+            <div className="flex items-center gap-2 mb-4">
+              <MessageSquare size={14} className="text-gray-500" />
               <h3 className="text-sm font-semibold text-white">SLA por Conta</h3>
             </div>
             <div className="overflow-x-auto">
@@ -188,9 +194,14 @@ export default function CSOpsPage() {
 
         {/* ─── Follow-ups Block ──────────────────────────────────────────────── */}
         <section className="space-y-4">
-          <div>
-            <h2 className="text-sm font-semibold text-white">Follow-ups</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Previstos, realizados e vencidos no mês</p>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+              <Calendar size={14} />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-white">Follow-ups</h2>
+              <p className="text-xs text-gray-500">Previstos, realizados e vencidos no mês</p>
+            </div>
           </div>
 
           {/* Follow-up KPI cards */}
@@ -248,7 +259,8 @@ export default function CSOpsPage() {
 
           {/* Follow-up por conta table */}
           <div className="card p-6">
-            <div className="mb-4">
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle size={14} className="text-gray-500" />
               <h3 className="text-sm font-semibold text-white">Follow-up por Conta</h3>
             </div>
             <div className="overflow-x-auto">
@@ -295,9 +307,14 @@ export default function CSOpsPage() {
 
         {/* ─── Aging de Pendências ───────────────────────────────────────────── */}
         <section className="space-y-4">
-          <div>
-            <h2 className="text-sm font-semibold text-white">Aging de Pendências</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Pendências abertas por conta e nível de urgência</p>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 shrink-0">
+              <AlertTriangle size={14} />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-white">Aging de Pendências</h2>
+              <p className="text-xs text-gray-500">Pendências abertas por conta e nível de urgência</p>
+            </div>
           </div>
 
           <div className="card p-6">
@@ -358,9 +375,14 @@ export default function CSOpsPage() {
 
         {/* ─── Processo & Ativos ─────────────────────────────────────────────── */}
         <section className="space-y-4">
-          <div>
-            <h2 className="text-sm font-semibold text-white">Processo & Ativos</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Produção de ativos operacionais no mês</p>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
+              <FileText size={14} />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-white">Processo & Ativos</h2>
+              <p className="text-xs text-gray-500">Produção de ativos operacionais no mês</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
