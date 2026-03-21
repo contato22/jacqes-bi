@@ -376,6 +376,107 @@ export const miniPLContas: MiniPLConta[] = [
 
 export const miniPLMes = "Março 2026";
 
+// ─── DRE Gerencial — JACQES BU ────────────────────────────────────────────────
+// Atualizar mensalmente. Campos com (*) são estimativas/rateios — confirmar com AWQ.
+// Fonte base: Notion Mini P&L (FEE, Danilo, COGS, OPEX, Freelancer)
+
+export interface DRELinha {
+  label: string;
+  valor: number;
+  estimativa?: boolean;  // true = rateio ou estimativa, não vem diretamente da base
+  nota?: string;
+}
+
+export interface DREGerencial {
+  mes: string;
+
+  // 1. Receita Bruta
+  receitaBruta: {
+    recorrente: number;          // FEE mensal das contas ativas
+    projetoSetup: number;        // receitas pontuais de projeto/setup
+    variavel: number;            // bônus/comissão/performance
+    extraordinaria: number;      // outras receitas não recorrentes
+  };
+
+  // 2. Deduções
+  deducoes: {
+    impostosTaxas: DRELinha;     // Simples Nacional ou equivalente (*)
+  };
+
+  // 3. Custos Diretos
+  custosDiretos: {
+    daniloFixo: DRELinha;        // custo fixo alocado Danilo na BU (*)
+    daniloVariavel: DRELinha;    // variável/comissão Danilo (*)
+    encargosProvisos: DRELinha;  // encargos sociais sobre custo Danilo (*)
+    deslocamentosVisitas: DRELinha; // transporte/deslocamento de visitas (*)
+    ferramentasDiretas: DRELinha;   // ferramentas diretas da BU (do COGS)
+    apoioOperacionalFreela: DRELinha; // freelancers/apoio pontual
+    outrosCustosDiretos: DRELinha;
+  };
+
+  // 4. Despesas Operacionais da BU
+  despesasOperacionais: {
+    coordenacaoSupervisao: DRELinha;    // custo de supervisão alocado (*)
+    ferramentasCompartilhadas: DRELinha; // ferramentas SaaS rateadas (*)
+    administrativoRateado: DRELinha;    // admin/financeiro AWQ rateado (*)
+    desenvolvimentoProcessoBI: DRELinha; // BI/processos/melhoria (*)
+    outrosOverheads: DRELinha;
+  };
+
+  // 5. Ajustes Imputados
+  ajustesImputados: {
+    custoFounderEstrategico: DRELinha;  // tempo do Miguel alocado (*)
+    overheadExtra: DRELinha;
+  };
+}
+
+export const dreGerencial: DREGerencial = {
+  mes: "Março 2026",
+
+  // ── Receita Bruta ──────────────────────────────────────────────────────────
+  // Fonte: Notion Mini P&L · FEE total = R$8.280
+  receitaBruta: {
+    recorrente:    8280,   // FEE mensal CEM + André + Carol + Tati
+    projetoSetup:     0,   // sem projetos/setup em março
+    variavel:         0,   // sem receita variável em março
+    extraordinaria:   0,   // sem receitas extraordinárias
+  },
+
+  // ── Deduções ───────────────────────────────────────────────────────────────
+  deducoes: {
+    impostosTaxas: { label: "Impostos / taxas", valor: 994, estimativa: true,
+      nota: "~12% Simples Nacional — confirmar alíquota com AWQ" },
+  },
+
+  // ── Custos Diretos ─────────────────────────────────────────────────────────
+  // Fonte: Danilo R$2.484, COGS R$384, Freelancer R$30 (do Mini P&L)
+  custosDiretos: {
+    daniloFixo:            { label: "Danilo — custo fixo alocado",       valor: 2000, estimativa: true, nota: "Rateio proporcional à BU — confirmar com AWQ" },
+    daniloVariavel:        { label: "Danilo — variável / comissão",      valor:  484, estimativa: true, nota: "Diferença entre total alocado e fixo" },
+    encargosProvisos:      { label: "Encargos / provisões",              valor:  372, estimativa: true, nota: "~15% sobre custo Danilo (FGTS, férias, 13º)" },
+    deslocamentosVisitas:  { label: "Deslocamentos / visitas",           valor:  150, estimativa: true, nota: "Transporte de visitas às contas — inserir mensalmente" },
+    ferramentasDiretas:    { label: "Ferramentas diretas",               valor:  184, estimativa: false, nota: "Do COGS do Mini P&L" },
+    apoioOperacionalFreela:{ label: "Apoio operacional / freelancer",    valor:   30, estimativa: false, nota: "Do campo Freelancer do Mini P&L" },
+    outrosCustosDiretos:   { label: "Outros custos diretos",             valor:  200, estimativa: true, nota: "Inserir mensalmente" },
+  },
+
+  // ── Despesas Operacionais da BU ────────────────────────────────────────────
+  // Fonte: OPEX R$560 do Mini P&L + estimativas
+  despesasOperacionais: {
+    coordenacaoSupervisao:      { label: "Coordenação / supervisão",          valor:    0, estimativa: true, nota: "Sem coordenador alocado em março" },
+    ferramentasCompartilhadas:  { label: "Ferramentas compartilhadas",        valor:  280, estimativa: true, nota: "Metade do OPEX — SaaS rateados entre BUs" },
+    administrativoRateado:      { label: "Administrativo rateado",           valor:  140, estimativa: true, nota: "Admin/financeiro AWQ rateado proporcional" },
+    desenvolvimentoProcessoBI:  { label: "Desenvolvimento de processo / BI", valor:  140, estimativa: true, nota: "Custo de manutenção e evolução do BI" },
+    outrosOverheads:            { label: "Outros overheads",                  valor:    0, estimativa: true, nota: "Inserir mensalmente" },
+  },
+
+  // ── Ajustes Imputados ──────────────────────────────────────────────────────
+  ajustesImputados: {
+    custoFounderEstrategico: { label: "Custo founder / estratégico (Miguel)", valor: 800, estimativa: true, nota: "Tempo do Miguel alocado à BU — inserir mensalmente" },
+    overheadExtra:           { label: "Overhead extra",                       valor:   0, estimativa: true, nota: "Inserir mensalmente se houver" },
+  },
+};
+
 // ─── Score Auditável — Critérios por Dimensão ────────────────────────────────
 // Source: Modelo M4E · 4 critérios × 5 pts = 20 pts por dimensão
 
