@@ -467,3 +467,83 @@ export const processoAtivos: ProcessoAtivos = {
   padroesReaproveitaveis: 1,
   iaEmAtivo: 0,
 };
+
+// ─── Comparativo Previsto × Realizado por Período ─────────────────────────────
+// Referência: Março 2026 · Meta variável = 75 pts · FEE alvo = R$10.500
+
+export type PeriodKey = "diario" | "semanal" | "mensal" | "trimestral" | "anual";
+
+export interface MetricaComparativa {
+  id: string;
+  label: string;
+  sublabel?: string;
+  previsto: number;
+  realizado: number;
+  unidade: string;      // "pts" | "%" | "R$" | "visitas" | "msgs" | "h" | "tasks"
+  lowerIsBetter?: boolean;
+  categoria: "score" | "financeiro" | "operacional" | "sla";
+}
+
+export interface PeriodoComparativo {
+  periodo: PeriodKey;
+  label: string;        // ex.: "Semana 12 · 17–21 Mar"
+  metricas: MetricaComparativa[];
+}
+
+export const comparativoPeriodos: PeriodoComparativo[] = [
+  {
+    periodo: "diario",
+    label: "Hoje · 21 Mar 2026",
+    metricas: [
+      { id: "d-msgs-prazo",   label: "Mensagens respondidas no prazo", sublabel: "< 24 h",          previsto: 100, realizado: 80,  unidade: "%",    categoria: "sla"          },
+      { id: "d-tarefas",      label: "Tarefas do dia concluídas",      sublabel: "Execução",         previsto: 5,   realizado: 3,   unidade: "tasks", categoria: "operacional"  },
+      { id: "d-follow-up",    label: "Follow-ups realizados",          sublabel: "Diário",           previsto: 2,   realizado: 1,   unidade: "msgs",  categoria: "operacional"  },
+      { id: "d-contatos",     label: "Contas tocadas hoje",            sublabel: "Min. 1 contato",   previsto: 3,   realizado: 2,   unidade: "contas",categoria: "sla"          },
+    ],
+  },
+  {
+    periodo: "semanal",
+    label: "Semana 12 · 16–21 Mar 2026",
+    metricas: [
+      { id: "w-follow-up",    label: "Follow-ups realizados",          sublabel: "vs previstos",     previsto: 3,   realizado: 2,   unidade: "msgs",  categoria: "operacional"  },
+      { id: "w-visitas",      label: "Visitas realizadas",             sublabel: "vs planejadas",    previsto: 2,   realizado: 1,   unidade: "visitas",categoria: "operacional" },
+      { id: "w-sla",          label: "SLA de resposta",                sublabel: "% no prazo",       previsto: 90,  realizado: 73,  unidade: "%",     categoria: "sla"          },
+      { id: "w-pendencias",   label: "Pendências abertas",             sublabel: "Meta: reduzir",    previsto: 5,   realizado: 11,  unidade: "itens", lowerIsBetter: true, categoria: "operacional" },
+      { id: "w-contatos",     label: "Contas com contato ativo",       sublabel: "das 5",            previsto: 5,   realizado: 4,   unidade: "contas",categoria: "sla"          },
+    ],
+  },
+  {
+    periodo: "mensal",
+    label: "Março 2026",
+    metricas: [
+      { id: "m-score",        label: "Score Total",                    sublabel: "Meta variável",    previsto: 75,  realizado: 69,  unidade: "pts",   categoria: "score"        },
+      { id: "m-fee",          label: "FEE Carteira",                   sublabel: "Receita do mês",   previsto: 10500, realizado: 8280, unidade: "R$", categoria: "financeiro"   },
+      { id: "m-visitas",      label: "Visitas realizadas",             sublabel: "vs planejadas",    previsto: 6,   realizado: 4,   unidade: "visitas",categoria: "operacional" },
+      { id: "m-followup",     label: "Follow-ups",                     sublabel: "Total do mês",     previsto: 12,  realizado: 9,   unidade: "msgs",  categoria: "operacional"  },
+      { id: "m-sla",          label: "SLA de resposta",                sublabel: "% no prazo",       previsto: 90,  realizado: 73,  unidade: "%",     categoria: "sla"          },
+      { id: "m-resultado",    label: "Resultado operacional",          sublabel: "EBITDA BU",        previsto: 5600, realizado: 4822, unidade: "R$",  categoria: "financeiro"   },
+    ],
+  },
+  {
+    periodo: "trimestral",
+    label: "Q1 2026 · Jan–Mar",
+    metricas: [
+      { id: "q-score-med",    label: "Score médio trimestral",         sublabel: "Meta: 75 / mês",   previsto: 75,  realizado: 69,  unidade: "pts",   categoria: "score"        },
+      { id: "q-fee",          label: "FEE acumulado",                  sublabel: "Jan–Mar",          previsto: 31500, realizado: 8280, unidade: "R$", categoria: "financeiro"   },
+      { id: "q-visitas",      label: "Visitas realizadas",             sublabel: "Meta 18 no tri",   previsto: 18,  realizado: 4,   unidade: "visitas",categoria: "operacional" },
+      { id: "q-contas-ativas",label: "Contas com fee ativo",           sublabel: "das 5 na carteira",previsto: 5,   realizado: 4,   unidade: "contas",categoria: "operacional"  },
+      { id: "q-followup",     label: "Follow-ups acumulados",          sublabel: "Meta 36 no tri",   previsto: 36,  realizado: 9,   unidade: "msgs",  categoria: "operacional"  },
+    ],
+  },
+  {
+    periodo: "anual",
+    label: "2026 · Jan–Dez",
+    metricas: [
+      { id: "a-score-meta",   label: "Score-alvo anual",               sublabel: "Owner em Formação",previsto: 85,  realizado: 69,  unidade: "pts",   categoria: "score"        },
+      { id: "a-fee-anual",    label: "FEE anualizado",                 sublabel: "Projeção 12 meses",previsto: 126000, realizado: 8280, unidade: "R$",categoria: "financeiro"  },
+      { id: "a-visitas",      label: "Visitas no ano",                 sublabel: "Meta 72 visitas",  previsto: 72,  realizado: 4,   unidade: "visitas",categoria: "operacional" },
+      { id: "a-contas-plenas",label: "Contas com fee pleno",           sublabel: "todas com FEE",    previsto: 5,   realizado: 4,   unidade: "contas",categoria: "operacional"  },
+      { id: "a-sops",         label: "SOPs criados",                   sublabel: "Meta: 12 no ano",  previsto: 12,  realizado: 0,   unidade: "docs",  categoria: "operacional"  },
+    ],
+  },
+];

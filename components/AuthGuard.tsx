@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { PeriodProvider } from "@/contexts/PeriodContext";
 import Sidebar from "@/components/Sidebar";
 import OpenClaw from "@/components/OpenClaw";
 
@@ -64,7 +65,9 @@ function AuthGuardInner({ children }: { children: React.ReactNode }) {
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <AuthGuardInner>{children}</AuthGuardInner>
+      <PeriodProvider>
+        <AuthGuardInner>{children}</AuthGuardInner>
+      </PeriodProvider>
     </AuthProvider>
   );
 }
