@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import PeriodFilterBar from "@/components/PeriodFilterBar";
 import { contasData } from "@/lib/data";
 import { Briefcase, AlertTriangle, TrendingUp, TrendingDown, Minus, Clock } from "lucide-react";
 
@@ -45,6 +46,7 @@ export default function CarteiraPage() {
         subtitle="Contas & Carteira — saúde, risco e oportunidade por cliente"
       />
 
+      <PeriodFilterBar available={["mensal"]} label="Março 2026">
       <div className="px-8 py-6 space-y-6">
         {/* Summary */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
@@ -246,6 +248,7 @@ export default function CarteiraPage() {
           </div>
         </div>
       </div>
+      </PeriodFilterBar>
     </>
   );
 }

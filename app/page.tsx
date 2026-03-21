@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import PeriodFilterBar from "@/components/PeriodFilterBar";
 import KPICard from "@/components/KPICard";
 import ScoreChart from "@/components/RevenueChart";
 import AccountHealthChart from "@/components/CustomerSegmentChart";
@@ -15,6 +16,7 @@ export default function DashboardPage() {
         subtitle="Danilo · CS & Operações · AWQ Group · Março 2026"
       />
 
+      <PeriodFilterBar available={["mensal"]} label="Março 2026">
       <div className="px-8 py-6 space-y-6">
         {/* KPI Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -106,6 +108,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+      </PeriodFilterBar>
     </>
   );
 }

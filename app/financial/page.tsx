@@ -1,5 +1,6 @@
 import { miniPLContas, miniPLMes } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
+import PeriodFilterBar from "@/components/PeriodFilterBar";
 
 function pct(value: number, total: number) {
   if (!total) return "—";
@@ -21,6 +22,7 @@ export default function FinancialPage() {
   const ebitda       = lucroBruto - totalOpex;
 
   return (
+    <PeriodFilterBar available={["mensal"]} label={miniPLMes}>
     <div className="p-6 space-y-6">
 
       {/* Header */}
@@ -201,5 +203,6 @@ export default function FinancialPage() {
       </p>
 
     </div>
+    </PeriodFilterBar>
   );
 }

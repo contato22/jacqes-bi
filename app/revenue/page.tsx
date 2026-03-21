@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 import Header from "@/components/Header";
+import PeriodFilterBar from "@/components/PeriodFilterBar";
 import { scoreMensal, scoreDimensions, scoreCriterios } from "@/lib/data";
 
 const thresholdBands = [
@@ -78,6 +79,7 @@ export default function DesempenhoPage() {
         subtitle="Score detalhado e evolução operacional — Março 2026"
       />
 
+      <PeriodFilterBar available={["mensal"]} label="Março 2026">
       <div className="px-8 py-6 space-y-6">
         {/* Summary stats */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
@@ -335,6 +337,7 @@ export default function DesempenhoPage() {
           </div>
         </div>
       </div>
+      </PeriodFilterBar>
     </>
   );
 }

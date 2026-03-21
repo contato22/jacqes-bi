@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/Header";
+import PeriodFilterBar from "@/components/PeriodFilterBar";
 import {
   Clock,
   CheckCircle,
@@ -28,6 +29,7 @@ export default function CSOpsPage() {
         subtitle="SLA · Follow-ups · Processos · Março 2026"
       />
 
+      <PeriodFilterBar available={["mensal"]} label="Março 2026">
       <div className="px-8 py-6 space-y-8">
 
         {/* ─── SLA Block ─────────────────────────────────────────────────────── */}
@@ -468,6 +470,7 @@ export default function CSOpsPage() {
         </section>
 
       </div>
+      </PeriodFilterBar>
     </>
   );
 }
