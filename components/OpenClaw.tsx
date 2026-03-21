@@ -230,6 +230,8 @@ function KeySetup({ onSave }: { onSave: (key: string) => void }) {
 export default function OpenClaw() {
   const { user } = useAuth();
 
+  const isAdmin = user?.role === "admin";
+
   const [open, setOpen]         = useState(false);
   const [apiKey, setApiKey]     = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -242,11 +244,16 @@ export default function OpenClaw() {
   const abortRef  = useRef<AbortController | null>(null);
 
   // Carrega chave: env var (build-time) → localStorage (runtime)
+  // Admin: abre automaticamente se a chave estiver disponível
   useEffect(() => {
     const envKey   = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY || "";
     const localKey = localStorage.getItem(API_KEY_STORAGE) || "";
-    setApiKey(envKey || localKey);
-  }, []);
+    const key = envKey || localKey;
+    setApiKey(key);
+    if (isAdmin && key) {
+      setOpen(true);
+    }
+  }, [isAdmin]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -322,6 +329,9 @@ export default function OpenClaw() {
         title="Open Claw — Agente BI"
       >
         <Zap size={20} className="text-white" />
+        {isAdmin && apiKey && (
+          <span className="absolute top-0.5 right-0.5 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-gray-950 animate-pulse" />
+        )}
       </button>
 
       {/* ── Panel ── */}
