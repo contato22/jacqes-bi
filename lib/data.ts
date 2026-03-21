@@ -277,3 +277,39 @@ export const alerts: Alert[] = [
     timestamp: "2026-03-18T08:00:00Z",
   },
 ];
+
+// ─── Mini P&L — Financeiro ────────────────────────────────────────────────────
+// Source: Notion · JACQES ERP Financeiro · Forecast Month
+// Databases: Ganhos (mensais) + Despesas (mensais) · ref: Fevereiro/Março 2026
+
+export interface PLItem {
+  id: string;
+  label: string;
+  valor: number;
+  categoria?: string;
+}
+
+export interface PLData {
+  mes: string;
+  receitas: PLItem[];
+  despesas: PLItem[];
+}
+
+export const plData: PLData = {
+  mes: "Fevereiro · Março 2026",
+
+  // Source: collection://2f1e9381-f175-81a3-8c02-000b1d2db07c (Ganhos mensais)
+  receitas: [
+    { id: "r1", label: "AWQ - Produtora", valor: 10000, categoria: "Operação Interna" },
+    { id: "r2", label: "AWQ - Ag.",        valor: 4500,  categoria: "Agência" },
+    { id: "r3", label: "AWQ - M4E",        valor: 2000,  categoria: "M4E / CS" },
+  ],
+
+  // Source: collection://2f1e9381-f175-81f1-877d-000bf9ecae0c (Despesas mensais)
+  despesas: [
+    { id: "d1", label: "Cartão de Crédito", valor: 10615.22, categoria: "Variável" },
+    { id: "d2", label: "Aluguel",            valor: 1880,     categoria: "Fixo" },
+    { id: "d3", label: "Internet",           valor: 119.99,   categoria: "Fixo" },
+    { id: "d4", label: "Luz",                valor: 114.72,   categoria: "Fixo" },
+  ],
+};

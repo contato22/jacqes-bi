@@ -12,16 +12,18 @@ import {
   Zap,
   Activity,
   LogOut,
+  DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
-  { label: "Visão Geral", href: "/",          icon: LayoutDashboard },
-  { label: "Desempenho",  href: "/revenue",   icon: TrendingUp      },
-  { label: "Carteira",    href: "/customers", icon: Users           },
-  { label: "Análise",     href: "/analise",   icon: Activity        },
-  { label: "Relatórios",  href: "/reports",   icon: FileBarChart    },
+  { label: "Visão Geral", href: "/",           icon: LayoutDashboard },
+  { label: "Desempenho",  href: "/revenue",    icon: TrendingUp      },
+  { label: "Carteira",    href: "/customers",  icon: Users           },
+  { label: "Análise",     href: "/analise",    icon: Activity        },
+  { label: "Financial",   href: "/financial",  icon: DollarSign      },
+  { label: "Relatórios",  href: "/reports",    icon: FileBarChart    },
 ];
 
 export default function Sidebar() {
