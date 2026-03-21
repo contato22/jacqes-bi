@@ -32,6 +32,7 @@ export interface ContaData {
   proximaVisita: string | null;
   donoProximaAcao: string;
   observacoes: string;
+  tendencia: "subindo" | "estavel" | "descendo";
 }
 
 export interface AccountHealthSegment {
@@ -174,6 +175,7 @@ export const contasData: ContaData[] = [
     donoProximaAcao: "Danilo",
     observacoes:
       "Cliente saudável com alto potencial de expansão. Follow-up consistente e boa percepção de valor.",
+    tendencia: "subindo",
   },
   {
     id: "2",
@@ -188,6 +190,7 @@ export const contasData: ContaData[] = [
     donoProximaAcao: "Danilo",
     observacoes:
       "Atenção para alinhamento de expectativas. 3 pendências abertas precisam de resolução.",
+    tendencia: "estavel",
   },
   {
     id: "3",
@@ -202,6 +205,7 @@ export const contasData: ContaData[] = [
     donoProximaAcao: "Danilo",
     observacoes:
       "Boa saúde de conta. 1 pendência em aberto. Oportunidade de expansão a ser explorada.",
+    tendencia: "subindo",
   },
   {
     id: "4",
@@ -216,6 +220,7 @@ export const contasData: ContaData[] = [
     donoProximaAcao: "Danilo",
     observacoes:
       "Conta em situação sensível. 5 pendências abertas sem resolução. Expectativa desalinhada identificada.",
+    tendencia: "descendo",
   },
   {
     id: "5",
@@ -230,6 +235,7 @@ export const contasData: ContaData[] = [
     donoProximaAcao: "Danilo",
     observacoes:
       "Conta institucional com potencial de crescimento. Monitorar engajamento e alinhar próximos passos.",
+    tendencia: "estavel",
   },
 ];
 
@@ -312,4 +318,165 @@ export const plData: PLData = {
     { id: "d3", label: "Internet",           valor: 119.99,   categoria: "Fixo" },
     { id: "d4", label: "Luz",                valor: 114.72,   categoria: "Fixo" },
   ],
+};
+
+// ─── Score Auditável — Critérios por Dimensão ────────────────────────────────
+// Source: Modelo M4E · 4 critérios × 5 pts = 20 pts por dimensão
+
+export interface ScoreCriterio {
+  criterio: string;
+  score: number; // 0–5
+  max: 5;
+  nota?: string;
+}
+
+export interface ScoreDimensaoAuditavel {
+  dimensao: string;
+  scoreTotal: number;
+  max: 20;
+  criterios: ScoreCriterio[];
+}
+
+export const scoreCriterios: ScoreDimensaoAuditavel[] = [
+  {
+    dimensao: "Atendimento",
+    scoreTotal: 16,
+    max: 20,
+    criterios: [
+      { criterio: "SLA de resposta", score: 4, max: 5, nota: "1 resposta acima de 24h no mês" },
+      { criterio: "Follow-up no prazo", score: 4, max: 5, nota: "3 vencidos de 12 previstos" },
+      { criterio: "Pendências sem retorno", score: 4, max: 5, nota: "2 sem retorno do cliente" },
+      { criterio: "Clareza e completude", score: 4, max: 5, nota: "Comunicação consistente" },
+    ],
+  },
+  {
+    dimensao: "Operação",
+    scoreTotal: 15,
+    max: 20,
+    criterios: [
+      { criterio: "Contas atualizadas", score: 4, max: 5, nota: "5/5 contas com dados atuais" },
+      { criterio: "Tarefas no prazo", score: 4, max: 5, nota: "CEM atrasado 2 dias" },
+      { criterio: "Retrabalho", score: 3, max: 5, nota: "1 ciclo reaberto por informação incompleta" },
+      { criterio: "Fechamento de ciclo", score: 4, max: 5, nota: "4 de 5 ciclos fechados no prazo" },
+    ],
+  },
+  {
+    dimensao: "Visitas",
+    scoreTotal: 14,
+    max: 20,
+    criterios: [
+      { criterio: "Visitas realizadas", score: 4, max: 5, nota: "4 de 6 previstas (67%)" },
+      { criterio: "Reagendamento", score: 3, max: 5, nota: "2 sem reagendamento confirmado" },
+      { criterio: "Relatório pós-visita", score: 4, max: 5, nota: "1 relatório pendente" },
+      { criterio: "Próximos passos definidos", score: 3, max: 5, nota: "2 visitas sem próximos passos formalizados" },
+    ],
+  },
+  {
+    dimensao: "Risco",
+    scoreTotal: 13,
+    max: 20,
+    criterios: [
+      { criterio: "Risco identificado cedo", score: 4, max: 5, nota: "Tati Simões mapeada antes de escalar" },
+      { criterio: "Alertas acionados", score: 3, max: 5, nota: "1 alerta acionado com atraso" },
+      { criterio: "Pendências críticas endereçadas", score: 3, max: 5, nota: "5 pendências Tati em aberto" },
+      { criterio: "Oportunidade/expansão mapeada", score: 3, max: 5, nota: "André e Carol mapeados, CEM pendente" },
+    ],
+  },
+  {
+    dimensao: "Processo",
+    scoreTotal: 11,
+    max: 20,
+    criterios: [
+      { criterio: "Checklist criado", score: 3, max: 5, nota: "1 checklist de visita em rascunho" },
+      { criterio: "SOP/template criado", score: 3, max: 5, nota: "2 templates criados este mês" },
+      { criterio: "Melhoria implementada", score: 3, max: 5, nota: "1 processo padronizado" },
+      { criterio: "IA convertida em ativo", score: 2, max: 5, nota: "Uso pontual, sem documentação" },
+    ],
+  },
+];
+
+// ─── CS Ops — SLA ─────────────────────────────────────────────────────────────
+
+export interface SLAItem {
+  conta: string;
+  diasSemContato: number;
+  pendenciasVencidas: number;
+  tempoMedioRespostaH: number;
+}
+
+export interface SLAData {
+  tempoMedioRespostaH: number;
+  percentualNoPrazo: number;
+  mensagensVencidas: number;
+  contasSemContatoDias: number; // threshold em dias
+  porConta: SLAItem[];
+}
+
+export const slaData: SLAData = {
+  tempoMedioRespostaH: 18.4,
+  percentualNoPrazo: 73,
+  mensagensVencidas: 4,
+  contasSemContatoDias: 7,
+  porConta: [
+    { conta: "André Vieira",   diasSemContato: 3,  pendenciasVencidas: 0, tempoMedioRespostaH: 8.2  },
+    { conta: "Luis Vieira",    diasSemContato: 9,  pendenciasVencidas: 2, tempoMedioRespostaH: 22.5 },
+    { conta: "Carol Bertolini",diasSemContato: 5,  pendenciasVencidas: 0, tempoMedioRespostaH: 11.0 },
+    { conta: "Tati Simões",    diasSemContato: 12, pendenciasVencidas: 2, tempoMedioRespostaH: 36.8 },
+    { conta: "CEM",            diasSemContato: 4,  pendenciasVencidas: 0, tempoMedioRespostaH: 13.7 },
+  ],
+};
+
+// ─── CS Ops — Follow-ups ──────────────────────────────────────────────────────
+
+export interface FollowUpItem {
+  conta: string;
+  previstos: number;
+  realizados: number;
+  vencidos: number;
+  semRetorno: number;
+  semFechamento: number;
+}
+
+export interface FollowUpData {
+  totalPrevistos: number;
+  totalRealizados: number;
+  totalVencidos: number;
+  totalSemRetorno: number;
+  totalSemFechamento: number;
+  porConta: FollowUpItem[];
+}
+
+export const followUpData: FollowUpData = {
+  totalPrevistos: 12,
+  totalRealizados: 9,
+  totalVencidos: 3,
+  totalSemRetorno: 2,
+  totalSemFechamento: 4,
+  porConta: [
+    { conta: "André Vieira",    previstos: 3, realizados: 3, vencidos: 0, semRetorno: 0, semFechamento: 1 },
+    { conta: "Luis Vieira",     previstos: 3, realizados: 2, vencidos: 1, semRetorno: 1, semFechamento: 1 },
+    { conta: "Carol Bertolini", previstos: 2, realizados: 2, vencidos: 0, semRetorno: 0, semFechamento: 0 },
+    { conta: "Tati Simões",     previstos: 3, realizados: 1, vencidos: 2, semRetorno: 1, semFechamento: 2 },
+    { conta: "CEM",             previstos: 1, realizados: 1, vencidos: 0, semRetorno: 0, semFechamento: 0 },
+  ],
+};
+
+// ─── CS Ops — Processo & Ativos ──────────────────────────────────────────────
+
+export interface ProcessoAtivos {
+  checklistsCriados: number;
+  sopsCriados: number;
+  templatesCriados: number;
+  melhorasImplementadas: number;
+  padroesReaproveitaveis: number;
+  iaEmAtivo: number;
+}
+
+export const processoAtivos: ProcessoAtivos = {
+  checklistsCriados: 1,
+  sopsCriados: 0,
+  templatesCriados: 2,
+  melhorasImplementadas: 1,
+  padroesReaproveitaveis: 1,
+  iaEmAtivo: 0,
 };

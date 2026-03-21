@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import { contasData } from "@/lib/data";
-import { Briefcase, AlertTriangle, TrendingUp, Clock } from "lucide-react";
+import { Briefcase, AlertTriangle, TrendingUp, TrendingDown, Minus, Clock } from "lucide-react";
 
 const saudeConfig = {
   Saudável: { classes: "badge-green", dot: "bg-emerald-400" },
@@ -121,6 +121,7 @@ export default function CarteiraPage() {
                     "Saúde",
                     "Risco",
                     "Oportunidade",
+                    "Tendência",
                     "Pendências",
                     "Última Visita",
                     "Próxima Visita",
@@ -182,6 +183,30 @@ export default function CarteiraPage() {
                         <span className={`badge ${oportunidadeClass}`}>
                           {conta.oportunidade}
                         </span>
+                      </td>
+                      <td className="py-3 pr-4">
+                        <div className="flex items-center gap-1.5">
+                          {conta.tendencia === "subindo" ? (
+                            <TrendingUp size={14} className="text-emerald-400" />
+                          ) : conta.tendencia === "descendo" ? (
+                            <TrendingDown size={14} className="text-red-400" />
+                          ) : (
+                            <Minus size={14} className="text-gray-400" />
+                          )}
+                          <span className={`text-xs ${
+                            conta.tendencia === "subindo"
+                              ? "text-emerald-400"
+                              : conta.tendencia === "descendo"
+                              ? "text-red-400"
+                              : "text-gray-400"
+                          }`}>
+                            {conta.tendencia === "subindo"
+                              ? "Subindo"
+                              : conta.tendencia === "descendo"
+                              ? "Descendo"
+                              : "Estável"}
+                          </span>
+                        </div>
                       </td>
                       <td className="py-3 pr-4 text-center">
                         <span

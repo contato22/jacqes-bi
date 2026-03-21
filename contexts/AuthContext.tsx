@@ -30,8 +30,8 @@ const SESSION_KEY = "jacqes_session";
 const USER_KEY    = "jacqes_user";
 const ROLE_KEY    = "jacqes_role";
 
-export const USER_TOKEN  = process.env.NEXT_PUBLIC_SESSION_TOKEN  ?? "jacqes-bi-danilo-awq";
-export const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_TOKEN    ?? "jacqes-bi-admin-awq";
+export const USER_TOKEN  = process.env.NEXT_PUBLIC_SESSION_TOKEN  || "jacqes-bi-danilo-awq";
+export const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_TOKEN    || "jacqes-bi-admin-awq";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser]       = useState<AuthUser | null>(null);
@@ -54,7 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(ROLE_KEY);
-    window.location.href = "/login";
+    const base = process.env.NODE_ENV === "production" ? "/jacqes-bi" : "";
+    window.location.href = base + "/login";
   }, []);
 
   return (

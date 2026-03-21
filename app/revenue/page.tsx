@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 import Header from "@/components/Header";
-import { scoreMensal, scoreDimensions } from "@/lib/data";
+import { scoreMensal, scoreDimensions, scoreCriterios } from "@/lib/data";
 
 const thresholdBands = [
   { range: "95–100", label: "Owner em Formação", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
@@ -216,6 +216,72 @@ export default function DesempenhoPage() {
                   </div>
                   <div className="text-[10px] text-gray-600 text-center">
                     {d.dimensao}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Score Auditável — Critérios por Dimensão */}
+        <div className="card p-6">
+          <div className="mb-5">
+            <h2 className="text-sm font-semibold text-white">
+              Score Auditável — Critérios por Dimensão
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              4 critérios × 5 pts = 20 pts por dimensão · Modelo M4E
+            </p>
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+            {scoreCriterios.map((dim) => {
+              const pct = (dim.scoreTotal / dim.max) * 100;
+              return (
+                <div key={dim.dimensao} className="bg-gray-800/40 rounded-xl p-4 border border-gray-800">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-white">{dim.dimensao}</span>
+                    <span className="text-sm font-bold text-brand-400 tabular-nums">
+                      {dim.scoreTotal}
+                      <span className="text-gray-600 font-normal text-xs">/{dim.max}</span>
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-gray-700 rounded-full mb-4">
+                    <div
+                      className="h-1.5 rounded-full bg-gradient-to-r from-brand-700 to-brand-400"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <div className="space-y-2.5">
+                    {dim.criterios.map((c) => {
+                      const cPct = (c.score / 5) * 100;
+                      return (
+                        <div key={c.criterio} className="flex items-center gap-3">
+                          <div className="text-xs text-gray-400 w-36 shrink-0 truncate" title={c.criterio}>
+                            {c.criterio}
+                          </div>
+                          <div className="flex-1 h-1 bg-gray-700 rounded-full">
+                            <div
+                              className={`h-1 rounded-full ${
+                                cPct >= 80
+                                  ? "bg-emerald-500"
+                                  : cPct >= 60
+                                  ? "bg-yellow-500"
+                                  : "bg-red-500"
+                              }`}
+                              style={{ width: `${cPct}%` }}
+                            />
+                          </div>
+                          <span className="text-xs tabular-nums text-gray-500 w-8 text-right shrink-0">
+                            {c.score}/5
+                          </span>
+                          {c.nota && (
+                            <span className="text-[10px] text-gray-600 hidden xl:block max-w-[160px] truncate" title={c.nota}>
+                              {c.nota}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );

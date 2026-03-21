@@ -11,16 +11,16 @@ const ROLE_KEY    = "jacqes_role";
 
 const USERS = [
   {
-    username:    process.env.NEXT_PUBLIC_AUTH_USERNAME    ?? "danilo",
-    password:    process.env.NEXT_PUBLIC_AUTH_PASSWORD    ?? "awqgroup2026",
-    token:       process.env.NEXT_PUBLIC_SESSION_TOKEN    ?? "jacqes-bi-danilo-awq",
+    username:    process.env.NEXT_PUBLIC_AUTH_USERNAME    || "danilo",
+    password:    process.env.NEXT_PUBLIC_AUTH_PASSWORD    || "awqgroup2026",
+    token:       process.env.NEXT_PUBLIC_SESSION_TOKEN    || "jacqes-bi-danilo-awq",
     role:        "user" as const,
     displayName: "Danilo",
   },
   {
-    username:    process.env.NEXT_PUBLIC_ADMIN_USERNAME   ?? "admin",
-    password:    process.env.NEXT_PUBLIC_ADMIN_PASSWORD   ?? "awqadmin2026",
-    token:       process.env.NEXT_PUBLIC_ADMIN_TOKEN      ?? "jacqes-bi-admin-awq",
+    username:    process.env.NEXT_PUBLIC_ADMIN_USERNAME   || "admin",
+    password:    process.env.NEXT_PUBLIC_ADMIN_PASSWORD   || "awqadmin2026",
+    token:       process.env.NEXT_PUBLIC_ADMIN_TOKEN      || "jacqes-bi-admin-awq",
     role:        "admin" as const,
     displayName: "Admin",
   },

@@ -13,6 +13,7 @@ import {
   Activity,
   LogOut,
   DollarSign,
+  HeartPulse,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,6 +23,7 @@ const navItems = [
   { label: "Desempenho",  href: "/revenue",    icon: TrendingUp      },
   { label: "Carteira",    href: "/customers",  icon: Users           },
   { label: "Análise",     href: "/analise",    icon: Activity        },
+  { label: "CS Ops",      href: "/csops",      icon: HeartPulse      },
   { label: "Financial",   href: "/financial",  icon: DollarSign      },
   { label: "Relatórios",  href: "/reports",    icon: FileBarChart    },
 ];
@@ -58,7 +60,7 @@ export default function Sidebar() {
           </span>
         </div>
 
-        {navItems.map((item) => {
+        {navItems.filter((item) => user?.role === "admin" || item.href === "/").map((item) => {
           const Icon     = item.icon;
           const isActive =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);

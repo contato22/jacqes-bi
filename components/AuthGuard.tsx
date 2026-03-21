@@ -24,6 +24,9 @@ function AuthGuardInner({ children }: { children: React.ReactNode }) {
 
     if (!user) {
       router.replace(`/login?from=${encodeURIComponent(pathname ?? "/")}`);
+    } else if (user.role === "user" && pathname !== "/") {
+      // Danilo (user role) can only access Visão Geral
+      router.replace("/");
     } else {
       setReady(true);
     }
