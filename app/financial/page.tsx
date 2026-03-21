@@ -2,7 +2,7 @@ import { dreGerencial, miniPLContas, miniPLMes, type DRELinha } from "@/lib/data
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
-import { Info } from "lucide-react";
+import { Database, Edit3, GitBranch } from "lucide-react";
 
 function pct(value: number, total: number) {
   if (!total) return "—";
@@ -11,29 +11,42 @@ function pct(value: number, total: number) {
 
 // ── DRE helpers ───────────────────────────────────────────────────────────────
 
+const fonteConfig = {
+  notion:   { icon: Database,   cls: "text-emerald-600", title: "Direto do Notion Mini P&L" },
+  derivado: { icon: GitBranch,  cls: "text-brand-600",   title: "Calculado a partir do Notion" },
+  manual:   { icon: Edit3,      cls: "text-orange-600",  title: "Preencher mensalmente na base de dados" },
+};
+
 function DRELineItem({ linha, negativo = false }: { linha: DRELinha; negativo?: boolean }) {
   const isZero = linha.valor === 0;
+  const isManualEmpty = isZero && linha.fonte === "manual";
+  const { icon: FonIcon, cls: fonCls, title: fonTitle } = fonteConfig[linha.fonte];
+
   return (
-    <div className="flex items-center justify-between py-2 border-b border-gray-800/40 last:border-0">
+    <div className={cn(
+      "flex items-center justify-between py-2 border-b border-gray-800/30 last:border-0",
+      isManualEmpty && "opacity-60"
+    )}>
       <div className="flex items-center gap-1.5 pl-5">
-        <span className={cn("text-sm", isZero ? "text-gray-700" : "text-gray-400")}>
+        <span title={fonTitle}>
+          <FonIcon size={10} className={fonCls} />
+        </span>
+        <span className={cn("text-sm", isManualEmpty ? "text-gray-600" : "text-gray-400")}>
           {linha.label}
         </span>
-        {linha.estimativa && (
-          <span title={linha.nota || "Estimativa — atualizar mensalmente"}>
-            <Info size={11} className="text-gray-700 hover:text-gray-500 cursor-help" />
-          </span>
+        {isManualEmpty && (
+          <span className="text-[10px] text-orange-700 font-medium">a preencher</span>
         )}
       </div>
       <span className={cn(
         "text-sm tabular-nums",
-        isZero
+        isManualEmpty
           ? "text-gray-700"
           : negativo
           ? "text-red-400/80"
           : "text-gray-300"
       )}>
-        {isZero
+        {isManualEmpty
           ? "—"
           : negativo
           ? `(${formatCurrency(linha.valor)})`
@@ -137,10 +150,9 @@ export default function FinancialPage() {
       <div>
         <h1 className="text-xl font-bold text-white">DRE Gerencial · JACQES BU</h1>
         <p className="text-sm text-gray-500 mt-0.5">
-          {d.mes} · {contasAtivas.length} contas ativas
-          <span className="text-gray-700 ml-2">
-            · <Info size={10} className="inline mr-0.5" />
-            campos <Info size={10} className="inline mx-0.5 text-gray-700" /> são estimativas/rateios — revisar mensalmente
+          {d.mes} · {contasAtivas.length} contas ativas ·{" "}
+          <span className="text-orange-700 text-xs">
+            campos marcados <Edit3 size={10} className="inline" /> precisam ser preenchidos mensalmente
           </span>
         </p>
       </div>
@@ -169,18 +181,20 @@ export default function FinancialPage() {
       <div className="card p-6">
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-sm font-semibold text-white">DRE Gerencial — JACQES BU</h2>
-          <span className="text-[10px] text-gray-700 flex items-center gap-1">
-            <Info size={10} /> estimativa/rateio
-          </span>
+          <div className="flex items-center gap-3 text-[10px] text-gray-600">
+            <span className="flex items-center gap-1"><Database size={9} className="text-emerald-600" /> Notion</span>
+            <span className="flex items-center gap-1"><GitBranch size={9} className="text-brand-600" /> Derivado</span>
+            <span className="flex items-center gap-1"><Edit3 size={9} className="text-orange-600" /> Manual</span>
+          </div>
         </div>
-        <p className="text-xs text-gray-600 mb-4">{d.mes} · Valores em R$</p>
+        <p className="text-xs text-gray-600 mb-4">{d.mes} · Valores em R$ · campos <span className="text-orange-700">a preencher</span> não existem na base — atualizar mensalmente em lib/data.ts</p>
 
         {/* ─ 1. Receita Bruta ─ */}
         <DRESectionHeader label="Receita Bruta" />
-        <DRELineItem linha={{ label: "Receita recorrente", valor: d.receitaBruta.recorrente }} />
-        <DRELineItem linha={{ label: "Receita projeto/setup", valor: d.receitaBruta.projetoSetup }} />
-        <DRELineItem linha={{ label: "Receita variável", valor: d.receitaBruta.variavel }} />
-        <DRELineItem linha={{ label: "Receita extraordinária", valor: d.receitaBruta.extraordinaria }} />
+        <DRELineItem linha={{ label: "Receita recorrente",    valor: d.receitaBruta.recorrente,    fonte: "notion",  nota: "Notion Mini P&L · soma dos FEEs das contas" }} />
+        <DRELineItem linha={{ label: "Receita projeto/setup", valor: d.receitaBruta.projetoSetup,  fonte: "manual",  nota: "Preencher mensalmente" }} />
+        <DRELineItem linha={{ label: "Receita variável",      valor: d.receitaBruta.variavel,      fonte: "manual",  nota: "Preencher mensalmente" }} />
+        <DRELineItem linha={{ label: "Receita extraordinária",valor: d.receitaBruta.extraordinaria,fonte: "manual",  nota: "Preencher mensalmente" }} />
         <DRESumRow label="= Receita Bruta" valor={recBruta} recBruta={recBruta} />
 
         {/* ─ 2. Deduções ─ */}
@@ -220,10 +234,11 @@ export default function FinancialPage() {
         />
 
         {/* Legenda */}
-        <p className="mt-5 text-[10px] text-gray-700 flex items-center gap-1">
-          <Info size={10} />
-          Campos com <Info size={10} className="mx-0.5" /> são estimativas/rateios — confirmar mensalmente com a AWQ. Campos com valor — ainda não preenchidos.
-        </p>
+        <div className="mt-5 pt-4 border-t border-gray-800 flex flex-wrap gap-4 text-[10px] text-gray-600">
+          <span className="flex items-center gap-1.5"><Database size={10} className="text-emerald-600" /> Direto do Notion Mini P&L</span>
+          <span className="flex items-center gap-1.5"><GitBranch size={10} className="text-brand-600" /> Calculado/derivado do Notion</span>
+          <span className="flex items-center gap-1.5"><Edit3 size={10} className="text-orange-600" /> Não existe na base — preencher mensalmente em <code className="bg-gray-800 px-1 rounded">lib/data.ts</code></span>
+        </div>
       </div>
 
       {/* ── Mini P&L por conta ────────────────────────────────────────────────── */}

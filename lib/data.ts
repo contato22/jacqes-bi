@@ -383,7 +383,10 @@ export const miniPLMes = "Março 2026";
 export interface DRELinha {
   label: string;
   valor: number;
-  estimativa?: boolean;  // true = rateio ou estimativa, não vem diretamente da base
+  /** notion = vem diretamente do Notion Mini P&L
+   *  derivado = calculado a partir de dados do Notion
+   *  manual = não existe na base → preencher mensalmente */
+  fonte: "notion" | "derivado" | "manual";
   nota?: string;
 }
 
@@ -443,37 +446,44 @@ export const dreGerencial: DREGerencial = {
   },
 
   // ── Deduções ───────────────────────────────────────────────────────────────
+  // ⚠ Não existe na base Notion — preencher mensalmente
   deducoes: {
-    impostosTaxas: { label: "Impostos / taxas", valor: 994, estimativa: true,
-      nota: "~12% Simples Nacional — confirmar alíquota com AWQ" },
+    impostosTaxas: { label: "Impostos / descontos / taxas", valor: 0, fonte: "manual",
+      nota: "Preencher mensalmente — ex.: Simples Nacional ~12% sobre receita bruta" },
   },
 
   // ── Custos Diretos ─────────────────────────────────────────────────────────
-  // Fonte: Danilo R$2.484, COGS R$384, Freelancer R$30 (do Mini P&L)
   custosDiretos: {
-    daniloFixo:            { label: "Danilo — custo fixo alocado",       valor: 2000, estimativa: true, nota: "Rateio proporcional à BU — confirmar com AWQ" },
-    daniloVariavel:        { label: "Danilo — variável / comissão",      valor:  484, estimativa: true, nota: "Diferença entre total alocado e fixo" },
-    encargosProvisos:      { label: "Encargos / provisões",              valor:  372, estimativa: true, nota: "~15% sobre custo Danilo (FGTS, férias, 13º)" },
-    deslocamentosVisitas:  { label: "Deslocamentos / visitas",           valor:  150, estimativa: true, nota: "Transporte de visitas às contas — inserir mensalmente" },
-    ferramentasDiretas:    { label: "Ferramentas diretas",               valor:  184, estimativa: false, nota: "Do COGS do Mini P&L" },
-    apoioOperacionalFreela:{ label: "Apoio operacional / freelancer",    valor:   30, estimativa: false, nota: "Do campo Freelancer do Mini P&L" },
-    outrosCustosDiretos:   { label: "Outros custos diretos",             valor:  200, estimativa: true, nota: "Inserir mensalmente" },
+    // ← Notion: campo "Danilo" do Mini P&L (total = R$2.484 em março)
+    // A divisão entre fixo e variável deve ser informada mensalmente
+    daniloFixo:            { label: "Danilo fixo",                        valor: 2000, fonte: "derivado", nota: "Parcela fixa do custo Danilo — Notion Mini P&L campo Danilo" },
+    daniloVariavel:        { label: "Danilo variável",                    valor:  484, fonte: "derivado", nota: "Parcela variável/comissão — complemento até total Notion" },
+    // ← Não existe na base Notion → preencher mensalmente
+    encargosProvisos:      { label: "Encargos / provisões",               valor:    0, fonte: "manual",   nota: "Preencher mensalmente — FGTS, férias, 13º proporcional" },
+    deslocamentosVisitas:  { label: "Deslocamentos / visitas",            valor:    0, fonte: "manual",   nota: "Preencher mensalmente — transporte de visitas às contas" },
+    // ← Notion: campo "COGS" do Mini P&L
+    ferramentasDiretas:    { label: "Ferramentas diretas",                valor:  184, fonte: "notion",   nota: "Notion Mini P&L · campo COGS" },
+    // ← Notion: campo "Freelancer" do Mini P&L
+    apoioOperacionalFreela:{ label: "Apoio operacional / freela",         valor:   30, fonte: "notion",   nota: "Notion Mini P&L · campo Freelancer" },
+    // ← Não existe na base Notion → preencher mensalmente
+    outrosCustosDiretos:   { label: "Outros custos diretos",              valor:    0, fonte: "manual",   nota: "Preencher mensalmente" },
   },
 
   // ── Despesas Operacionais da BU ────────────────────────────────────────────
-  // Fonte: OPEX R$560 do Mini P&L + estimativas
+  // ⚠ Nenhum desses campos existe na base Notion → preencher mensalmente
   despesasOperacionais: {
-    coordenacaoSupervisao:      { label: "Coordenação / supervisão",          valor:    0, estimativa: true, nota: "Sem coordenador alocado em março" },
-    ferramentasCompartilhadas:  { label: "Ferramentas compartilhadas",        valor:  280, estimativa: true, nota: "Metade do OPEX — SaaS rateados entre BUs" },
-    administrativoRateado:      { label: "Administrativo rateado",           valor:  140, estimativa: true, nota: "Admin/financeiro AWQ rateado proporcional" },
-    desenvolvimentoProcessoBI:  { label: "Desenvolvimento de processo / BI", valor:  140, estimativa: true, nota: "Custo de manutenção e evolução do BI" },
-    outrosOverheads:            { label: "Outros overheads",                  valor:    0, estimativa: true, nota: "Inserir mensalmente" },
+    coordenacaoSupervisao:      { label: "Coordenação / supervisão",          valor: 0, fonte: "manual", nota: "Preencher mensalmente — custo de supervisão alocado à BU" },
+    ferramentasCompartilhadas:  { label: "Ferramentas compartilhadas",        valor: 0, fonte: "manual", nota: "Preencher mensalmente — SaaS rateados entre BUs" },
+    administrativoRateado:      { label: "Administrativo rateado",            valor: 0, fonte: "manual", nota: "Preencher mensalmente — admin/financeiro AWQ rateado" },
+    desenvolvimentoProcessoBI:  { label: "Desenvolvimento de processo / BI",  valor: 0, fonte: "manual", nota: "Preencher mensalmente — custo de evolução do BI/processos" },
+    outrosOverheads:            { label: "Outros overheads",                  valor: 0, fonte: "manual", nota: "Preencher mensalmente" },
   },
 
   // ── Ajustes Imputados ──────────────────────────────────────────────────────
+  // ⚠ Não existe na base Notion → preencher mensalmente
   ajustesImputados: {
-    custoFounderEstrategico: { label: "Custo founder / estratégico (Miguel)", valor: 800, estimativa: true, nota: "Tempo do Miguel alocado à BU — inserir mensalmente" },
-    overheadExtra:           { label: "Overhead extra",                       valor:   0, estimativa: true, nota: "Inserir mensalmente se houver" },
+    custoFounderEstrategico: { label: "Custo founder / estratégico (Miguel)", valor: 0, fonte: "manual", nota: "Preencher mensalmente — tempo do Miguel alocado à BU" },
+    overheadExtra:           { label: "Overhead extra",                       valor: 0, fonte: "manual", nota: "Preencher mensalmente — se houver" },
   },
 };
 
