@@ -136,8 +136,8 @@ export default function AnalisePage() {
             <div className="h-8 w-px bg-gray-800" />
             <div className="text-sm text-gray-400">
               Meta da variável:{" "}
-              <span className="text-red-400 font-semibold">75 pts</span>
-              <span className="text-gray-600 ml-1">(faltam {75 - scoreMensal.scoreTotal} pts)</span>
+              <span className="text-red-400 font-semibold">{scoreMensal.scorePotencial} pts</span>
+              <span className="text-gray-600 ml-1">(faltam {scoreMensal.gapParaVariavel} pts)</span>
             </div>
             <div className="h-8 w-px bg-gray-800" />
             <div className="text-sm text-gray-400">

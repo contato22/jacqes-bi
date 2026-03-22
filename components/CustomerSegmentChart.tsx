@@ -1,7 +1,31 @@
 "use client";
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { accountHealthData } from "@/lib/data";
+import { contasData } from "@/lib/data";
+
+// Derived from contasData so it never goes stale
+const HEALTH_CONFIG: Record<string, { color: string; displayName: string }> = {
+  "Saudável":            { color: "#22c55e", displayName: "Saudável" },
+  "Estável com Atenção": { color: "#eab308", displayName: "Estável c/ Atenção" },
+  "Sensível":            { color: "#f97316", displayName: "Sensível" },
+  "Em Risco":            { color: "#ef4444", displayName: "Em Risco" },
+};
+
+function buildHealthData() {
+  const counts: Record<string, number> = {};
+  for (const conta of contasData) {
+    counts[conta.saude] = (counts[conta.saude] ?? 0) + 1;
+  }
+  return Object.entries(counts)
+    .filter(([, v]) => v > 0)
+    .map(([saude, value]) => ({
+      name: HEALTH_CONFIG[saude]?.displayName ?? saude,
+      value,
+      color: HEALTH_CONFIG[saude]?.color ?? "#6b7280",
+    }));
+}
+
+const accountHealthData = buildHealthData();
 
 interface CustomTooltipProps {
   active?: boolean;

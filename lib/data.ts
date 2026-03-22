@@ -40,12 +40,6 @@ export interface ContaData {
   gestaoRiscoDanilo: "Boa" | "Média" | "Fraca";
 }
 
-export interface AccountHealthSegment {
-  name: string;
-  value: number;
-  color: string;
-}
-
 export interface Alert {
   id: string;
   type: "warning" | "info" | "success" | "error";
@@ -126,55 +120,6 @@ export const scoreMensal: ScoreMensal = {
   autonomiaIndex: 3,
 };
 
-// ─── KPIs ─────────────────────────────────────────────────────────────────────
-
-export const kpis: KPI[] = [
-  {
-    id: "score",
-    label: "Score Geral",
-    value: 69,
-    previousValue: 75,
-    unit: "number",
-    suffix: " / 100",
-    icon: "TrendingUp",
-    color: "brand",
-    comparisonLabel: "vs meta (75 pts)",
-    lowerIsBetter: false,
-  },
-  {
-    id: "contas",
-    label: "Contas Ativas",
-    value: 5,
-    previousValue: 4,
-    unit: "number",
-    icon: "Briefcase",
-    color: "emerald",
-    comparisonLabel: "vs mês anterior",
-  },
-  {
-    id: "visitas",
-    label: "Visitas Realizadas",
-    value: 4,
-    previousValue: 6,
-    unit: "number",
-    suffix: " / 6",
-    icon: "MapPin",
-    color: "blue",
-    comparisonLabel: "de 6 previstas",
-    lowerIsBetter: false,
-  },
-  {
-    id: "pendencias",
-    label: "Pendências Abertas",
-    value: 13,
-    previousValue: 11,
-    unit: "number",
-    icon: "AlertCircle",
-    color: "red",
-    comparisonLabel: "total na carteira",
-    lowerIsBetter: true,
-  },
-];
 
 // ─── Score por Dimensão ───────────────────────────────────────────────────────
 // Source: Notion · Score Mensal · Março 2026
@@ -294,12 +239,6 @@ export const contasData: ContaData[] = [
 ];
 
 // ─── Account Health Distribution ─────────────────────────────────────────────
-
-export const accountHealthData: AccountHealthSegment[] = [
-  { name: "Saudável", value: 2, color: "#22c55e" },
-  { name: "Estável c/ Atenção", value: 2, color: "#eab308" },
-  { name: "Sensível", value: 1, color: "#f97316" },
-];
 
 // ─── Alerts ───────────────────────────────────────────────────────────────────
 // Source: Notion · Score Mensal + Contas & Carteira
@@ -607,9 +546,7 @@ export interface FollowUpItem {
 export interface FollowUpData {
   totalPrevistos: number;
   totalRealizados: number;
-  realizados: number;
   totalVencidos: number;
-  vencidos: number;
   totalSemRetorno: number;
   totalSemFechamento: number;
   porConta: FollowUpItem[];
@@ -618,9 +555,7 @@ export interface FollowUpData {
 export const followUpData: FollowUpData = {
   totalPrevistos: 12,
   totalRealizados: 9,
-  realizados: 9,
   totalVencidos: 3,
-  vencidos: 3,
   totalSemRetorno: 2,
   totalSemFechamento: 4,
   porConta: [

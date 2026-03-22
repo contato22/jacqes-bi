@@ -23,7 +23,7 @@ const contaAltoRisco = contasData.find((c) => c.risco === "Alto");
 const tatiSimoes = contasData.find((c) => c.nome === "Tati Simões");
 const contasAltoRiscoCount = contasData.filter((c) => c.risco === "Alto").length;
 const slaContasSemContato = slaData.porConta.filter((c) => c.diasSemContato >= 7).length;
-const followUpTaxa = Math.round((followUpData.realizados / followUpData.totalPrevistos) * 100);
+const followUpTaxa = Math.round((followUpData.totalRealizados / followUpData.totalPrevistos) * 100);
 
 export default function DashboardPage() {
   return (
@@ -243,7 +243,7 @@ export default function DashboardPage() {
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between py-1.5 border-b border-gray-800">
                       <span className="text-gray-500">Motivo do risco</span>
-                      <span className="text-gray-300 font-medium">{tatiSimoes.motivoRisco}</span>
+                      <span className="text-gray-300 font-medium">{tatiSimoes.motivoRisco ?? "—"}</span>
                     </div>
                     <div className="flex justify-between py-1.5 border-b border-gray-800">
                       <span className="text-gray-500">Pendências vencidas</span>
@@ -354,13 +354,13 @@ export default function DashboardPage() {
                 <div className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
                   <div className="text-xs text-gray-500 mb-1">Realizados</div>
                   <div className="text-xl font-bold text-emerald-400 tabular-nums">
-                    {followUpData.realizados}
+                    {followUpData.totalRealizados}
                   </div>
                 </div>
                 <div className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
                   <div className="text-xs text-gray-500 mb-1">Vencidos</div>
-                  <div className={cn("text-xl font-bold tabular-nums", followUpData.vencidos > 0 ? "text-red-400" : "text-emerald-400")}>
-                    {followUpData.vencidos}
+                  <div className={cn("text-xl font-bold tabular-nums", followUpData.totalVencidos > 0 ? "text-red-400" : "text-emerald-400")}>
+                    {followUpData.totalVencidos}
                   </div>
                 </div>
                 <div className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
@@ -374,7 +374,7 @@ export default function DashboardPage() {
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
                   <span className="text-gray-500">
-                    Taxa: {followUpData.realizados}/{followUpData.totalPrevistos}
+                    Taxa: {followUpData.totalRealizados}/{followUpData.totalPrevistos}
                   </span>
                   <span className={cn("font-semibold", followUpTaxa >= 90 ? "text-emerald-400" : followUpTaxa >= 70 ? "text-yellow-400" : "text-red-400")}>
                     {followUpTaxa}%
