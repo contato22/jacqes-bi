@@ -34,7 +34,7 @@ export default function DashboardPage() {
       />
 
       <PeriodFilterBar available={["mensal"]} label="Março 2026">
-        <div className="px-8 py-6 space-y-6">
+        <div className="page-content">
 
           {/* Bloco 1 — KPI Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -113,7 +113,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Bloco 2 — Score Potencial + SLA Quick */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
             {/* Card esquerdo — Score Atual vs Potencial */}
             <div className="card p-5">
@@ -208,7 +208,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Bloco 3 — Score chart + Account health */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             <div className="xl:col-span-2">
               <ScoreChart />
             </div>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Bloco 4 — Principal conta crítica + Alertas */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
             {/* Card esquerdo — Principal Conta em Risco */}
             <div className="card p-5">
@@ -306,7 +306,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Bloco 5 — Condição para próxima variável + Follow-up */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
             {/* Card esquerdo — Para desbloquear variável */}
             <div className="card p-5">
@@ -391,7 +391,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Bloco 6 — Retrospectiva + Autonomia + Foco */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
 
             {/* Card — Retrospectiva */}
             <div className="card p-5 space-y-4">

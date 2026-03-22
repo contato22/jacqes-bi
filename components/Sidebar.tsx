@@ -14,9 +14,11 @@ import {
   LogOut,
   DollarSign,
   HeartPulse,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 const navItems = [
   { label: "Visão Geral", href: "/",           icon: LayoutDashboard },
@@ -31,16 +33,27 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { open, close } = useSidebar();
 
   const initials = user?.displayName
     ? user.displayName.slice(0, 2).toUpperCase()
     : "AW";
 
   return (
-    <aside className="w-[260px] flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col h-full">
+    <aside
+      className={cn(
+        // Desktop: always visible in normal flow
+        "md:relative md:translate-x-0 md:flex md:w-[260px] md:flex-shrink-0",
+        // Mobile: fixed drawer that slides in
+        "fixed inset-y-0 left-0 z-40 w-[260px] flex-shrink-0",
+        "transition-transform duration-300 ease-in-out",
+        open ? "translate-x-0" : "-translate-x-full",
+        "bg-gray-900 border-r border-gray-800 flex flex-col h-full",
+      )}
+    >
 
-      {/* Logo */}
-      <div className="px-6 py-5 border-b border-gray-800">
+      {/* Logo + mobile close */}
+      <div className="px-6 py-5 border-b border-gray-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-900/40">
             <Zap size={16} className="text-white" />
@@ -50,6 +63,14 @@ export default function Sidebar() {
             <div className="text-[10px] text-gray-500 uppercase tracking-widest">AWQ Group</div>
           </div>
         </div>
+        {/* Close button — mobile only */}
+        <button
+          onClick={close}
+          className="md:hidden p-1 text-gray-500 hover:text-gray-200 rounded-lg transition-colors"
+          aria-label="Fechar menu"
+        >
+          <X size={18} />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -69,6 +90,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={close}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group",
                 isActive
@@ -97,6 +119,7 @@ export default function Sidebar() {
 
         <Link
           href="/settings"
+          onClick={close}
           className={cn(
             "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group",
             pathname === "/settings"

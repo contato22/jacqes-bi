@@ -30,9 +30,9 @@ export default function CarteiraPage() {
       />
 
       <PeriodFilterBar available={["mensal"]} label="Março 2026">
-      <div className="px-8 py-6 space-y-6">
+      <div className="page-content">
         {/* Summary */}
-        <div className="grid grid-cols-2 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
           <div className="card p-5 flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
               <Briefcase size={18} />

@@ -78,9 +78,9 @@ export default function DesempenhoPage() {
       />
 
       <PeriodFilterBar available={["mensal"]} label="Março 2026">
-      <div className="px-8 py-6 space-y-6">
+      <div className="page-content">
         {/* Summary stats */}
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryStats.map((stat) => (
             <div key={stat.label} className="card p-5">
               <div className="text-2xl font-bold text-white tabular-nums">
@@ -95,7 +95,7 @@ export default function DesempenhoPage() {
         </div>
 
         {/* Radar chart + thresholds */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="xl:col-span-2 card p-6">
             <div className="flex items-center gap-2 mb-6">
               <div className="w-6 h-6 rounded-md bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 shrink-0">

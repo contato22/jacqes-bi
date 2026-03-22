@@ -117,7 +117,7 @@ export default function AnalisePage() {
         subtitle="Briefing semanal gerado automaticamente — 19 a 25 de março 2026"
       />
 
-      <div className="px-8 py-6 space-y-6">
+      <div className="page-content">
 
         {/* ── Status banner ── */}
         <div className="card p-5 flex flex-wrap items-center justify-between gap-4">
@@ -154,10 +154,10 @@ export default function AnalisePage() {
         </div>
 
         {/* ── Grid principal ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* Coluna esquerda (2/3) */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6">
 
             {/* Agenda da Semana */}
             <div className="card p-6">

@@ -136,7 +136,7 @@ export default function ReportsPage() {
         subtitle="Relatórios operacionais — Danilo · CS & Operações · AWQ Group"
       />
 
-      <div className="px-8 py-6 space-y-6">
+      <div className="page-content">
         {/* Summary bar */}
         <div className="card p-4 flex items-center gap-4 flex-wrap">
           <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">

@@ -181,7 +181,7 @@ export default function SettingsPage() {
     <>
       <Header title="Configurações" subtitle="Preferências e configurações do JACQES BI — AWQ Group" />
 
-      <div className="px-8 py-6 space-y-4">
+      <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 space-y-4">
 
         {/* Info banner */}
         <div className="flex items-start gap-2 p-4 rounded-xl border border-brand-500/20 bg-brand-500/5">
