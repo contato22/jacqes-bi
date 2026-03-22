@@ -33,7 +33,7 @@ export interface ContaData {
   donoProximaAcao: string;
   observacoes: string;
   tendencia: "subindo" | "estavel" | "descendo";
-  motivoRisco: "Atraso da AWQ" | "Baixa resposta do cliente" | "Desalinhamento de expectativa" | "Baixa percepção de valor" | "Operação travada" | "Comunicação" | "Indefinido" | null;
+  motivoRisco: "Atraso da AWQ" | "Baixa resposta do cliente" | "Desalinhamento de expectativa" | "Expectativa desalinhada" | "Baixa percepção de valor" | "Operação travada" | "Comunicação" | "Indefinido" | null;
   pendenciasVencidas: number;
   pendenciasCriticas: number;
   responsividadeCliente: "Alta" | "Média" | "Baixa";
@@ -94,15 +94,15 @@ export const scoreMensal: ScoreMensal = {
   fase: "Operador em Formação",
   visitasRealizadas: 4,
   visitasPrevistas: 6,
-  contasSobAcompanhamento: 5,
-  contaMaisSaudavel: "André Vieira",
-  contaMaisSensivel: "Tati Simões",
+  contasSobAcompanhamento: 4,
+  contaMaisSaudavel: "JACQES",
+  contaMaisSensivel: "Conta 04 — Prospecção",
   principalAvanco:
-    "Consistência no follow-up com André Vieira e Carol Bertolini. Estruturação da carteira com 5 clientes ativos.",
+    "Consistência no follow-up com JACQES e estruturação inicial da carteira.",
   principalFalha:
     "2 visitas não realizadas sem reagendamento. Relatório pós-visita pendente em 1 caso.",
   focoProximoMes:
-    "Zerar pendências abertas com Tati Simões. Criar checklist de visita padrão. Aumentar autonomia operacional.",
+    "Zerar pendências abertas na Conta 04. Criar checklist de visita padrão. Aumentar autonomia operacional.",
   variavelPaga: false,
   scorePotencial: 75,
   gapParaVariavel: 6,
@@ -148,7 +148,7 @@ export const contasData: ContaData[] = [
     proximaVisita: "2026-03-25",
     donoProximaAcao: "Danilo",
     observacoes:
-      "Cliente saudável com alto potencial de expansão. Follow-up consistente e boa percepção de valor.",
+      "Conta âncora do portfólio AWQ M4E. Faturamento em crescimento consistente. Tranche 1 de vesting conquistada.",
     tendencia: "subindo",
     motivoRisco: null,
     pendenciasVencidas: 0,
@@ -168,7 +168,7 @@ export const contasData: ContaData[] = [
     proximaVisita: "2026-03-28",
     donoProximaAcao: "Danilo",
     observacoes:
-      "Atenção para alinhamento de expectativas. 3 pendências abertas precisam de resolução.",
+      "Renda mensal R$ 4,5k. Atenção para alinhamento de expectativas com clientes da carteira.",
     tendencia: "estavel",
     motivoRisco: "Baixa resposta do cliente",
     pendenciasVencidas: 1,
@@ -188,7 +188,7 @@ export const contasData: ContaData[] = [
     proximaVisita: "2026-04-02",
     donoProximaAcao: "Danilo",
     observacoes:
-      "Boa saúde de conta. 1 pendência em aberto. Oportunidade de expansão a ser explorada.",
+      "Operação interna. Renda mensal estável R$ 10k.",
     tendencia: "subindo",
     motivoRisco: null,
     pendenciasVencidas: 0,
@@ -208,9 +208,9 @@ export const contasData: ContaData[] = [
     proximaVisita: "2026-03-22",
     donoProximaAcao: "Danilo",
     observacoes:
-      "Conta em situação sensível. 5 pendências abertas sem resolução. Expectativa desalinhada identificada.",
+      "Conta em análise para entrada no portfólio M4E. Expectativa desalinhada identificada na última conversa.",
     tendencia: "descendo",
-    motivoRisco: "Desalinhamento de expectativa",
+    motivoRisco: "Expectativa desalinhada",
     pendenciasVencidas: 3,
     pendenciasCriticas: 2,
     responsividadeCliente: "Baixa",
@@ -224,11 +224,10 @@ export const contasData: ContaData[] = [
     risco: "Médio",
     oportunidade: "Média",
     pendencias: 2,
-    ultimaVisita: "2026-03-08",
-    proximaVisita: "2026-03-30",
+    ultimaVisita: null,
+    proximaVisita: null,
     donoProximaAcao: "Danilo",
-    observacoes:
-      "Conta institucional com potencial de crescimento. Monitorar engajamento e alinhar próximos passos.",
+    observacoes: "",
     tendencia: "estavel",
     motivoRisco: null,
     pendenciasVencidas: 0,
