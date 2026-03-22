@@ -15,6 +15,8 @@ import {
   DollarSign,
   HeartPulse,
   X,
+  Briefcase,
+  Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,6 +31,10 @@ const navItems = [
   { label: "Financial",   href: "/financial",  icon: DollarSign      },
   { label: "Relatórios",  href: "/reports",    icon: FileBarChart    },
 ];
+
+// ⚠️  Modo Carreira — habilitado: false · aguardando liberação pelo usuário
+const CARREIRA_ENABLED = false;
+const carreiraItem = { label: "Modo Carreira", href: "/carreira", icon: Briefcase };
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -112,6 +118,32 @@ export default function Sidebar() {
             </Link>
           );
         })}
+
+        {/* Modo Carreira — disabled until enabled */}
+        {CARREIRA_ENABLED ? (
+          <Link
+            href={carreiraItem.href}
+            onClick={close}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group",
+              pathname.startsWith(carreiraItem.href)
+                ? "bg-brand-600/20 text-brand-400 border border-brand-500/20"
+                : "text-gray-400 hover:text-gray-200 hover:bg-gray-800",
+            )}
+          >
+            <carreiraItem.icon size={16} className="text-gray-500 group-hover:text-gray-300 transition-colors" />
+            <span className="flex-1">{carreiraItem.label}</span>
+          </Link>
+        ) : (
+          <div
+            title="Em breve — habilitação pendente"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium cursor-not-allowed opacity-40 select-none"
+          >
+            <carreiraItem.icon size={16} className="text-gray-600" />
+            <span className="flex-1 text-gray-600">{carreiraItem.label}</span>
+            <Lock size={11} className="text-gray-700" />
+          </div>
+        )}
 
         <div className="px-3 mt-5 mb-3">
           <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">

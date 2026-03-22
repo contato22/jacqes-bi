@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import { contasData, scoreMensal, scoreDimensions, alerts } from "@/lib/data";
+import CarteiraTab from "@/components/CarteiraTab";
 import { cn } from "@/lib/utils";
 
 // ─── Derivações automáticas dos dados ─────────────────────────────────────────
@@ -100,8 +101,11 @@ const categoryStyle: Record<string, string> = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+type Tab = "analise" | "carteira";
+
 export default function AnalisePage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [tab, setTab] = useState<Tab>("analise");
 
   function toggle(id: string) {
     setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -118,6 +122,23 @@ export default function AnalisePage() {
       />
 
       <div className="page-content">
+        {/* tab bar */}
+        <div className="flex items-center gap-1 border-b border-gray-800 -mt-2 mb-0">
+          {(["analise", "carteira"] as Tab[]).map((t) => (
+            <button key={t} onClick={() => setTab(t)}
+              className={cn(
+                "px-5 py-2.5 text-sm font-medium rounded-t-lg border-b-2 transition-all",
+                tab === t
+                  ? "text-brand-300 border-brand-400 bg-brand-600/10"
+                  : "text-gray-500 border-transparent hover:text-gray-200 hover:bg-gray-800/50"
+              )}>
+              {t === "analise" ? "Análise" : "Carteira"}
+            </button>
+          ))}
+        </div>
+
+        {tab === "carteira" && <CarteiraTab />}
+        {tab === "analise" && <>
 
         {/* ── Status banner ── */}
         <div className="card p-5 flex flex-wrap items-center justify-between gap-4">
@@ -469,6 +490,7 @@ export default function AnalisePage() {
 
           </div>
         </div>
+        </>}
       </div>
     </>
   );

@@ -1168,3 +1168,200 @@ export const marketingData: MarketingCliente[] = [
     ],
   },
 ];
+
+// ─── Modo Carreira — Danilo · AWQ Group ───────────────────────────────────────
+
+export type OKRStatus = "on_track" | "at_risk" | "behind" | "futuro";
+export type EstudoStatus = "em_andamento" | "concluido" | "planejado";
+export type HabilidadeArea = "tecnica" | "soft" | "gestao" | "marketing";
+export type MilestoneStatus = "concluido" | "em_andamento" | "proximo" | "futuro";
+
+export interface CarreiraReceita {
+  fixoMensal: number;
+  variavelMeta: number;
+  variavelStatus: "paga" | "nao_paga";
+  variavelScoreMin: number;
+  vestingContaAncora: string;
+  vestingProgresso: number;
+  vestingDescricao: string;
+  projecaoAnualBase: number;
+  projecaoAnualComVariavel: number;
+}
+
+export interface CarreiraOKR {
+  objetivo: string;
+  trimestre: string;
+  keyResults: {
+    descricao: string;
+    meta: string;
+    atual: string;
+    progresso: number;
+    status: OKRStatus;
+  }[];
+}
+
+export interface CarreiraEstudo {
+  curso: string;
+  plataforma: string;
+  status: EstudoStatus;
+  progresso?: number;
+  prazo?: string;
+  area: string;
+  cargaHoras?: number;
+}
+
+export interface CarreiraHabilidade {
+  nome: string;
+  nivel: number;
+  meta: number;
+  area: HabilidadeArea;
+}
+
+export interface CarreiraMilestone {
+  titulo: string;
+  descricao: string;
+  prazo: string;
+  status: MilestoneStatus;
+}
+
+export interface CarreiraEstagio {
+  titulo: string;
+  scoreMin: number;
+  scoreMax: number | null;
+  descricao: string;
+  beneficios: string[];
+  isCurrent?: boolean;
+}
+
+export interface CarreiraData {
+  nomeCompleto: string;
+  cargo: string;
+  empresa: string;
+  ingressoMes: string;
+  scoreAtual: number;
+  estagioAtual: string;
+  receita: CarreiraReceita;
+  estagios: CarreiraEstagio[];
+  okrs: CarreiraOKR[];
+  estudos: CarreiraEstudo[];
+  habilidades: CarreiraHabilidade[];
+  milestones: CarreiraMilestone[];
+  mentores: { nome: string; relacao: string; area: string }[];
+  notasCarreira: string;
+}
+
+export const carreiraData: CarreiraData = {
+  nomeCompleto:  "Danilo",
+  cargo:         "CS & Operações",
+  empresa:       "AWQ Group",
+  ingressoMes:   "2025-08",
+  scoreAtual:    69,
+  estagioAtual:  "Operador em Formação",
+
+  receita: {
+    fixoMensal:              4500,
+    variavelMeta:            1200,
+    variavelStatus:          "nao_paga",
+    variavelScoreMin:        75,
+    vestingContaAncora:      "JACQES",
+    vestingProgresso:        35,
+    vestingDescricao:        "Vesting JACQES em andamento — 35% acumulado. Progressão vinculada à entrega de resultados trimestrais e manutenção da conta como saudável.",
+    projecaoAnualBase:       54000,
+    projecaoAnualComVariavel:68400,
+  },
+
+  estagios: [
+    {
+      titulo:    "Operador em Formação",
+      scoreMin:  60,
+      scoreMax:  74,
+      descricao: "Etapa atual. Processos básicos sendo estabelecidos, carteira em maturação.",
+      beneficios: ["Fixo garantido", "Acesso ao modelo M4E", "Início do vesting JACQES"],
+      isCurrent: true,
+    },
+    {
+      titulo:    "Bom Nível",
+      scoreMin:  75,
+      scoreMax:  84,
+      descricao: "Variável desbloqueada. Carteira estabilizada com SLA consistente.",
+      beneficios: ["Variável mensal R$ 1.200", "Revisão de cargo elegível", "Expansão de carteira autorizada"],
+    },
+    {
+      titulo:    "Operador Sólido",
+      scoreMin:  85,
+      scoreMax:  94,
+      descricao: "Referência de operação. Processos auditáveis e carteira com crescimento.",
+      beneficios: ["Variável + bônus semestral", "Elegível a lead de squad", "Participação em decisões estratégicas"],
+    },
+    {
+      titulo:    "Owner em Formação",
+      scoreMin:  95,
+      scoreMax:  null,
+      descricao: "Autonomia operacional total. Gestão de receita do próprio portfólio.",
+      beneficios: ["Modelo de receita compartilhada", "Autonomia de precificação", "Expansão de equity"],
+    },
+  ],
+
+  okrs: [
+    {
+      objetivo:  "Atingir score 75+ em Abril 2026 e desbloquear a variável",
+      trimestre: "Q2 2026",
+      keyResults: [
+        { descricao: "Elevar dimensão Processo de 11 para 14 pts",   meta: "14 pts",  atual: "11 pts", progresso: 55, status: "at_risk"   },
+        { descricao: "Elevar dimensão Risco de 13 para 17 pts",      meta: "17 pts",  atual: "13 pts", progresso: 65, status: "at_risk"   },
+        { descricao: "Manter Atendimento e Operação ≥ 16 pts",       meta: "≥ 16 pts",atual: "16/15",  progresso: 78, status: "on_track"  },
+        { descricao: "Reduzir pendências totais de 11 para ≤ 5",     meta: "≤ 5",     atual: "11",     progresso: 30, status: "behind"    },
+        { descricao: "Criar mínimo 3 SOPs documentados no Notion",   meta: "3 SOPs",  atual: "0",      progresso: 0,  status: "behind"    },
+      ],
+    },
+    {
+      objetivo:  "Estabilizar a carteira e expandir para 5 contas em Q3 2026",
+      trimestre: "Q3 2026",
+      keyResults: [
+        { descricao: "Conta 04 passar de Sensível para Estável",     meta: "Estável",   atual: "Sensível",progresso: 10, status: "at_risk"  },
+        { descricao: "JACQES vesting ≥ 50% acumulado",              meta: "50%",       atual: "35%",     progresso: 70, status: "on_track" },
+        { descricao: "Prospecção e onboarding de 1 nova conta",     meta: "1 conta",   atual: "0",       progresso: 0,  status: "futuro"   },
+        { descricao: "NPS médio da carteira ≥ 8,0",                 meta: "≥ 8,0",     atual: "—",       progresso: 0,  status: "futuro"   },
+      ],
+    },
+  ],
+
+  estudos: [
+    { curso: "Customer Success Manager Certification (CSMC)", plataforma: "SuccessHACKER",    status: "em_andamento", progresso: 60, prazo: "2026-05-31", area: "CS",        cargaHoras: 40  },
+    { curso: "Fundamentos de Gestão de Receita (RevOps)",      plataforma: "HubSpot Academy",  status: "em_andamento", progresso: 35, prazo: "2026-06-30", area: "RevOps",    cargaHoras: 20  },
+    { curso: "Método M4E — Módulo Avançado",                   plataforma: "AWQ Interno",      status: "em_andamento", progresso: 80, prazo: "2026-04-15", area: "Operações", cargaHoras: 12  },
+    { curso: "Negociação e Gestão de Conflitos",               plataforma: "Coursera",         status: "planejado",    prazo: "2026-07-31",                  area: "Soft Skills",cargaHoras: 15 },
+    { curso: "Análise de Dados com Google Sheets & Notion",    plataforma: "Udemy",            status: "concluido",    progresso: 100,                       area: "Dados",     cargaHoras: 10  },
+    { curso: "Comunicação Executiva",                          plataforma: "LinkedIn Learning", status: "concluido",   progresso: 100,                       area: "Soft Skills",cargaHoras: 8  },
+  ],
+
+  habilidades: [
+    { nome: "Customer Success",       nivel: 3, meta: 5, area: "gestao"    },
+    { nome: "Gestão de Conta (AM)",   nivel: 3, meta: 4, area: "gestao"    },
+    { nome: "Análise de Dados",       nivel: 2, meta: 4, area: "tecnica"   },
+    { nome: "Processos & SOPs",       nivel: 2, meta: 4, area: "tecnica"   },
+    { nome: "Comunicação Executiva",  nivel: 3, meta: 5, area: "soft"      },
+    { nome: "Negociação",             nivel: 2, meta: 4, area: "soft"      },
+    { nome: "Marketing Digital",      nivel: 2, meta: 3, area: "marketing" },
+    { nome: "RevOps",                 nivel: 1, meta: 3, area: "gestao"    },
+  ],
+
+  milestones: [
+    { titulo: "Início na AWQ Group",              descricao: "Onboarding e integração ao modelo M4E",                     prazo: "2025-08", status: "concluido"    },
+    { titulo: "Carteira ativa com 4 contas",      descricao: "Onboarding de JACQES, AWQ Agência, AWQ Produtora e Conta 04",prazo: "2025-10", status: "concluido"    },
+    { titulo: "Primeiro mês com score ≥ 60",      descricao: "Operação mínima estabelecida",                               prazo: "2025-12", status: "concluido"    },
+    { titulo: "Score 75 — variável desbloqueada", descricao: "Meta de Abril 2026 — faltam +6 pts",                         prazo: "2026-04", status: "em_andamento" },
+    { titulo: "CSMC Certification",               descricao: "Certificação oficial de Customer Success Manager",            prazo: "2026-05", status: "em_andamento" },
+    { titulo: "Score 85 — Operador Sólido",       descricao: "Carteira madura, revisão de cargo elegível",                 prazo: "2026-09", status: "proximo"      },
+    { titulo: "5ª conta onboarded",               descricao: "Expansão da carteira com nova prospecção",                   prazo: "2026-09", status: "proximo"      },
+    { titulo: "Score 95 — Owner em Formação",     descricao: "Autonomia total, modelo de receita compartilhada",           prazo: "2027-01", status: "futuro"       },
+  ],
+
+  mentores: [
+    { nome: "Liderança AWQ",     relacao: "Gestora direta",      area: "Operações & Estratégia" },
+    { nome: "Rede CS Community", relacao: "Comunidade de pares", area: "Customer Success"       },
+  ],
+
+  notasCarreira:
+    "Foco no curto prazo: desbloquear a variável atingindo 75 pts em Abril. A dimensão Processo é o maior gargalo — 0 SOPs criados até agora. O vesting JACQES está em progresso e depende da continuidade saudável da conta.",
+};

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   RadarChart,
   Radar,
@@ -12,6 +13,8 @@ import Header from "@/components/Header";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
 import { scoreMensal, scoreDimensions, scoreCriterios } from "@/lib/data";
 import { dimensionColors, scoreThresholds } from "@/lib/colors";
+import CarteiraTab from "@/components/CarteiraTab";
+import { cn } from "@/lib/utils";
 
 const thresholdBands = scoreThresholds.map((t, i) => {
   const ranges = ["95–100", "85–94", "75–84", "60–74", "0–59"];
@@ -63,7 +66,10 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
+type Tab = "desempenho" | "carteira";
+
 export default function DesempenhoPage() {
+  const [tab, setTab] = useState<Tab>("desempenho");
   const radarData = scoreDimensions.map((d) => ({
     dimensao: d.dimensao,
     score: d.score,
@@ -79,6 +85,23 @@ export default function DesempenhoPage() {
 
       <PeriodFilterBar available={["mensal"]} label="Março 2026">
       <div className="page-content">
+        {/* tab bar */}
+        <div className="flex items-center gap-1 border-b border-gray-800 -mt-2 mb-0">
+          {(["desempenho", "carteira"] as Tab[]).map((t) => (
+            <button key={t} onClick={() => setTab(t)}
+              className={cn(
+                "px-5 py-2.5 text-sm font-medium rounded-t-lg border-b-2 transition-all capitalize",
+                tab === t
+                  ? "text-brand-300 border-brand-400 bg-brand-600/10"
+                  : "text-gray-500 border-transparent hover:text-gray-200 hover:bg-gray-800/50"
+              )}>
+              {t === "desempenho" ? "Desempenho" : "Carteira"}
+            </button>
+          ))}
+        </div>
+
+        {tab === "carteira" && <CarteiraTab />}
+        {tab === "desempenho" && <>
         {/* Summary stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryStats.map((stat) => (
@@ -336,6 +359,7 @@ export default function DesempenhoPage() {
             </div>
           </div>
         </div>
+        </>}
       </div>
       </PeriodFilterBar>
     </>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Header from "@/components/Header";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
 import {
@@ -16,12 +17,17 @@ import {
 } from "lucide-react";
 import { slaData, followUpData, processoAtivos, contasData } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import CarteiraTab from "@/components/CarteiraTab";
 
 const contasSemContato = slaData.porConta.filter(
   (c) => c.diasSemContato > slaData.contasSemContatoDias
 ).length;
 
+type Tab = "csops" | "carteira";
+
 export default function CSOpsPage() {
+  const [tab, setTab] = useState<Tab>("csops");
+
   return (
     <>
       <Header
@@ -30,7 +36,24 @@ export default function CSOpsPage() {
       />
 
       <PeriodFilterBar available={["mensal"]} label="Março 2026">
-      <div className="px-8 py-6 space-y-8">
+      <div className="px-8 py-6 space-y-6">
+        {/* tab bar */}
+        <div className="flex items-center gap-1 border-b border-gray-800">
+          {(["csops", "carteira"] as Tab[]).map((t) => (
+            <button key={t} onClick={() => setTab(t)}
+              className={cn(
+                "px-5 py-2.5 text-sm font-medium rounded-t-lg border-b-2 transition-all",
+                tab === t
+                  ? "text-brand-300 border-brand-400 bg-brand-600/10"
+                  : "text-gray-500 border-transparent hover:text-gray-200 hover:bg-gray-800/50"
+              )}>
+              {t === "csops" ? "CS Ops" : "Carteira"}
+            </button>
+          ))}
+        </div>
+
+        {tab === "carteira" && <CarteiraTab />}
+        {tab === "csops" && <div className="space-y-8">
 
         {/* ─── SLA Block ─────────────────────────────────────────────────────── */}
         <section className="space-y-4">
@@ -476,6 +499,7 @@ export default function CSOpsPage() {
           </div>
         </section>
 
+        </div>}
       </div>
       </PeriodFilterBar>
     </>
