@@ -2,6 +2,7 @@ import { dreGerencial, miniPLContas, miniPLMes, type DRELinha } from "@/lib/data
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
+import FluxoCaixaChart from "@/components/FluxoCaixaChart";
 import { Database, Edit3, GitBranch } from "lucide-react";
 
 function pct(value: number, total: number) {
@@ -176,6 +177,9 @@ export default function FinancialPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Fluxo de Caixa ────────────────────────────────────────────────────── */}
+      <FluxoCaixaChart />
 
       {/* ── DRE Waterfall ─────────────────────────────────────────────────────── */}
       <div className="card p-6">
