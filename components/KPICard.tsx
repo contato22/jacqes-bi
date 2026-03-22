@@ -74,7 +74,7 @@ export default function KPICard({ kpi }: KPICardProps) {
       </div>
 
       <div className="space-y-1">
-        <div className="text-2xl font-bold text-white tabular-nums">
+        <div className="text-xl sm:text-2xl font-bold text-white tabular-nums">
           {formatValue(kpi)}
         </div>
         <div className="text-sm text-gray-500">{kpi.label}</div>

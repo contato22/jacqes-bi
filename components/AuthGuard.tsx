@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { PeriodProvider } from "@/contexts/PeriodContext";
 import { SidebarProvider, useSidebar } from "@/contexts/SidebarContext";
 import Sidebar from "@/components/Sidebar";
 import OpenClaw from "@/components/OpenClaw";
-import { useState } from "react";
 
 const PUBLIC_PATHS = ["/login"];
 

@@ -42,13 +42,15 @@ export default function Sidebar() {
   return (
     <aside
       className={cn(
-        // Desktop: always visible in normal flow
-        "md:relative md:translate-x-0 md:flex md:w-[260px] md:flex-shrink-0",
-        // Mobile: fixed drawer that slides in
-        "fixed inset-y-0 left-0 z-40 w-[260px] flex-shrink-0",
+        // Shared
+        "w-[260px] flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col h-full",
         "transition-transform duration-300 ease-in-out",
+        // Mobile: fixed drawer
+        "fixed inset-y-0 left-0 z-40",
+        // Desktop: back in normal flow, reset mobile overrides
+        "md:relative md:inset-auto md:z-auto md:translate-x-0",
+        // Mobile open/close state (ignored on desktop due to md:translate-x-0)
         open ? "translate-x-0" : "-translate-x-full",
-        "bg-gray-900 border-r border-gray-800 flex flex-col h-full",
       )}
     >
 

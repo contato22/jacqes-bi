@@ -96,7 +96,7 @@ export default function DesempenhoPage() {
 
         {/* Radar chart + thresholds */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="xl:col-span-2 card p-6">
+          <div className="lg:col-span-2 card p-6">
             <div className="flex items-center gap-2 mb-6">
               <div className="w-6 h-6 rounded-md bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 shrink-0">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -235,7 +235,7 @@ export default function DesempenhoPage() {
               4 critérios × 5 pts = 20 pts por dimensão · Modelo M4E
             </p>
           </div>
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {scoreCriterios.map((dim) => {
               const pct = (dim.scoreTotal / dim.max) * 100;
               return (
@@ -292,7 +292,7 @@ export default function DesempenhoPage() {
         </div>
 
         {/* Retrospectiva */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="card p-5 space-y-3">
             <h2 className="text-sm font-semibold text-white">
               Retrospectiva — Março 2026
