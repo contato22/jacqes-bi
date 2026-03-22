@@ -697,3 +697,474 @@ export const fluxoCaixaSemanal: FluxoCaixaEntry[] = [
   { periodo: "Sem 3 · 15–21/3", entradasPrev: 2625, entradasReal: 2480, saidasPrev: 1225, saidasReal: 950  },
   { periodo: "Sem 4 · 22–31/3", entradasPrev: 2625, entradasReal: 1800, saidasPrev: 1225, saidasReal: 558  },
 ];
+
+// ─── Marketing · Mercadologia por Cliente ─────────────────────────────────────
+
+export type CanalStatus = "ativo" | "pausado" | "em_estruturação" | "inativo";
+export type FonteStatus = "conectado" | "manual" | "nao_configurado";
+export type AcaoAtualizar = "pull_notion" | "pull_ga" | "pull_meta" | "pull_email" | "upload_planilha" | "none";
+
+export interface CanalMarketing {
+  canal: string;
+  tipo: "instagram" | "tiktok" | "youtube" | "linkedin" | "email" | "site" | "whatsapp" | "meta_ads" | "google_ads" | "outro";
+  status: CanalStatus;
+  metricas: {
+    label: string;
+    valor: string;
+    delta?: number;   // positivo = crescimento vs mês anterior
+  }[];
+}
+
+export interface FunilMarketing {
+  topo: number;
+  meio: number;
+  fundo: number;
+  clientes: number;
+  rotuloTopo?: string;
+  rotuloMeio?: string;
+  rotuloFundo?: string;
+  rotuloClientes?: string;
+}
+
+export interface CampanhaMarketing {
+  nome: string;
+  canal: string;
+  status: "ativa" | "pausada" | "encerrada" | "planejada";
+  orcamento?: string;
+  resultado?: string;
+  inicio: string;
+  fim?: string;
+}
+
+export interface BaseDados {
+  id: string;
+  fonte: string;
+  icone: "Database" | "BarChart2" | "Megaphone" | "Mail" | "Users" | "FileSpreadsheet" | "Globe" | "MessageSquare";
+  status: FonteStatus;
+  ultimaSincronizacao: string | null;
+  descricao: string;
+  acaoAtualizar: AcaoAtualizar;
+}
+
+export interface MarketingCliente {
+  contaId: string;
+  posicionamento: string;
+  publicoAlvo: string[];
+  diferenciais: string[];
+  canais: CanalMarketing[];
+  funil: FunilMarketing;
+  campanhas: CampanhaMarketing[];
+  oportunidades: string[];
+  desafios: string[];
+  bases: BaseDados[];
+}
+
+export const marketingData: MarketingCliente[] = [
+  // ── André Vieira · id "1" ──────────────────────────────────────────────────
+  {
+    contaId: "1",
+    posicionamento:
+      "Marca pessoal focada em consultoria de crescimento para empreendedores individuais. Posicionamento de autoridade via conteúdo educativo e resultados comprovados de clientes.",
+    publicoAlvo: [
+      "Empreendedores solo (25–45 anos)",
+      "Coaches e consultores em início de carreira",
+      "Profissionais liberais em transição",
+    ],
+    diferenciais: [
+      "Método M4E validado com resultados documentados",
+      "Comunidade fechada com acompanhamento contínuo",
+      "Conteúdo prático baseado em casos reais",
+    ],
+    canais: [
+      {
+        canal: "Instagram",
+        tipo: "instagram",
+        status: "ativo",
+        metricas: [
+          { label: "Seguidores",     valor: "8.4K",  delta: 4.2  },
+          { label: "Engajamento",    valor: "5,8%",  delta: 0.3  },
+          { label: "Alcance mensal", valor: "42K",   delta: 12   },
+        ],
+      },
+      {
+        canal: "Email MKT",
+        tipo: "email",
+        status: "ativo",
+        metricas: [
+          { label: "Lista",          valor: "1.230", delta: 3.1  },
+          { label: "Taxa de abertura",valor: "34%",  delta: -1.5 },
+          { label: "Cliques",        valor: "8,2%",  delta: 0.4  },
+        ],
+      },
+      {
+        canal: "Meta Ads",
+        tipo: "meta_ads",
+        status: "ativo",
+        metricas: [
+          { label: "Investimento",   valor: "R$ 900/mês",   delta: 0    },
+          { label: "CPL",            valor: "R$ 18,40",     delta: -5.2 },
+          { label: "ROAS",           valor: "3,2×",         delta: 0.4  },
+        ],
+      },
+      {
+        canal: "WhatsApp Business",
+        tipo: "whatsapp",
+        status: "ativo",
+        metricas: [
+          { label: "Contatos ativos", valor: "320",  delta: 8    },
+          { label: "Taxa de resposta",valor: "91%",  delta: 1    },
+        ],
+      },
+    ],
+    funil: {
+      topo: 4200,
+      meio: 610,
+      fundo: 84,
+      clientes: 22,
+      rotuloTopo:     "Alcance / Visitantes",
+      rotuloMeio:     "Leads captados",
+      rotuloFundo:    "Oportunidades",
+      rotuloClientes: "Clientes ativos",
+    },
+    campanhas: [
+      {
+        nome: "Lead Magnet — E-book Método M4E",
+        canal: "Meta Ads + Email",
+        status: "ativa",
+        orcamento: "R$ 600/mês",
+        resultado: "CPL R$ 18,40 · 48 leads/mês",
+        inicio: "2026-02-01",
+      },
+      {
+        nome: "Sequência de nutrição — 7 emails",
+        canal: "Email MKT",
+        status: "ativa",
+        resultado: "Abertura 38% · Conversão 6,2%",
+        inicio: "2026-01-15",
+      },
+      {
+        nome: "Campanha de reativação lista fria",
+        canal: "Email MKT",
+        status: "encerrada",
+        resultado: "Reativou 12% · 94 contatos",
+        inicio: "2026-02-10",
+        fim: "2026-03-01",
+      },
+    ],
+    oportunidades: [
+      "Lançamento de programa em grupo (leverage do 1:1)",
+      "Parceria com creators do nicho para co-marketing",
+      "Produção de mini-curso no YouTube para topo de funil",
+    ],
+    desafios: [
+      "Dependência elevada de tráfego pago (65% dos leads)",
+      "Taxa de abertura de email caindo — necessita atualização da cadência",
+    ],
+    bases: [
+      { id: "a1-notion",  fonte: "Notion",            icone: "Database",       status: "conectado",     ultimaSincronizacao: "2026-03-21T18:00:00Z", descricao: "CRM e gestão de clientes / leads",                     acaoAtualizar: "pull_notion"    },
+      { id: "a1-ga",      fonte: "Google Analytics",  icone: "BarChart2",      status: "manual",        ultimaSincronizacao: "2026-03-15T10:30:00Z", descricao: "Tráfego do site e conversões de landing page",          acaoAtualizar: "pull_ga"        },
+      { id: "a1-meta",    fonte: "Meta Ads Manager",  icone: "Megaphone",      status: "manual",        ultimaSincronizacao: "2026-03-20T09:00:00Z", descricao: "Performance de campanhas pagas no Instagram/Facebook",  acaoAtualizar: "pull_meta"      },
+      { id: "a1-email",   fonte: "Email MKT",         icone: "Mail",           status: "manual",        ultimaSincronizacao: "2026-03-18T14:00:00Z", descricao: "Métricas de listas e campanhas de email",              acaoAtualizar: "pull_email"     },
+      { id: "a1-plan",    fonte: "Planilha de Leads",  icone: "FileSpreadsheet",status: "nao_configurado",ultimaSincronizacao: null,                   descricao: "Controle manual de pipeline de vendas",               acaoAtualizar: "upload_planilha"},
+    ],
+  },
+
+  // ── Luis Vieira · id "2" ───────────────────────────────────────────────────
+  {
+    contaId: "2",
+    posicionamento:
+      "Consultoria financeira pessoal para profissionais de renda média-alta. Foco em organização patrimonial e planejamento de médio prazo.",
+    publicoAlvo: [
+      "Profissionais CLT com renda R$ 8k–25k/mês",
+      "Autônomos e liberais com dificuldade de organização financeira",
+    ],
+    diferenciais: [
+      "Diagnóstico financeiro estruturado em 30 dias",
+      "Acompanhamento mensal com planilha personalizada",
+    ],
+    canais: [
+      {
+        canal: "Instagram",
+        tipo: "instagram",
+        status: "pausado",
+        metricas: [
+          { label: "Seguidores",  valor: "1.820", delta: 0    },
+          { label: "Engajamento", valor: "1,4%",  delta: -0.8 },
+        ],
+      },
+      {
+        canal: "WhatsApp Business",
+        tipo: "whatsapp",
+        status: "ativo",
+        metricas: [
+          { label: "Contatos ativos", valor: "87",  delta: 2   },
+          { label: "Taxa de resposta",valor: "68%", delta: -5  },
+        ],
+      },
+    ],
+    funil: {
+      topo: 380,
+      meio: 52,
+      fundo: 14,
+      clientes: 4,
+      rotuloTopo:     "Alcance orgânico",
+      rotuloMeio:     "Contatos no WhatsApp",
+      rotuloFundo:    "Conversas avançadas",
+      rotuloClientes: "Clientes ativos",
+    },
+    campanhas: [
+      {
+        nome: "Reativação do Instagram",
+        canal: "Instagram",
+        status: "planejada",
+        orcamento: "R$ 200/mês",
+        inicio: "2026-04-01",
+      },
+    ],
+    oportunidades: [
+      "Reativação do canal no Instagram com conteúdo educativo",
+      "Desenvolvimento de planilha de diagnóstico como lead magnet",
+      "Indicações estruturadas a partir da base existente de clientes",
+    ],
+    desafios: [
+      "Baixa constância de produção de conteúdo",
+      "Responsividade reduzida do próprio cliente para validar materiais",
+      "Sem funil estruturado — dependência de indicações informais",
+    ],
+    bases: [
+      { id: "l2-notion", fonte: "Notion",           icone: "Database",       status: "conectado",      ultimaSincronizacao: "2026-03-19T14:00:00Z", descricao: "Gestão de tarefas e histórico de cliente",       acaoAtualizar: "pull_notion"     },
+      { id: "l2-plan",   fonte: "Planilha Controle", icone: "FileSpreadsheet",status: "manual",         ultimaSincronizacao: "2026-03-10T09:00:00Z", descricao: "Pipeline de prospects e controle de indicações", acaoAtualizar: "upload_planilha" },
+      { id: "l2-meta",   fonte: "Meta Ads Manager",  icone: "Megaphone",      status: "nao_configurado",ultimaSincronizacao: null,                   descricao: "Campanhas pagas (a estruturar em Abril 2026)",   acaoAtualizar: "pull_meta"       },
+    ],
+  },
+
+  // ── Carol Bertolini · id "3" ───────────────────────────────────────────────
+  {
+    contaId: "3",
+    posicionamento:
+      "Operação interna AWQ Group — foco em gestão de processos e capacitação de equipe. Marketing voltado para posicionamento institucional B2B e comunicação com stakeholders.",
+    publicoAlvo: [
+      "Lideranças internas AWQ",
+      "Parceiros e fornecedores estratégicos",
+      "Potenciais talentos para recrutamento",
+    ],
+    diferenciais: [
+      "Processos documentados e replicáveis",
+      "Gestão baseada em dados e KPIs claros",
+    ],
+    canais: [
+      {
+        canal: "LinkedIn",
+        tipo: "linkedin",
+        status: "ativo",
+        metricas: [
+          { label: "Conexões",       valor: "1.1K",  delta: 2.8  },
+          { label: "Impressões",     valor: "6.2K",  delta: 15   },
+          { label: "Engajamento",    valor: "3,1%",  delta: 0.5  },
+        ],
+      },
+      {
+        canal: "Email Corporativo",
+        tipo: "email",
+        status: "ativo",
+        metricas: [
+          { label: "Taxa de abertura", valor: "47%", delta: 2    },
+          { label: "Lista corporativa",valor: "210", delta: 5    },
+        ],
+      },
+    ],
+    funil: {
+      topo: 620,
+      meio: 140,
+      fundo: 38,
+      clientes: 12,
+      rotuloTopo:     "Impressões LinkedIn",
+      rotuloMeio:     "Visitas perfil / site",
+      rotuloFundo:    "Contatos qualificados",
+      rotuloClientes: "Parceiros / talentos",
+    },
+    campanhas: [
+      {
+        nome: "Posicionamento LinkedIn — Série de artigos",
+        canal: "LinkedIn",
+        status: "ativa",
+        resultado: "Alcance médio 850/post",
+        inicio: "2026-02-15",
+      },
+    ],
+    oportunidades: [
+      "Newsletter interna como repositório de conhecimento da operação",
+      "Employer branding para atrair perfis técnicos ao time AWQ",
+      "Case studies de processos como conteúdo externo",
+    ],
+    desafios: [
+      "Foco interno limita o alcance de marketing externo",
+      "Ausência de landing page institucional dedicada",
+    ],
+    bases: [
+      { id: "c3-notion",  fonte: "Notion",            icone: "Database",       status: "conectado",      ultimaSincronizacao: "2026-03-20T11:00:00Z", descricao: "Processos, SOPs e documentação interna",                   acaoAtualizar: "pull_notion"     },
+      { id: "c3-linkedin",fonte: "LinkedIn Analytics", icone: "BarChart2",      status: "manual",         ultimaSincronizacao: "2026-03-18T16:00:00Z", descricao: "Métricas de alcance e engajamento no LinkedIn",             acaoAtualizar: "none"            },
+      { id: "c3-crm",     fonte: "CRM Interno",        icone: "Users",          status: "nao_configurado",ultimaSincronizacao: null,                   descricao: "Gestão de contatos estratégicos e parceiros",              acaoAtualizar: "none"            },
+      { id: "c3-email",   fonte: "Email Corporativo",  icone: "Mail",           status: "manual",         ultimaSincronizacao: "2026-03-15T09:00:00Z", descricao: "Taxa de abertura e cliques de comunicações internas",      acaoAtualizar: "pull_email"      },
+    ],
+  },
+
+  // ── Tati Simões · id "4" ───────────────────────────────────────────────────
+  {
+    contaId: "4",
+    posicionamento:
+      "Em estruturação. Nova frente identificada com potencial de expansão, porém com expectativa desalinhada. Marca pessoal ainda não definida — necessita de diagnóstico de posicionamento antes de qualquer ação de marketing.",
+    publicoAlvo: [
+      "A definir após alinhamento de expectativas",
+    ],
+    diferenciais: [
+      "Oportunidade forte identificada na área (a explorar)",
+      "Engajamento potencial com audiência digital",
+    ],
+    canais: [
+      {
+        canal: "Instagram",
+        tipo: "instagram",
+        status: "em_estruturação",
+        metricas: [
+          { label: "Seguidores",  valor: "640",  delta: 0  },
+          { label: "Engajamento", valor: "—",    delta: 0  },
+        ],
+      },
+    ],
+    funil: {
+      topo: 0,
+      meio: 0,
+      fundo: 0,
+      clientes: 0,
+      rotuloTopo:     "Alcance (a estruturar)",
+      rotuloMeio:     "Leads (a estruturar)",
+      rotuloFundo:    "Oportunidades",
+      rotuloClientes: "Clientes",
+    },
+    campanhas: [],
+    oportunidades: [
+      "Diagnóstico de posicionamento como primeiro entregável",
+      "Forte oportunidade de mercado identificada — validar com cliente",
+      "Potencial de crescimento acelerado uma vez alinhadas expectativas",
+    ],
+    desafios: [
+      "Expectativa desalinhada — prioridade: alinhamento antes de ações",
+      "5 pendências abertas bloqueando avanço operacional",
+      "Funil e canais ainda não estruturados",
+    ],
+    bases: [
+      { id: "t4-notion", fonte: "Notion",  icone: "Database",        status: "conectado", ultimaSincronizacao: "2026-03-19T14:00:00Z", descricao: "Registro de interações e pendências abertas", acaoAtualizar: "pull_notion" },
+    ],
+  },
+
+  // ── CEM · id "5" ──────────────────────────────────────────────────────────
+  {
+    contaId: "5",
+    posicionamento:
+      "Centro de educação e capacitação corporativa. Foco em B2B — atração de empresas e gestores de T&D para programas in-company e abertos.",
+    publicoAlvo: [
+      "Gestores de RH e T&D de empresas médias (50–500 funcionários)",
+      "Lideranças corporativas em busca de capacitação executiva",
+    ],
+    diferenciais: [
+      "Metodologia proprietária de capacitação acelerada",
+      "Certificação reconhecida no setor",
+      "Programas customizáveis por vertical",
+    ],
+    canais: [
+      {
+        canal: "LinkedIn",
+        tipo: "linkedin",
+        status: "ativo",
+        metricas: [
+          { label: "Seguidores página",  valor: "2.8K",  delta: 3.2  },
+          { label: "Impressões",         valor: "18K",   delta: 22   },
+          { label: "Engajamento",        valor: "2,4%",  delta: 0.2  },
+        ],
+      },
+      {
+        canal: "Email MKT",
+        tipo: "email",
+        status: "ativo",
+        metricas: [
+          { label: "Lista B2B",          valor: "3.420",  delta: 1.8  },
+          { label: "Taxa de abertura",   valor: "22%",    delta: -0.5 },
+          { label: "Conversão form",     valor: "3,1%",   delta: 0.4  },
+        ],
+      },
+      {
+        canal: "Site Institucional",
+        tipo: "site",
+        status: "ativo",
+        metricas: [
+          { label: "Visitantes/mês",  valor: "4.100",  delta: 8.5  },
+          { label: "Taxa de rejeição", valor: "52%",   delta: -3   },
+          { label: "Leads/mês",       valor: "34",     delta: 5    },
+        ],
+      },
+      {
+        canal: "Google Ads",
+        tipo: "google_ads",
+        status: "pausado",
+        metricas: [
+          { label: "CPC médio",     valor: "R$ 4,80",  delta: 0 },
+          { label: "Conversões",    valor: "0 (pausado)", delta: 0 },
+        ],
+      },
+    ],
+    funil: {
+      topo: 4100,
+      meio: 680,
+      fundo: 98,
+      clientes: 14,
+      rotuloTopo:     "Visitantes site / LinkedIn",
+      rotuloMeio:     "Leads qualificados",
+      rotuloFundo:    "Propostas enviadas",
+      rotuloClientes: "Empresas ativas",
+    },
+    campanhas: [
+      {
+        nome: "Inbound B2B — Série de conteúdo LinkedIn",
+        canal: "LinkedIn",
+        status: "ativa",
+        resultado: "Alcance médio 2.1K/post · +12 seguidores/sem",
+        inicio: "2026-01-10",
+      },
+      {
+        nome: "Email nurturing — Trilha T&D",
+        canal: "Email MKT",
+        status: "ativa",
+        orcamento: "R$ 0 (ferramenta inclusa)",
+        resultado: "Abertura 22% · 3 oportunidades geradas",
+        inicio: "2026-02-01",
+      },
+      {
+        nome: "Google Ads — Palavras-chave capacitação",
+        canal: "Google Ads",
+        status: "pausada",
+        orcamento: "R$ 1.500/mês (pausado)",
+        resultado: "Pausa por revisão de landing page",
+        inicio: "2025-11-01",
+        fim: "2026-02-28",
+      },
+    ],
+    oportunidades: [
+      "Reativação do Google Ads com nova landing page otimizada para conversão",
+      "Webinar mensal aberto como gerador de leads B2B",
+      "Parceria com associações de RH para co-marketing",
+    ],
+    desafios: [
+      "Google Ads pausado — perda de volume de leads pagos",
+      "Taxa de abertura de email abaixo da média B2B (meta: 28%)",
+      "Ciclo de venda longo — nurturing precisa de mais touchpoints",
+    ],
+    bases: [
+      { id: "e5-notion", fonte: "Notion",           icone: "Database",       status: "conectado",      ultimaSincronizacao: "2026-03-20T21:00:00Z", descricao: "CRM, tarefas e histórico de relacionamento B2B",           acaoAtualizar: "pull_notion"     },
+      { id: "e5-ga",     fonte: "Google Analytics", icone: "BarChart2",      status: "conectado",      ultimaSincronizacao: "2026-03-21T06:00:00Z", descricao: "Tráfego do site, metas e conversões",                      acaoAtualizar: "pull_ga"         },
+      { id: "e5-email",  fonte: "Email MKT",        icone: "Mail",           status: "manual",         ultimaSincronizacao: "2026-03-18T10:00:00Z", descricao: "Métricas de listas e campanhas (Mailchimp)",               acaoAtualizar: "pull_email"      },
+      { id: "e5-li",     fonte: "LinkedIn Analytics",icone: "BarChart2",     status: "manual",         ultimaSincronizacao: "2026-03-17T15:00:00Z", descricao: "Dados de alcance e engajamento da página empresarial",     acaoAtualizar: "none"            },
+      { id: "e5-crm",    fonte: "CRM",              icone: "Users",          status: "nao_configurado",ultimaSincronizacao: null,                   descricao: "Pipeline B2B — integração pendente",                       acaoAtualizar: "none"            },
+    ],
+  },
+];
