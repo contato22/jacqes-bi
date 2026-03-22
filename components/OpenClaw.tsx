@@ -75,32 +75,63 @@ DIRETRIZES DE RESPOSTA:
 // ─── Stream API ───────────────────────────────────────────────────────────────
 
 async function streamMessage(
-  apiKey: string,
+  clientKey: string,
   history: Message[],
   onChunk: (text: string) => void,
   signal: AbortSignal,
 ) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    signal,
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      stream: true,
-      system: SYSTEM_PROMPT,
-      messages: history.map((m) => ({ role: m.role, content: m.content })),
-    }),
+  const payload = JSON.stringify({
+    model: "claude-sonnet-4-6",
+    max_tokens: 4096,
+    stream: true,
+    system: SYSTEM_PROMPT,
+    messages: history.map((m) => ({ role: m.role, content: m.content })),
   });
 
+  // Tenta primeiro o proxy server-side (/api/chat)
+  // Se não disponível (static export), cai para chamada direta com chave do cliente
+  let res: Response;
+  const useProxy = typeof window !== "undefined" && !window.location.pathname.startsWith("/jacqes-bi");
+
+  if (useProxy) {
+    res = await fetch("/api/chat", {
+      method: "POST",
+      signal,
+      headers: { "Content-Type": "application/json", ...(clientKey ? { "x-client-key": clientKey } : {}) },
+      body: payload,
+    });
+    if (res.status === 503) {
+      // Servidor sem chave — tenta direto com chave do cliente (se houver)
+      if (!clientKey) throw new Error("Chave da API não configurada. Acesse Configurações para adicionar sua chave Anthropic.");
+      res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", signal,
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": clientKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: payload,
+      });
+    }
+  } else {
+    // GitHub Pages / static — chama direto
+    if (!clientKey) throw new Error("Chave da API não configurada. Acesse Configurações para adicionar sua chave Anthropic.");
+    res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST", signal,
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": clientKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: payload,
+    });
+  }
+
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Erro da API (${res.status}): ${err}`);
+    const err = await res.text().catch(() => String(res.status));
+    throw new Error(`Erro da API (${res.status}): ${err.slice(0, 200)}`);
   }
 
   const reader  = res.body!.getReader();

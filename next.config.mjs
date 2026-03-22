@@ -1,12 +1,19 @@
 /** @type {import('next').NextConfig} */
+
+// STATIC_EXPORT=1 → GitHub Pages (sem API routes)
+// default           → Vercel/Node (SSR + /api/chat proxy)
+const isStaticExport = process.env.STATIC_EXPORT === "1";
+
 const nextConfig = {
   reactStrictMode: true,
-  output: "export",
-  basePath: process.env.NODE_ENV === "production" ? "/jacqes-bi" : "",
-  images: {
-    unoptimized: true,
-  },
-  trailingSlash: true,
+  ...(isStaticExport
+    ? {
+        output: "export",
+        basePath: "/jacqes-bi",
+        images: { unoptimized: true },
+        trailingSlash: true,
+      }
+    : {}),
 };
 
 export default nextConfig;
