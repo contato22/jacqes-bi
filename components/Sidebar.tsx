@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -17,13 +16,10 @@ import {
   HeartPulse,
   X,
   Briefcase,
-  Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSidebar } from "@/contexts/SidebarContext";
-
-export const CARREIRA_STORAGE_KEY = "jacqes_feature_carreira";
 
 const navItems = [
   { label: "Visão Geral", href: "/",           icon: LayoutDashboard },
@@ -42,14 +38,7 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
   const { open, close } = useSidebar();
 
-  const [carreiraEnabled, setCarreiraEnabled] = useState(false);
-  useEffect(() => {
-    if (!user?.username) return;
-    try {
-      const stored = JSON.parse(localStorage.getItem(CARREIRA_STORAGE_KEY) || "{}");
-      setCarreiraEnabled(!!stored[user.username]);
-    } catch { /* ignore */ }
-  }, [user?.username]);
+  const isAdmin = user?.role === "admin";
 
   const initials = user?.displayName
     ? user.displayName.slice(0, 2).toUpperCase()
@@ -129,8 +118,8 @@ export default function Sidebar() {
           );
         })}
 
-        {/* Modo Carreira — controlled per user by admin via Settings */}
-        {carreiraEnabled ? (
+        {/* Modo Carreira — visível apenas para admin */}
+        {isAdmin && (
           <Link
             href={carreiraItem.href}
             onClick={close}
@@ -141,18 +130,16 @@ export default function Sidebar() {
                 : "text-gray-400 hover:text-gray-200 hover:bg-gray-800",
             )}
           >
-            <carreiraItem.icon size={16} className="text-gray-500 group-hover:text-gray-300 transition-colors" />
+            <carreiraItem.icon
+              size={16}
+              className={cn(
+                "transition-colors",
+                pathname.startsWith(carreiraItem.href) ? "text-brand-400" : "text-gray-500 group-hover:text-gray-300",
+              )}
+            />
             <span className="flex-1">{carreiraItem.label}</span>
+            {pathname.startsWith(carreiraItem.href) && <ChevronRight size={14} className="text-brand-500" />}
           </Link>
-        ) : (
-          <div
-            title="Em breve — habilitação pendente"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium cursor-not-allowed opacity-40 select-none"
-          >
-            <carreiraItem.icon size={16} className="text-gray-600" />
-            <span className="flex-1 text-gray-600">{carreiraItem.label}</span>
-            <Lock size={11} className="text-gray-700" />
-          </div>
         )}
 
         <div className="px-3 mt-5 mb-3">

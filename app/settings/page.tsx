@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
-import { Settings, Bell, Shield, Database, Info, Zap, Eye, EyeOff, CheckCircle, XCircle, Loader2, Briefcase, Lock, Unlock } from "lucide-react";
+import { Settings, Bell, Shield, Database, Info, Zap, Eye, EyeOff, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { CARREIRA_STORAGE_KEY } from "@/components/Sidebar";
 
 const API_KEY_STORAGE = "jacqes_anthropic_key";
 
@@ -176,92 +175,10 @@ function OpenClawConfig() {
   );
 }
 
-// ── Admin: Controle do Modo Carreira ──────────────────────────────────────────
-
-const MANAGED_USERS = [
-  { username: "danilo", displayName: "Danilo", role: "CS & Operações" },
-];
-
-function CarreiraAdminControl() {
-  const [enabled, setEnabled] = useState<Record<string, boolean>>({});
-  const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem(CARREIRA_STORAGE_KEY) || "{}");
-      setEnabled(stored);
-    } catch { /* ignore */ }
-  }, []);
-
-  function toggle(username: string) {
-    setSaved(false);
-    setEnabled((prev) => ({ ...prev, [username]: !prev[username] }));
-  }
-
-  function handleSave() {
-    localStorage.setItem(CARREIRA_STORAGE_KEY, JSON.stringify(enabled));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  }
-
-  return (
-    <div className="space-y-4">
-      <p className="text-xs text-gray-500 leading-relaxed">
-        Ative o <span className="text-brand-400 font-medium">Modo Carreira</span> por usuário para exibir o item no menu lateral.
-        As alterações entram em vigor no próximo login do usuário.
-      </p>
-
-      <div className="space-y-2">
-        {MANAGED_USERS.map((u) => {
-          const on = !!enabled[u.username];
-          return (
-            <div key={u.username} className="flex items-center justify-between p-3.5 rounded-xl bg-gray-800/40 border border-gray-700/40">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 flex items-center justify-center text-xs font-bold text-white shrink-0">
-                  {u.displayName.slice(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-gray-200">{u.displayName}</div>
-                  <div className="text-[10px] text-gray-600">{u.role}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 text-xs">
-                  {on
-                    ? <><Unlock size={11} className="text-emerald-400" /><span className="text-emerald-400 font-medium">Habilitado</span></>
-                    : <><Lock size={11} className="text-gray-600" /><span className="text-gray-600">Desabilitado</span></>}
-                </div>
-                <button
-                  onClick={() => toggle(u.username)}
-                  className={`relative w-10 h-5 rounded-full transition-colors ${on ? "bg-brand-600" : "bg-gray-700"}`}
-                >
-                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${on ? "translate-x-5" : "translate-x-0.5"}`} />
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center gap-3">
-        <button
-          onClick={handleSave}
-          className="flex items-center gap-1.5 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium transition-colors"
-        >
-          {saved ? <><CheckCircle size={11} /> Salvo</> : "Salvar alterações"}
-        </button>
-        <p className="text-[10px] text-gray-700">
-          Persistido localmente no navegador (localStorage).
-        </p>
-      </div>
-    </div>
-  );
-}
-
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  useAuth(); // mantém contexto disponível
   return (
     <>
       <Header title="Configurações" subtitle="Preferências e configurações do JACQES BI — AWQ Group" />
@@ -364,17 +281,6 @@ export default function SettingsPage() {
             ))}
           </div>
         </SettingsSection>
-
-        {/* ── Modo Carreira — Admin only ── */}
-        {user?.role === "admin" && (
-          <SettingsSection
-            icon={Briefcase}
-            title="Modo Carreira — Controle por Usuário"
-            description="Habilite ou desabilite o Modo Carreira para cada usuário da plataforma"
-          >
-            <CarreiraAdminControl />
-          </SettingsSection>
-        )}
 
         <SettingsSection
           icon={Database}
