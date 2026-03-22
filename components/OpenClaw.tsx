@@ -90,7 +90,7 @@ async function streamMessage(
       "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
-      model: "claude-opus-4-6",
+      model: "claude-sonnet-4-6",
       max_tokens: 4096,
       stream: true,
       system: SYSTEM_PROMPT,
@@ -137,10 +137,7 @@ function KeySetup({ onSave }: { onSave: (key: string) => void }) {
 
   async function handleSave() {
     const key = val.trim();
-    if (!key.startsWith("sk-")) {
-      setErr("Chave inválida. Deve começar com sk-");
-      return;
-    }
+    if (!key) { setErr("Insira a chave."); return; }
     setLoading(true);
     setErr("");
     try {
@@ -154,16 +151,22 @@ function KeySetup({ onSave }: { onSave: (key: string) => void }) {
           "anthropic-dangerous-direct-browser-access": "true",
         },
         body: JSON.stringify({
-          model: "claude-haiku-4-5",
+          model: "claude-haiku-4-5-20251001",
           max_tokens: 1,
-          messages: [{ role: "user", content: "hi" }],
+          messages: [{ role: "user", content: "ok" }],
         }),
       });
       if (res.status === 401) { setErr("Chave inválida ou sem permissão."); return; }
+      if (!res.ok && res.status !== 400) {
+        const body = await res.text().catch(() => "");
+        setErr(`Erro ${res.status}${body ? `: ${body.slice(0,120)}` : ""}`);
+        return;
+      }
       localStorage.setItem(API_KEY_STORAGE, key);
       onSave(key);
-    } catch {
-      setErr("Erro de rede ao validar a chave.");
+    } catch (e: unknown) {
+      setErr("Erro de rede. Verifique sua conexão.");
+      console.error(e);
     } finally {
       setLoading(false);
     }
