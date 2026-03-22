@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -22,6 +23,8 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSidebar } from "@/contexts/SidebarContext";
 
+export const CARREIRA_STORAGE_KEY = "jacqes_feature_carreira";
+
 const navItems = [
   { label: "Visão Geral", href: "/",           icon: LayoutDashboard },
   { label: "Desempenho",  href: "/revenue",    icon: TrendingUp      },
@@ -32,14 +35,21 @@ const navItems = [
   { label: "Relatórios",  href: "/reports",    icon: FileBarChart    },
 ];
 
-// ⚠️  Modo Carreira — habilitado: false · aguardando liberação pelo usuário
-const CARREIRA_ENABLED = false;
 const carreiraItem = { label: "Modo Carreira", href: "/carreira", icon: Briefcase };
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { open, close } = useSidebar();
+
+  const [carreiraEnabled, setCarreiraEnabled] = useState(false);
+  useEffect(() => {
+    if (!user?.username) return;
+    try {
+      const stored = JSON.parse(localStorage.getItem(CARREIRA_STORAGE_KEY) || "{}");
+      setCarreiraEnabled(!!stored[user.username]);
+    } catch { /* ignore */ }
+  }, [user?.username]);
 
   const initials = user?.displayName
     ? user.displayName.slice(0, 2).toUpperCase()
@@ -119,8 +129,8 @@ export default function Sidebar() {
           );
         })}
 
-        {/* Modo Carreira — disabled until enabled */}
-        {CARREIRA_ENABLED ? (
+        {/* Modo Carreira — controlled per user by admin via Settings */}
+        {carreiraEnabled ? (
           <Link
             href={carreiraItem.href}
             onClick={close}

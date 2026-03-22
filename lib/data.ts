@@ -690,6 +690,22 @@ export const fluxoCaixaMensal: FluxoCaixaEntry[] = [
   { periodo: "Jun",  entradasPrev: 10500, entradasReal: 0,     saidasPrev: 4900, saidasReal: 0    },
 ];
 
+// Visão anual — 2026 completo (Jan–Mar realizados · Abr–Dez projetados)
+export const fluxoCaixaAnual: FluxoCaixaEntry[] = [
+  { periodo: "Jan",  entradasPrev: 9000,  entradasReal: 5500,  saidasPrev: 6800, saidasReal: 5900 },
+  { periodo: "Fev",  entradasPrev: 9500,  entradasReal: 7200,  saidasPrev: 6800, saidasReal: 6100 },
+  { periodo: "Mar",  entradasPrev: 10500, entradasReal: 8280,  saidasPrev: 4900, saidasReal: 3458 },
+  { periodo: "Abr",  entradasPrev: 10500, entradasReal: 0,     saidasPrev: 4900, saidasReal: 0    },
+  { periodo: "Mai",  entradasPrev: 10500, entradasReal: 0,     saidasPrev: 4900, saidasReal: 0    },
+  { periodo: "Jun",  entradasPrev: 10500, entradasReal: 0,     saidasPrev: 4900, saidasReal: 0    },
+  { periodo: "Jul",  entradasPrev: 11000, entradasReal: 0,     saidasPrev: 5000, saidasReal: 0    },
+  { periodo: "Ago",  entradasPrev: 11000, entradasReal: 0,     saidasPrev: 5000, saidasReal: 0    },
+  { periodo: "Set",  entradasPrev: 11500, entradasReal: 0,     saidasPrev: 5100, saidasReal: 0    },
+  { periodo: "Out",  entradasPrev: 11500, entradasReal: 0,     saidasPrev: 5100, saidasReal: 0    },
+  { periodo: "Nov",  entradasPrev: 12000, entradasReal: 0,     saidasPrev: 5200, saidasReal: 0    },
+  { periodo: "Dez",  entradasPrev: 12000, entradasReal: 0,     saidasPrev: 5200, saidasReal: 0    },
+];
+
 // Visão semanal — Março 2026 (4 semanas)
 export const fluxoCaixaSemanal: FluxoCaixaEntry[] = [
   { periodo: "Sem 1 · 1–7/3",   entradasPrev: 2625, entradasReal: 1800, saidasPrev: 1225, saidasReal: 1050 },

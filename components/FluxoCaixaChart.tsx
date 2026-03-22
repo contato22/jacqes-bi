@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { fluxoCaixaMensal, fluxoCaixaSemanal, type FluxoCaixaEntry } from "@/lib/data";
+import { fluxoCaixaMensal, fluxoCaixaSemanal, fluxoCaixaAnual, type FluxoCaixaEntry } from "@/lib/data";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -100,12 +100,18 @@ function buildChartData(entries: FluxoCaixaEntry[]) {
 
 // ─── component ────────────────────────────────────────────────────────────────
 
-type Granularidade = "semanal" | "mensal";
+type Granularidade = "semanal" | "mensal" | "anual";
+
+const granLabels: Record<Granularidade, string> = {
+  semanal: "Semanal",
+  mensal:  "Mensal",
+  anual:   "Anual",
+};
 
 export default function FluxoCaixaChart() {
   const [gran, setGran] = useState<Granularidade>("mensal");
 
-  const raw   = gran === "mensal" ? fluxoCaixaMensal : fluxoCaixaSemanal;
+  const raw   = gran === "mensal" ? fluxoCaixaMensal : gran === "anual" ? fluxoCaixaAnual : fluxoCaixaSemanal;
   const data  = buildChartData(raw);
 
   const totalEntradasReal = raw.reduce((s, e) => s + e.entradasReal, 0);
@@ -123,13 +129,15 @@ export default function FluxoCaixaChart() {
         <div>
           <h2 className="text-sm font-semibold text-white">Fluxo de Caixa · Previsto × Realizado</h2>
           <p className="text-xs text-gray-500 mt-0.5">
-            {gran === "mensal" ? "Jan–Jun 2026 · barras = volumes · linhas = saldo" : "Março 2026 · visão semanal"}
+            {gran === "anual"   ? "Jan–Dez 2026 · Jan–Mar realizados · Abr–Dez projetados"
+            : gran === "mensal" ? "Jan–Jun 2026 · barras = volumes · linhas = saldo"
+            :                    "Março 2026 · visão semanal"}
           </p>
         </div>
 
         {/* granularidade selector */}
         <div className="flex items-center bg-gray-800 rounded-lg p-0.5 gap-0.5 self-start shrink-0">
-          {(["semanal", "mensal"] as Granularidade[]).map((g) => (
+          {(["semanal", "mensal", "anual"] as Granularidade[]).map((g) => (
             <button
               key={g}
               onClick={() => setGran(g)}
@@ -139,7 +147,7 @@ export default function FluxoCaixaChart() {
                   : "text-gray-500 hover:text-gray-300"
               }`}
             >
-              {g.charAt(0).toUpperCase() + g.slice(1)}
+              {granLabels[g]}
             </button>
           ))}
         </div>
