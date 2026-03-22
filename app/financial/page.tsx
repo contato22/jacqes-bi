@@ -1,9 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import { dreGerencial, miniPLContas, miniPLMes, type DRELinha } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import PeriodFilterBar from "@/components/PeriodFilterBar";
 import FluxoCaixaChart from "@/components/FluxoCaixaChart";
 import { Database, Edit3, GitBranch } from "lucide-react";
+
+type Tab = "dre" | "fluxo";
 
 function pct(value: number, total: number) {
   if (!total) return "—";
@@ -103,6 +108,7 @@ function DRESumRow({ label, valor, recBruta, highlight = false, separator = true
 }
 
 export default function FinancialPage() {
+  const [tab, setTab] = useState<Tab>("dre");
   const d = dreGerencial;
 
   const recBruta =
@@ -149,7 +155,7 @@ export default function FinancialPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-white">DRE Gerencial · JACQES BU</h1>
+        <h1 className="text-xl font-bold text-white">Financial · JACQES BU</h1>
         <p className="text-sm text-gray-500 mt-0.5">
           {d.mes} · {contasAtivas.length} contas ativas ·{" "}
           <span className="text-orange-700 text-xs">
@@ -157,6 +163,30 @@ export default function FinancialPage() {
           </span>
         </p>
       </div>
+
+      {/* ── Tab bar ── */}
+      <div className="flex items-center gap-1 border-b border-gray-800">
+        {([
+          { id: "dre",   label: "DRE Gerencial"   },
+          { id: "fluxo", label: "Fluxo de Caixa"  },
+        ] as { id: Tab; label: string }[]).map((t) => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className={cn(
+              "px-5 py-2.5 text-sm font-medium rounded-t-lg border-b-2 transition-all",
+              tab === t.id
+                ? "text-brand-300 border-brand-400 bg-brand-600/10"
+                : "text-gray-500 border-transparent hover:text-gray-200 hover:bg-gray-800/50"
+            )}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Fluxo de Caixa tab ── */}
+      {tab === "fluxo" && <FluxoCaixaChart />}
+
+      {/* ── DRE tab ── */}
+      {tab === "dre" && <>
 
       {/* ── KPI cards ─────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
@@ -177,9 +207,6 @@ export default function FinancialPage() {
           </div>
         ))}
       </div>
-
-      {/* ── Fluxo de Caixa ────────────────────────────────────────────────────── */}
-      <FluxoCaixaChart />
 
       {/* ── DRE Waterfall ─────────────────────────────────────────────────────── */}
       <div className="card p-6">
@@ -320,6 +347,7 @@ export default function FinancialPage() {
         Fonte: Notion · DRE Gerencial · {d.mes}
       </p>
 
+      </>}
     </div>
     </PeriodFilterBar>
   );

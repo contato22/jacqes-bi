@@ -178,7 +178,7 @@ function OpenClawConfig() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
-  useAuth(); // mantém contexto disponível
+  const { user } = useAuth();
   return (
     <>
       <Header title="Configurações" subtitle="Preferências e configurações do JACQES BI — AWQ Group" />
@@ -195,14 +195,16 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        {/* ── Open Claw ── */}
-        <SettingsSection
-          icon={Zap}
-          title="Open Claw — Agente de BI"
-          description="Configure sua chave Anthropic para ativar o agente de análise inteligente"
-        >
-          <OpenClawConfig />
-        </SettingsSection>
+        {/* ── Open Claw — admin only ── */}
+        {user?.role === "admin" && (
+          <SettingsSection
+            icon={Zap}
+            title="Open Claw — Agente de BI"
+            description="Configure sua chave Anthropic para ativar o agente de análise inteligente"
+          >
+            <OpenClawConfig />
+          </SettingsSection>
+        )}
 
         <SettingsSection
           icon={Settings}
