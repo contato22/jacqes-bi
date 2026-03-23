@@ -314,6 +314,87 @@ export const miniPLContas: MiniPLConta[] = [
 
 export const miniPLMes = "Março 2026";
 
+// ─── Contas a Receber (AR) ─────────────────────────────────────────────────────
+// Source: preencher mensalmente — não existe no Notion Mini P&L
+
+export interface ContaReceber {
+  id: string;
+  conta: string;            // cliente/conta
+  descricao: string;        // serviço ou referência
+  valor: number;
+  vencimento: string;       // YYYY-MM-DD
+  status: "a_vencer" | "vencido" | "recebido" | "em_negociacao";
+  diasEmAberto?: number;    // calculado
+  mes: string;              // "Março 2026"
+}
+
+export const contasReceber: ContaReceber[] = [
+  { id: "AR001", conta: "CEM",             descricao: "FEE Março 2026",       valor: 3200,  vencimento: "2026-03-05", status: "recebido",    mes: "Março 2026" },
+  { id: "AR002", conta: "André Vieira",    descricao: "FEE Março 2026",       valor: 1500,  vencimento: "2026-03-10", status: "recebido",    mes: "Março 2026" },
+  { id: "AR003", conta: "Carol Bertolini", descricao: "FEE Março 2026",       valor: 1790,  vencimento: "2026-03-10", status: "recebido",    mes: "Março 2026" },
+  { id: "AR004", conta: "Tati Simões",     descricao: "FEE Março 2026",       valor: 1790,  vencimento: "2026-03-15", status: "a_vencer",    mes: "Março 2026" },
+  { id: "AR005", conta: "CEM",             descricao: "Upsell — Setup Extra", valor:  800,  vencimento: "2026-03-28", status: "em_negociacao", mes: "Março 2026" },
+];
+
+// ─── Contas a Pagar (AP) ───────────────────────────────────────────────────────
+// Source: preencher mensalmente — não existe no Notion Mini P&L
+
+export interface ContaPagar {
+  id: string;
+  fornecedor: string;
+  descricao: string;
+  valor: number;
+  vencimento: string;       // YYYY-MM-DD
+  status: "a_pagar" | "vencido" | "pago" | "em_negociacao";
+  categoria: "remuneracao" | "ferramentas" | "freela" | "impostos" | "overhead" | "outros";
+  mes: string;
+}
+
+export const contasPagar: ContaPagar[] = [
+  { id: "AP001", fornecedor: "Danilo (fixo)",         descricao: "Remuneração fixa — Março",          valor: 2000, vencimento: "2026-03-05", status: "pago",     categoria: "remuneracao", mes: "Março 2026" },
+  { id: "AP002", fornecedor: "Danilo (variável)",     descricao: "Comissão/variável — Março",         valor:  484, vencimento: "2026-03-10", status: "pago",     categoria: "remuneracao", mes: "Março 2026" },
+  { id: "AP003", fornecedor: "Notion (tools)",        descricao: "Ferramentas diretas — COGS",        valor:  184, vencimento: "2026-03-01", status: "pago",     categoria: "ferramentas", mes: "Março 2026" },
+  { id: "AP004", fornecedor: "Freela Operacional",    descricao: "Apoio pontual — Março",             valor:   30, vencimento: "2026-03-20", status: "pago",     categoria: "freela",      mes: "Março 2026" },
+  { id: "AP005", fornecedor: "Impostos / Taxas",      descricao: "Simples Nacional — estimado",       valor:    0, vencimento: "2026-04-10", status: "a_pagar",  categoria: "impostos",    mes: "Março 2026" },
+  { id: "AP006", fornecedor: "SaaS Rateado AWQ",      descricao: "Ferramentas compartilhadas — Março",valor:    0, vencimento: "2026-03-31", status: "a_pagar",  categoria: "overhead",    mes: "Março 2026" },
+];
+
+// ─── Inventário ────────────────────────────────────────────────────────────────
+// Source: preencher mensalmente — ativos e recursos sob gestão da BU
+
+export interface InventarioItem {
+  id: string;
+  categoria: "ferramenta_saas" | "ativo_digital" | "recurso_humano" | "contrato" | "outros";
+  nome: string;
+  descricao: string;
+  valorMensal: number;      // custo ou valor mensal
+  valorTotal?: number;      // valor contratado/total (se aplicável)
+  status: "ativo" | "inativo" | "em_avaliacao" | "cancelar";
+  conta?: string;           // conta associada (se específico de uma conta)
+  responsavel: string;
+  renovacao?: string;       // YYYY-MM-DD
+  fonte: "notion" | "manual";
+}
+
+export const inventarioData: InventarioItem[] = [
+  // Ferramentas SaaS diretas (COGS)
+  { id: "INV001", categoria: "ferramenta_saas", nome: "Notion",           descricao: "Workspace principal — gestão de contas e BI",      valorMensal:  32, status: "ativo",         responsavel: "Danilo",  renovacao: "2026-12-31", fonte: "notion" },
+  { id: "INV002", categoria: "ferramenta_saas", nome: "Make (Integromat)", descricao: "Automações e integrações de fluxo",                valorMensal:  49, status: "ativo",         responsavel: "Danilo",  renovacao: "2026-06-30", fonte: "notion" },
+  { id: "INV003", categoria: "ferramenta_saas", nome: "Loom",              descricao: "Vídeos de atualização e treinamento para contas",  valorMensal:  15, status: "ativo",         responsavel: "Danilo",  renovacao: "2026-12-31", fonte: "notion" },
+  { id: "INV004", categoria: "ferramenta_saas", nome: "Google Workspace",  descricao: "E-mail e Drive — compartilhado AWQ",               valorMensal:  88, status: "ativo",         responsavel: "AWQ",     renovacao: "2026-12-31", fonte: "manual" },
+  { id: "INV005", categoria: "ferramenta_saas", nome: "Slack",             descricao: "Comunicação interna e com clientes",               valorMensal:   0, status: "ativo",         responsavel: "AWQ",     fonte: "manual" },
+  // Ativos digitais
+  { id: "INV006", categoria: "ativo_digital",   nome: "Dashboard JACQES BI", descricao: "Este BI — código-fonte Next.js",                valorMensal:   0, status: "ativo",         responsavel: "Danilo",  fonte: "manual" },
+  { id: "INV007", categoria: "ativo_digital",   nome: "SOPs & Playbooks",    descricao: "Biblioteca de processos no Notion",             valorMensal:   0, status: "em_avaliacao",  responsavel: "Danilo",  fonte: "manual" },
+  // Contratos ativos
+  { id: "INV008", categoria: "contrato",        nome: "Contrato CEM",           descricao: "CS + Operações · R$3.200/mês",  valorMensal: 3200, status: "ativo", conta: "CEM",             responsavel: "AWQ",   renovacao: "2026-12-31", fonte: "manual" },
+  { id: "INV009", categoria: "contrato",        nome: "Contrato André Vieira",  descricao: "CS + Ops · R$1.500/mês",        valorMensal: 1500, status: "ativo", conta: "André Vieira",    responsavel: "AWQ",   renovacao: "2026-09-30", fonte: "manual" },
+  { id: "INV010", categoria: "contrato",        nome: "Contrato Carol Bertolini",descricao: "CS + Ops · R$1.790/mês",       valorMensal: 1790, status: "ativo", conta: "Carol Bertolini", responsavel: "AWQ",   renovacao: "2026-09-30", fonte: "manual" },
+  { id: "INV011", categoria: "contrato",        nome: "Contrato Tati Simões",   descricao: "CS + Ops · R$1.790/mês",        valorMensal: 1790, status: "ativo", conta: "Tati Simões",     responsavel: "AWQ",   renovacao: "2026-09-30", fonte: "manual" },
+  // Recurso humano
+  { id: "INV012", categoria: "recurso_humano",  nome: "Danilo — CS & Ops",      descricao: "Alocação full — BU JACQES",     valorMensal: 2484, status: "ativo",                           responsavel: "AWQ",   fonte: "notion" },
+];
+
 // ─── DRE Gerencial — JACQES BU ────────────────────────────────────────────────
 // Atualizar mensalmente. Campos com (*) são estimativas/rateios — confirmar com AWQ.
 // Fonte base: Notion Mini P&L (FEE, Danilo, COGS, OPEX, Freelancer)
@@ -344,16 +425,23 @@ export interface DREGerencial {
     impostosTaxas: DRELinha;     // Simples Nacional ou equivalente (*)
   };
 
-  // 3. Custos Diretos
-  custosDiretos: {
-    daniloFixo: DRELinha;        // custo fixo alocado Danilo na BU (*)
-    daniloVariavel: DRELinha;    // variável/comissão Danilo (*)
-    encargosProvisos: DRELinha;  // encargos sociais sobre custo Danilo (*)
-    deslocamentosVisitas: DRELinha; // transporte/deslocamento de visitas (*)
-    ferramentasDiretas: DRELinha;   // ferramentas diretas da BU (do COGS)
+  // 3a. Custos Variáveis Diretos → base para Margem de Contribuição (MC)
+  custosVariaveis: {
+    daniloVariavel: DRELinha;         // variável/comissão Danilo (*)
+    ferramentasDiretas: DRELinha;     // ferramentas diretas da BU (do COGS)
     apoioOperacionalFreela: DRELinha; // freelancers/apoio pontual
-    outrosCustosDiretos: DRELinha;
+    deslocamentosVisitas: DRELinha;   // transporte/deslocamento de visitas (*)
+    outrosCustosVariaveis: DRELinha;
   };
+  // MC = Receita Líquida − Custos Variáveis
+
+  // 3b. Custos Fixos Diretos → abaixo da MC
+  custosFixos: {
+    daniloFixo: DRELinha;       // custo fixo alocado Danilo na BU (*)
+    encargosProvisos: DRELinha; // encargos sociais sobre custo Danilo (*)
+    outrosCustosFixos: DRELinha;
+  };
+  // Margem Bruta = MC − Custos Fixos
 
   // 4. Despesas Operacionais da BU
   despesasOperacionais: {
@@ -390,21 +478,27 @@ export const dreGerencial: DREGerencial = {
       nota: "Preencher mensalmente — ex.: Simples Nacional ~12% sobre receita bruta" },
   },
 
-  // ── Custos Diretos ─────────────────────────────────────────────────────────
-  custosDiretos: {
-    // ← Notion: campo "Danilo" do Mini P&L (total = R$2.484 em março)
-    // A divisão entre fixo e variável deve ser informada mensalmente
-    daniloFixo:            { label: "Danilo fixo",                        valor: 2000, fonte: "derivado", nota: "Parcela fixa do custo Danilo — Notion Mini P&L campo Danilo" },
-    daniloVariavel:        { label: "Danilo variável",                    valor:  484, fonte: "derivado", nota: "Parcela variável/comissão — complemento até total Notion" },
-    // ← Não existe na base Notion → preencher mensalmente
-    encargosProvisos:      { label: "Encargos / provisões",               valor:    0, fonte: "manual",   nota: "Preencher mensalmente — FGTS, férias, 13º proporcional" },
-    deslocamentosVisitas:  { label: "Deslocamentos / visitas",            valor:    0, fonte: "manual",   nota: "Preencher mensalmente — transporte de visitas às contas" },
+  // ── Custos Variáveis Diretos (base para MC) ────────────────────────────────
+  custosVariaveis: {
+    // ← Notion: parcela variável do campo "Danilo" do Mini P&L
+    daniloVariavel:        { label: "Danilo variável / comissão",         valor:  484, fonte: "derivado", nota: "Parcela variável/comissão — complemento até total Notion" },
     // ← Notion: campo "COGS" do Mini P&L
-    ferramentasDiretas:    { label: "Ferramentas diretas",                valor:  184, fonte: "notion",   nota: "Notion Mini P&L · campo COGS" },
+    ferramentasDiretas:    { label: "Ferramentas diretas (COGS)",         valor:  184, fonte: "notion",   nota: "Notion Mini P&L · campo COGS" },
     // ← Notion: campo "Freelancer" do Mini P&L
     apoioOperacionalFreela:{ label: "Apoio operacional / freela",         valor:   30, fonte: "notion",   nota: "Notion Mini P&L · campo Freelancer" },
     // ← Não existe na base Notion → preencher mensalmente
-    outrosCustosDiretos:   { label: "Outros custos diretos",              valor:    0, fonte: "manual",   nota: "Preencher mensalmente" },
+    deslocamentosVisitas:  { label: "Deslocamentos / visitas",            valor:    0, fonte: "manual",   nota: "Preencher mensalmente — transporte de visitas às contas" },
+    outrosCustosVariaveis: { label: "Outros custos variáveis",            valor:    0, fonte: "manual",   nota: "Preencher mensalmente" },
+  },
+  // MC = Receita Líquida − Custos Variáveis
+
+  // ── Custos Fixos Diretos (abaixo da MC) ────────────────────────────────────
+  custosFixos: {
+    // ← Notion: parcela fixa do campo "Danilo" do Mini P&L
+    daniloFixo:            { label: "Danilo fixo",                        valor: 2000, fonte: "derivado", nota: "Parcela fixa do custo Danilo — Notion Mini P&L campo Danilo" },
+    // ← Não existe na base Notion → preencher mensalmente
+    encargosProvisos:      { label: "Encargos / provisões",               valor:    0, fonte: "manual",   nota: "Preencher mensalmente — FGTS, férias, 13º proporcional" },
+    outrosCustosFixos:     { label: "Outros custos fixos diretos",        valor:    0, fonte: "manual",   nota: "Preencher mensalmente" },
   },
 
   // ── Despesas Operacionais da BU ────────────────────────────────────────────
@@ -441,6 +535,212 @@ export interface ScoreDimensaoAuditavel {
   max: 20;
   criterios: ScoreCriterio[];
 }
+
+// ─── Modo Carreira — 6 Pilares da BU ──────────────────────────────────────────
+// Framework de avaliação do dono de BU: pipeline → ativação → retenção →
+// expansão → NPS → margem de contribuição.
+// Source: preencher mensalmente. Referência: modelo M4E AWQ Group.
+
+export interface ModoCarreiraPilar {
+  id: string;
+  pilar: "pipeline" | "ativacao" | "retencao" | "expansao" | "nps" | "mc";
+  label: string;
+  descricao: string;
+  valor: number;
+  meta: number;
+  unidade: "currency" | "number" | "percent" | "score";
+  status: "acima_meta" | "na_meta" | "abaixo_meta" | "sem_dados";
+  tendencia: "subindo" | "estavel" | "descendo";
+  detalhe?: string;
+}
+
+export interface ModoCarreiraMetricas {
+  mes: string;
+
+  pipeline: {
+    totalProspectos: number;        // contas em avaliação/prospecção
+    valorPipelineMRR: number;       // MRR potencial em pipeline (R$)
+    taxaConversao: number;          // % prospectos → contratos (histórico)
+    novasOportunidades: number;     // oportunidades abertas no mês
+  };
+
+  ativacao: {
+    novasContasAtivadas: number;    // contratos iniciados no mês
+    taxaAtivacao: number;           // % de ativação (ativadas / total iniciado)
+    tempoMedioOnboarding: number;   // dias médios até 1ª entrega de valor
+    onboardingsConcluidos: number;
+  };
+
+  retencao: {
+    contasAtivas: number;
+    churnMes: number;               // contas perdidas no mês
+    taxaRetencao: number;           // % (contasAtivas - churn) / contasAtivas
+    mrr: number;                    // Monthly Recurring Revenue (R$)
+    mrrMeta: number;                // meta de MRR
+  };
+
+  expansao: {
+    upsellReceita: number;          // receita gerada por upsell/cross-sell (R$)
+    novasOportunidadesExpansao: number;
+    expansaoMRRPct: number;         // % crescimento MRR via expansão
+    contasComOportunidade: number;  // contas com Oportunidade Forte ou Média
+  };
+
+  nps: {
+    score: number;                  // NPS: -100 a 100
+    meta: number;
+    promotores: number;             // % promotores (9-10)
+    neutros: number;                // % neutros (7-8)
+    detratores: number;             // % detratores (0-6)
+    respostas: number;
+    ultimaColeta: string;           // YYYY-MM-DD
+  };
+
+  margemContribuicao: {
+    mc: number;                     // valor absoluto (R$)
+    mcPct: number;                  // MC / Receita Líquida × 100
+    metaMcPct: number;              // meta de % MC
+    porConta: {
+      conta: string;
+      fee: number;
+      custoVariavel: number;
+      mc: number;
+      mcPct: number;
+    }[];
+  };
+}
+
+export const modoCarreiraMetricas: ModoCarreiraMetricas = {
+  mes: "Março 2026",
+
+  pipeline: {
+    totalProspectos:     1,      // Conta 04 — Prospecção
+    valorPipelineMRR:    2000,   // estimativa de MRR potencial da Conta 04
+    taxaConversao:       50,     // histórico AWQ — 1 em 2 prospectos fecha
+    novasOportunidades:  1,
+  },
+
+  ativacao: {
+    novasContasAtivadas:   0,    // sem novos contratos iniciados em março
+    taxaAtivacao:          100,  // 100% das contas em onboarding concluíram
+    tempoMedioOnboarding:  14,   // ~14 dias até 1ª entrega de valor
+    onboardingsConcluidos: 0,
+  },
+
+  retencao: {
+    contasAtivas:   4,
+    churnMes:       0,           // sem churn em março
+    taxaRetencao:   100,         // 100% de retenção
+    mrr:            8280,        // FEE total março
+    mrrMeta:        9000,        // meta de MRR definida para 2026
+  },
+
+  expansao: {
+    upsellReceita:              0,    // sem upsell concluído em março
+    novasOportunidadesExpansao: 2,   // CEM (Forte) + AWQ-Produtora (Média)
+    expansaoMRRPct:             0,
+    contasComOportunidade:      3,   // JACQES Forte, AWQ-Produtora Média, CEM implícito
+  },
+
+  nps: {
+    score:         72,            // estimativa — NPS formal pendente
+    meta:          75,
+    promotores:    60,            // % de clientes promotores
+    neutros:       30,            // % neutros
+    detratores:    10,            // % detratores (Conta 04 em risco)
+    respostas:     3,             // de 4 contas, 3 responderam
+    ultimaColeta:  "2026-03-15",
+  },
+
+  margemContribuicao: {
+    mc:         7582,             // Rec Líquida R$8.280 − CV R$698
+    mcPct:      91.6,
+    metaMcPct:  80,               // meta mínima de MC%
+    porConta: [
+      { conta: "CEM",             fee: 3200, custoVariavel: 320, mc: 2880, mcPct: 90.0 },
+      { conta: "André Vieira",    fee: 1500, custoVariavel: 165, mc: 1335, mcPct: 89.0 },
+      { conta: "Carol Bertolini", fee: 1790, custoVariavel: 134, mc: 1656, mcPct: 92.5 },
+      { conta: "Tati Simões",     fee: 1790, custoVariavel: 179, mc: 1611, mcPct: 90.0 },
+    ],
+  },
+};
+
+// ─── Pilares Modo Carreira — cards de status ──────────────────────────────────
+
+export const modoCarreiraPilares: ModoCarreiraPilar[] = [
+  {
+    id: "pipeline",
+    pilar: "pipeline",
+    label: "Pipeline",
+    descricao: "Prospectos ativos e MRR potencial em avaliação",
+    valor:   1,
+    meta:    2,
+    unidade: "number",
+    status:  "abaixo_meta",
+    tendencia: "estavel",
+    detalhe: "Conta 04 em prospecção · MRR pot. R$2.000",
+  },
+  {
+    id: "ativacao",
+    pilar: "ativacao",
+    label: "Ativação",
+    descricao: "Novos contratos ativados e tempo de onboarding",
+    valor:   0,
+    meta:    1,
+    unidade: "number",
+    status:  "sem_dados",
+    tendencia: "estavel",
+    detalhe: "Sem novas ativações em março · onboarding: 14 dias médio",
+  },
+  {
+    id: "retencao",
+    pilar: "retencao",
+    label: "Retenção",
+    descricao: "Taxa de retenção mensal e MRR mantido",
+    valor:   100,
+    meta:    95,
+    unidade: "percent",
+    status:  "acima_meta",
+    tendencia: "estavel",
+    detalhe: "0 churn · 4 contas ativas · MRR R$8.280",
+  },
+  {
+    id: "expansao",
+    pilar: "expansao",
+    label: "Expansão",
+    descricao: "Upsell, cross-sell e expansão de MRR",
+    valor:   0,
+    meta:    500,
+    unidade: "currency",
+    status:  "abaixo_meta",
+    tendencia: "subindo",
+    detalhe: "2 oportunidades abertas · upsell CEM em negociação R$800",
+  },
+  {
+    id: "nps",
+    pilar: "nps",
+    label: "NPS",
+    descricao: "Net Promoter Score — satisfação da carteira",
+    valor:   72,
+    meta:    75,
+    unidade: "score",
+    status:  "abaixo_meta",
+    tendencia: "subindo",
+    detalhe: "3/4 contas responderam · Conta 04 detratora",
+  },
+  {
+    id: "mc",
+    pilar: "mc",
+    label: "Margem Contribuição",
+    descricao: "MC% da BU — Receita Líquida − Custos Variáveis",
+    valor:   91.6,
+    meta:    80,
+    unidade: "percent",
+    status:  "acima_meta",
+    tendencia: "estavel",
+    detalhe: "MC R$7.582 · meta ≥ 80% · todas as contas acima do break-even",
+  },
+];
 
 export const scoreCriterios: ScoreDimensaoAuditavel[] = [
   {
@@ -1381,3 +1681,576 @@ export const carreiraData: CarreiraData = {
   notasCarreira:
     "Foco no curto prazo: desbloquear a variável atingindo 75 pts em Abril. A dimensão Processo é o maior gargalo — 0 SOPs criados até agora. O vesting JACQES está em progresso e depende da continuidade saudável da conta.",
 };
+
+// ─── Fluxo de Caixa · Categorias Detalhadas ──────────────────────────────────
+// Conectado diretamente ao DRE Gerencial · Março 2026
+
+export type FluxoGrupo = "entradas" | "saidas";
+export type FluxoSubgrupo =
+  | "Receita de Serviços"
+  | "Receitas Extras"
+  | "Remuneração & RH"
+  | "Ferramentas & Infraestrutura"
+  | "Impostos & Taxas"
+  | "Encargos & Provisões"
+  | "Overhead & Estrutura"
+  | "Ajustes & Reconciliação";
+
+export interface FluxoCaixaCategoria {
+  id: string;
+  grupo: FluxoGrupo;
+  subgrupo: FluxoSubgrupo;
+  label: string;
+  fonte: "notion" | "derivado" | "manual";
+  dreRef?: string;        // campo correspondente no DRE
+  prevMensal: number;     // projeção mensal (meta)
+  realJan: number;
+  realFev: number;
+  realMar: number;        // março = referência DRE
+  nota?: string;
+}
+
+// Entradas: FEE recorrente = R$8.280 (Notion)
+// Saídas DRE: fixo=2.000 + variável=484 + ferramentas=184 + freela=30 = 2.698
+// Fluxo total saídas Mar: 3.458 — diferença de 760 = timing/ajustes de caixa
+export const fluxoCaixaCategorias: FluxoCaixaCategoria[] = [
+  // ── ENTRADAS ───────────────────────────────────────────────────────────────
+  {
+    id: "ent-fee",
+    grupo: "entradas",
+    subgrupo: "Receita de Serviços",
+    label: "FEE recorrente (contratos ativos)",
+    fonte: "notion",
+    dreRef: "receitaBruta.recorrente",
+    prevMensal: 9000,
+    realJan: 5500,
+    realFev: 7200,
+    realMar: 8280,
+    nota: "Notion Mini P&L · soma dos FEEs das 4 contas ativas",
+  },
+  {
+    id: "ent-projeto",
+    grupo: "entradas",
+    subgrupo: "Receita de Serviços",
+    label: "Projetos / Setup pontual",
+    fonte: "manual",
+    dreRef: "receitaBruta.projetoSetup",
+    prevMensal: 500,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — serviços avulsos ou onboarding",
+  },
+  {
+    id: "ent-variavel",
+    grupo: "entradas",
+    subgrupo: "Receitas Extras",
+    label: "Receita variável / bônus de resultado",
+    fonte: "manual",
+    dreRef: "receitaBruta.variavel",
+    prevMensal: 0,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — comissões ou bônus de performance",
+  },
+  {
+    id: "ent-extra",
+    grupo: "entradas",
+    subgrupo: "Receitas Extras",
+    label: "Receita extraordinária",
+    fonte: "manual",
+    dreRef: "receitaBruta.extraordinaria",
+    prevMensal: 0,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — itens não recorrentes",
+  },
+
+  // ── SAÍDAS ─────────────────────────────────────────────────────────────────
+  {
+    id: "sai-fixo",
+    grupo: "saidas",
+    subgrupo: "Remuneração & RH",
+    label: "Remuneração fixa — Danilo",
+    fonte: "notion",
+    dreRef: "custosDiretos.daniloFixo",
+    prevMensal: 2000,
+    realJan: 2000,
+    realFev: 2000,
+    realMar: 2000,
+    nota: "Notion Mini P&L · campo Danilo (Fixo)",
+  },
+  {
+    id: "sai-variavel",
+    grupo: "saidas",
+    subgrupo: "Remuneração & RH",
+    label: "Remuneração variável — Danilo",
+    fonte: "notion",
+    dreRef: "custosDiretos.daniloVariavel",
+    prevMensal: 1200,
+    realJan: 0,
+    realFev: 0,
+    realMar: 484,
+    nota: "Notion Mini P&L · variável proporcional ao score (69/100 → R$484)",
+  },
+  {
+    id: "sai-encargos",
+    grupo: "saidas",
+    subgrupo: "Encargos & Provisões",
+    label: "Encargos / provisões trabalhistas",
+    fonte: "manual",
+    dreRef: "custosDiretos.encargosProvisos",
+    prevMensal: 300,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — FGTS, férias e 13º proporcional",
+  },
+  {
+    id: "sai-deslocamento",
+    grupo: "saidas",
+    subgrupo: "Encargos & Provisões",
+    label: "Deslocamentos / visitas às contas",
+    fonte: "manual",
+    dreRef: "custosDiretos.deslocamentosVisitas",
+    prevMensal: 200,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — transporte e deslocamento a clientes",
+  },
+  {
+    id: "sai-ferramentas",
+    grupo: "saidas",
+    subgrupo: "Ferramentas & Infraestrutura",
+    label: "Ferramentas diretas (COGS)",
+    fonte: "notion",
+    dreRef: "custosDiretos.ferramentasDiretas",
+    prevMensal: 200,
+    realJan: 184,
+    realFev: 184,
+    realMar: 184,
+    nota: "Notion Mini P&L · campo COGS — ferramentas diretas de entrega",
+  },
+  {
+    id: "sai-freela",
+    grupo: "saidas",
+    subgrupo: "Ferramentas & Infraestrutura",
+    label: "Apoio operacional / freela",
+    fonte: "notion",
+    dreRef: "custosDiretos.apoioOperacionalFreela",
+    prevMensal: 100,
+    realJan: 30,
+    realFev: 30,
+    realMar: 30,
+    nota: "Notion Mini P&L · campo Freelancer",
+  },
+  {
+    id: "sai-impostos",
+    grupo: "saidas",
+    subgrupo: "Impostos & Taxas",
+    label: "Impostos / taxas sobre receita",
+    fonte: "manual",
+    dreRef: "deducoes.impostosTaxas",
+    prevMensal: 400,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — DAS, ISS, PIS/COFINS conforme regime",
+  },
+  {
+    id: "sai-coord",
+    grupo: "saidas",
+    subgrupo: "Overhead & Estrutura",
+    label: "Coordenação / supervisão (rateio)",
+    fonte: "manual",
+    dreRef: "despesasOperacionais.coordenacaoSupervisao",
+    prevMensal: 0,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — custo de supervisão alocado à BU",
+  },
+  {
+    id: "sai-saas",
+    grupo: "saidas",
+    subgrupo: "Overhead & Estrutura",
+    label: "Ferramentas compartilhadas (SaaS rateado)",
+    fonte: "manual",
+    dreRef: "despesasOperacionais.ferramentasCompartilhadas",
+    prevMensal: 200,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — SaaS rateados entre BUs AWQ",
+  },
+  {
+    id: "sai-admin",
+    grupo: "saidas",
+    subgrupo: "Overhead & Estrutura",
+    label: "Administrativo rateado",
+    fonte: "manual",
+    dreRef: "despesasOperacionais.administrativoRateado",
+    prevMensal: 150,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — admin/financeiro AWQ rateado à BU",
+  },
+  {
+    id: "sai-founder",
+    grupo: "saidas",
+    subgrupo: "Ajustes & Reconciliação",
+    label: "Custo founder / estratégico (Miguel)",
+    fonte: "manual",
+    dreRef: "ajustesImputados.custoFounderEstrategico",
+    prevMensal: 0,
+    realJan: 0,
+    realFev: 0,
+    realMar: 0,
+    nota: "Preencher mensalmente — tempo estratégico do Miguel alocado à BU",
+  },
+  {
+    id: "sai-reconciliacao",
+    grupo: "saidas",
+    subgrupo: "Ajustes & Reconciliação",
+    label: "Diferença de caixa (timing / itens pendentes)",
+    fonte: "derivado",
+    prevMensal: 0,
+    realJan: 1716,
+    realFev: 1886,
+    realMar: 760,
+    nota: "Gap entre saídas totais do fluxo de caixa e custos do DRE — timing de pagamentos, provisões, impostos antecipados",
+  },
+];
+
+// ─── Agência · Funções & Organograma ─────────────────────────────────────────
+
+export type FuncaoStatus = "ativo" | "vago" | "a_estruturar";
+export type FuncaoNivel = "c_level" | "senior" | "pleno" | "junior";
+export type KPIStatus = "ok" | "atencao" | "risco" | "nd";
+export type AcessoNivel = "admin" | "editor" | "viewer" | "sem_acesso";
+export type FerramentaCategoria =
+  | "comunicacao" | "projeto" | "financeiro" | "marketing" | "bi" | "infra" | "crm";
+
+export interface FuncaoKPI {
+  label: string;
+  meta: string;
+  atual: string;
+  status: KPIStatus;
+}
+
+export interface FuncaoAgencia {
+  id: string;
+  titulo: string;
+  categoria: "estrategia" | "cs_ops" | "marketing" | "financeiro" | "produto";
+  responsavel: string | null;
+  status: FuncaoStatus;
+  nivel: FuncaoNivel;
+  descricao: string;
+  responsabilidades: string[];
+  kpis: FuncaoKPI[];
+  contas: string[];        // IDs das contas envolvidas
+  ferramentas: string[];   // nomes das ferramentas
+}
+
+export const agenciaFuncoes: FuncaoAgencia[] = [
+  {
+    id: "estrategia",
+    titulo: "Estratégia & Growth",
+    categoria: "estrategia",
+    responsavel: "Miguel",
+    status: "ativo",
+    nivel: "c_level",
+    descricao: "Definição de posicionamento, modelo de negócio, precificação, expansão e decisões de portfólio. Condução das relações estratégicas com contas âncora.",
+    responsabilidades: [
+      "Definição do modelo M4E e evolução de metodologia",
+      "Aprovação de precificação e contratos",
+      "Relacionamento estratégico com contas JACQES e AWQ",
+      "Decisões de expansão de carteira e prospecção",
+      "Avaliação e gestão do vesting / equity",
+      "Arquitetura do JACQES BI e ferramentas de gestão",
+    ],
+    kpis: [
+      { label: "Contas sob gestão estratégica", meta: "5",    atual: "4",   status: "atencao" },
+      { label: "Score médio da carteira",        meta: "75",   atual: "69",  status: "risco"   },
+      { label: "Receita mensal BU",              meta: "10500",atual: "8280",status: "atencao" },
+    ],
+    contas: ["1", "2", "3", "4", "5"],
+    ferramentas: ["Notion", "JACQES BI", "GitHub", "WhatsApp Business"],
+  },
+  {
+    id: "cs_ops",
+    titulo: "CS & Operações",
+    categoria: "cs_ops",
+    responsavel: "Danilo",
+    status: "ativo",
+    nivel: "pleno",
+    descricao: "Execução do modelo M4E junto às contas: atendimento, visitas, follow-ups, gestão de pendências, SLA e relatórios operacionais. Primeiro ponto de contato dos clientes.",
+    responsabilidades: [
+      "Atendimento diário a todas as contas da carteira",
+      "Realização e relatório de visitas mensais",
+      "Gestão de pendências e SLA de resposta (< 24h)",
+      "Preenchimento e atualização do Notion por conta",
+      "Identificação e escalada de riscos de churn",
+      "Follow-up de oportunidades de expansão",
+      "Uso e alimentação do JACQES BI",
+    ],
+    kpis: [
+      { label: "Score mensal M4E",      meta: "75",  atual: "69",  status: "atencao" },
+      { label: "SLA de resposta",        meta: "90%", atual: "73%", status: "risco"   },
+      { label: "Visitas realizadas/mês", meta: "6",   atual: "4",   status: "atencao" },
+      { label: "Pendências abertas",     meta: "≤5",  atual: "11",  status: "risco"   },
+    ],
+    contas: ["1", "2", "3", "4", "5"],
+    ferramentas: ["Notion", "JACQES BI", "WhatsApp Business", "Google Agenda"],
+  },
+  {
+    id: "marketing",
+    titulo: "Marketing & Criação",
+    categoria: "marketing",
+    responsavel: null,
+    status: "a_estruturar",
+    nivel: "pleno",
+    descricao: "Execução de estratégias de marketing para os clientes da carteira: criação de conteúdo, gestão de canais, campanhas pagas, métricas e relatórios de marketing.",
+    responsabilidades: [
+      "Criação e publicação de conteúdo por conta",
+      "Gestão de campanhas pagas (Meta Ads, Google Ads)",
+      "Produção de materiais visuais e copywriting",
+      "Monitoramento de métricas de marketing (alcance, engajamento, ROAS)",
+      "Relatório mensal de marketing por conta",
+      "Estruturação de funis e automações de email",
+    ],
+    kpis: [
+      { label: "Contas com plano de marketing ativo", meta: "5",    atual: "2",  status: "risco"   },
+      { label: "ROAS médio (contas com paid)",         meta: "3,5×", atual: "3,2×",status: "atencao"},
+      { label: "CPL médio",                            meta: "R$15", atual: "R$18,40",status: "atencao"},
+    ],
+    contas: ["1", "2", "3", "4", "5"],
+    ferramentas: ["Meta Ads Manager", "Google Analytics", "Canva", "Mailchimp", "Notion"],
+  },
+  {
+    id: "financeiro",
+    titulo: "Financeiro & Admin",
+    categoria: "financeiro",
+    responsavel: null,
+    status: "a_estruturar",
+    nivel: "senior",
+    descricao: "Controle financeiro da BU, emissão de notas, gestão de contratos, pagamentos e relatórios financeiros. Alimentação do DRE Gerencial e reconciliação de caixa.",
+    responsabilidades: [
+      "Emissão e controle de NFs por conta",
+      "Gestão de contratos e reajustes anuais",
+      "Conciliação bancária mensal",
+      "Preenchimento do DRE Gerencial (campos manuais)",
+      "Controle de impostos e obrigações fiscais",
+      "Relatório de fluxo de caixa mensal",
+    ],
+    kpis: [
+      { label: "Campos DRE preenchidos",   meta: "100%", atual: "35%", status: "risco"   },
+      { label: "Inadimplência da carteira",meta: "0%",   atual: "0%",  status: "ok"      },
+      { label: "NFs emitidas no prazo",    meta: "100%", atual: "nd",  status: "nd"      },
+    ],
+    contas: ["1", "2", "3", "4", "5"],
+    ferramentas: ["Notion", "JACQES BI", "Planilha Financeira"],
+  },
+  {
+    id: "produto",
+    titulo: "Produto & BI",
+    categoria: "produto",
+    responsavel: "Miguel",
+    status: "ativo",
+    nivel: "c_level",
+    descricao: "Desenvolvimento e evolução do JACQES BI, ferramentas internas de gestão, automações e processos de dados. Responsável pelo stack tecnológico da agência.",
+    responsabilidades: [
+      "Desenvolvimento do JACQES BI (Next.js + Notion MCP)",
+      "Evolução do modelo de score M4E",
+      "Automações de coleta de dados do Notion",
+      "Criação e manutenção de SOPs digitais",
+      "Integrações de ferramentas (MCP, webhooks)",
+      "Deploy e manutenção em GitHub Pages",
+    ],
+    kpis: [
+      { label: "Uptime do BI",               meta: "99%",  atual: "99%", status: "ok"      },
+      { label: "Campos Notion conectados",    meta: "15",   atual: "8",   status: "atencao" },
+      { label: "Automações ativas",           meta: "5",    atual: "1",   status: "risco"   },
+    ],
+    contas: [],
+    ferramentas: ["GitHub", "Notion", "JACQES BI", "Next.js", "Vercel"],
+  },
+];
+
+// ─── Agência · Ferramentas & Acessos ─────────────────────────────────────────
+
+export interface AcessoFerramenta {
+  ferramenta: string;
+  categoria: FerramentaCategoria;
+  custo?: string;
+  status: "ativo" | "a_configurar" | "descontinuar";
+  // funcaoId → nível de acesso
+  acessos: Partial<Record<string, AcessoNivel>>;
+}
+
+export const agenciaAcessos: AcessoFerramenta[] = [
+  {
+    ferramenta: "Notion",
+    categoria: "projeto",
+    custo: "R$ 0 (gratuito)",
+    status: "ativo",
+    acessos: { estrategia: "admin", cs_ops: "editor", marketing: "editor", financeiro: "editor", produto: "admin" },
+  },
+  {
+    ferramenta: "JACQES BI",
+    categoria: "bi",
+    custo: "R$ 0 (self-hosted)",
+    status: "ativo",
+    acessos: { estrategia: "admin", cs_ops: "viewer", marketing: "sem_acesso", financeiro: "viewer", produto: "admin" },
+  },
+  {
+    ferramenta: "WhatsApp Business",
+    categoria: "comunicacao",
+    custo: "R$ 0",
+    status: "ativo",
+    acessos: { estrategia: "admin", cs_ops: "editor", marketing: "viewer", financeiro: "sem_acesso", produto: "sem_acesso" },
+  },
+  {
+    ferramenta: "Meta Ads Manager",
+    categoria: "marketing",
+    custo: "variável (budget por conta)",
+    status: "ativo",
+    acessos: { estrategia: "admin", cs_ops: "viewer", marketing: "editor", financeiro: "sem_acesso", produto: "sem_acesso" },
+  },
+  {
+    ferramenta: "Google Analytics",
+    categoria: "marketing",
+    custo: "R$ 0",
+    status: "ativo",
+    acessos: { estrategia: "viewer", cs_ops: "viewer", marketing: "editor", financeiro: "sem_acesso", produto: "admin" },
+  },
+  {
+    ferramenta: "GitHub",
+    categoria: "infra",
+    custo: "R$ 0 (gratuito)",
+    status: "ativo",
+    acessos: { estrategia: "admin", cs_ops: "sem_acesso", marketing: "sem_acesso", financeiro: "sem_acesso", produto: "admin" },
+  },
+  {
+    ferramenta: "Google Agenda",
+    categoria: "comunicacao",
+    custo: "R$ 0",
+    status: "ativo",
+    acessos: { estrategia: "admin", cs_ops: "editor", marketing: "viewer", financeiro: "viewer", produto: "viewer" },
+  },
+  {
+    ferramenta: "Planilha Financeira",
+    categoria: "financeiro",
+    custo: "R$ 0",
+    status: "a_configurar",
+    acessos: { estrategia: "admin", cs_ops: "sem_acesso", marketing: "sem_acesso", financeiro: "editor", produto: "viewer" },
+  },
+  {
+    ferramenta: "CRM (a definir)",
+    categoria: "crm",
+    custo: "a definir",
+    status: "a_configurar",
+    acessos: { estrategia: "admin", cs_ops: "editor", marketing: "editor", financeiro: "viewer", produto: "admin" },
+  },
+  {
+    ferramenta: "Mailchimp / Email MKT",
+    categoria: "marketing",
+    custo: "R$ 0–R$ 150/mês (plano)",
+    status: "ativo",
+    acessos: { estrategia: "viewer", cs_ops: "sem_acesso", marketing: "admin", financeiro: "sem_acesso", produto: "sem_acesso" },
+  },
+];
+
+// ─── Agência · Gestão de Contas por Função ───────────────────────────────────
+
+export interface ContaGestao {
+  contaId: string;
+  nomeConta: string;
+  funcoes: {
+    funcaoId: string;
+    responsavel: string;
+    nivel: "primario" | "secundario" | "suporte";
+  }[];
+  proximasAcoes: {
+    descricao: string;
+    funcaoId: string;
+    prazo: string;
+    prioridade: "alta" | "media" | "baixa";
+  }[];
+}
+
+export const agenciaContaGestao: ContaGestao[] = [
+  {
+    contaId: "1",
+    nomeConta: "André Vieira",
+    funcoes: [
+      { funcaoId: "cs_ops",    responsavel: "Danilo",  nivel: "primario"   },
+      { funcaoId: "marketing", responsavel: "a contratar", nivel: "primario" },
+      { funcaoId: "estrategia",responsavel: "Miguel",  nivel: "secundario" },
+    ],
+    proximasAcoes: [
+      { descricao: "Visita de QBR e revisão de resultados Q1",  funcaoId: "cs_ops",    prazo: "2026-04-05", prioridade: "alta"  },
+      { descricao: "Otimizar CPL das campanhas Meta Ads",       funcaoId: "marketing", prazo: "2026-04-10", prioridade: "media" },
+      { descricao: "Proposta de programa em grupo (leverage)",  funcaoId: "estrategia",prazo: "2026-04-20", prioridade: "media" },
+    ],
+  },
+  {
+    contaId: "2",
+    nomeConta: "Luis Vieira",
+    funcoes: [
+      { funcaoId: "cs_ops",    responsavel: "Danilo",  nivel: "primario"   },
+      { funcaoId: "marketing", responsavel: "a contratar", nivel: "secundario" },
+      { funcaoId: "estrategia",responsavel: "Miguel",  nivel: "suporte"    },
+    ],
+    proximasAcoes: [
+      { descricao: "Follow-up urgente — 9 dias sem contato",   funcaoId: "cs_ops",    prazo: "2026-03-23", prioridade: "alta"  },
+      { descricao: "Reativação do Instagram — plano de conteúdo", funcaoId: "marketing", prazo: "2026-04-01", prioridade: "media" },
+      { descricao: "Estruturar lead magnet (planilha diagnóstico)", funcaoId: "marketing", prazo: "2026-04-15", prioridade: "media" },
+    ],
+  },
+  {
+    contaId: "3",
+    nomeConta: "Carol Bertolini",
+    funcoes: [
+      { funcaoId: "cs_ops",    responsavel: "Danilo",  nivel: "primario"   },
+      { funcaoId: "marketing", responsavel: "a contratar", nivel: "secundario" },
+      { funcaoId: "estrategia",responsavel: "Miguel",  nivel: "suporte"    },
+    ],
+    proximasAcoes: [
+      { descricao: "Revisão de processos documentados Q1",     funcaoId: "cs_ops",    prazo: "2026-04-08", prioridade: "media" },
+      { descricao: "Newsletter interna — primeiros 2 posts",   funcaoId: "marketing", prazo: "2026-04-12", prioridade: "baixa" },
+    ],
+  },
+  {
+    contaId: "4",
+    nomeConta: "Tati Simões",
+    funcoes: [
+      { funcaoId: "cs_ops",    responsavel: "Danilo",  nivel: "primario"   },
+      { funcaoId: "estrategia",responsavel: "Miguel",  nivel: "primario"   },
+    ],
+    proximasAcoes: [
+      { descricao: "Reunião urgente de alinhamento de expectativas", funcaoId: "cs_ops",    prazo: "2026-03-25", prioridade: "alta" },
+      { descricao: "Diagnóstico de posicionamento — entregável #1",  funcaoId: "marketing", prazo: "2026-04-15", prioridade: "alta" },
+      { descricao: "Endereçar as 5 pendências abertas",             funcaoId: "cs_ops",    prazo: "2026-03-28", prioridade: "alta" },
+      { descricao: "Decisão estratégica: continuar ou desengajar",  funcaoId: "estrategia",prazo: "2026-04-01", prioridade: "alta" },
+    ],
+  },
+  {
+    contaId: "5",
+    nomeConta: "CEM",
+    funcoes: [
+      { funcaoId: "cs_ops",    responsavel: "Danilo",  nivel: "primario"   },
+      { funcaoId: "marketing", responsavel: "a contratar", nivel: "primario" },
+      { funcaoId: "estrategia",responsavel: "Miguel",  nivel: "suporte"    },
+    ],
+    proximasAcoes: [
+      { descricao: "Reativar Google Ads com nova LP",           funcaoId: "marketing", prazo: "2026-04-10", prioridade: "alta"  },
+      { descricao: "Webinar mensal aberto — primeiro piloto",   funcaoId: "marketing", prazo: "2026-04-25", prioridade: "media" },
+      { descricao: "Check-in mensal e próximos entregáveis",    funcaoId: "cs_ops",    prazo: "2026-04-05", prioridade: "media" },
+    ],
+  },
+];
