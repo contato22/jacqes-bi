@@ -10,6 +10,7 @@ import {
   Settings,
   ChevronRight,
   Zap,
+  Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +34,11 @@ const navItems = [
     label: "Reports",
     href: "/reports",
     icon: FileBarChart,
+  },
+  {
+    label: "Business Units",
+    href: "/business-units",
+    icon: Building2,
   },
 ];
 

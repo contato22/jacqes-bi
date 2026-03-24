@@ -302,6 +302,97 @@ export const channelData: ChannelData[] = [
   { channel: "Email", sessions: 14_700, conversions: 588, revenue: 531_500, cac: 12 },
 ];
 
+// ─── Business Units ───────────────────────────────────────────────────────────
+
+export interface BUSession {
+  channel: string;
+  sessions: number;
+  conversions: number;
+  revenue: number;
+  cac: number;
+}
+
+export interface BusinessUnit {
+  id: string;
+  name: string;
+  description: string;
+  revenue: number;
+  previousRevenue: number;
+  customers: number;
+  margin: number;
+  status: "growing" | "stable" | "declining";
+  sessions: BUSession[];
+}
+
+export const businessUnits: BusinessUnit[] = [
+  {
+    id: "BU001",
+    name: "AWQ Technology",
+    description: "SaaS platforms, APIs & data infrastructure",
+    revenue: 2_210_000,
+    previousRevenue: 1_870_000,
+    customers: 1_420,
+    margin: 71.2,
+    status: "growing",
+    sessions: [
+      { channel: "Organic Search", sessions: 21_400, conversions: 534, revenue: 680_000, cac: 0 },
+      { channel: "Paid Search", sessions: 9_800, conversions: 294, revenue: 410_000, cac: 185 },
+      { channel: "Direct", sessions: 8_100, conversions: 219, revenue: 340_000, cac: 0 },
+      { channel: "Referral", sessions: 5_200, conversions: 156, revenue: 280_000, cac: 42 },
+      { channel: "Social Media", sessions: 12_300, conversions: 197, revenue: 260_000, cac: 88 },
+      { channel: "Email", sessions: 6_400, conversions: 256, revenue: 240_000, cac: 10 },
+    ],
+  },
+  {
+    id: "BU002",
+    name: "AWQ Consulting",
+    description: "Strategic advisory, implementation & managed services",
+    revenue: 1_480_000,
+    previousRevenue: 1_320_000,
+    customers: 892,
+    margin: 64.8,
+    status: "growing",
+    sessions: [
+      { channel: "Direct", sessions: 6_200, conversions: 186, revenue: 490_000, cac: 0 },
+      { channel: "Referral", sessions: 4_800, conversions: 144, revenue: 280_000, cac: 52 },
+      { channel: "Organic Search", sessions: 14_600, conversions: 365, revenue: 420_000, cac: 0 },
+      { channel: "Email", sessions: 5_400, conversions: 216, revenue: 180_000, cac: 14 },
+      { channel: "Paid Search", sessions: 7_200, conversions: 216, revenue: 110_000, cac: 175 },
+    ],
+  },
+  {
+    id: "BU003",
+    name: "AWQ Finance",
+    description: "Fintech solutions, analytics & compliance tooling",
+    revenue: 780_000,
+    previousRevenue: 740_000,
+    customers: 384,
+    margin: 68.5,
+    status: "stable",
+    sessions: [
+      { channel: "Direct", sessions: 3_200, conversions: 96, revenue: 310_000, cac: 0 },
+      { channel: "Organic Search", sessions: 8_400, conversions: 210, revenue: 250_000, cac: 0 },
+      { channel: "Referral", sessions: 1_900, conversions: 57, revenue: 120_000, cac: 38 },
+      { channel: "Email", sessions: 2_100, conversions: 84, revenue: 100_000, cac: 12 },
+    ],
+  },
+  {
+    id: "BU004",
+    name: "AWQ Real Estate",
+    description: "Proptech, asset management & market intelligence",
+    revenue: 351_500,
+    previousRevenue: 390_000,
+    customers: 151,
+    margin: 52.3,
+    status: "declining",
+    sessions: [
+      { channel: "Direct", sessions: 1_400, conversions: 42, revenue: 180_000, cac: 0 },
+      { channel: "Paid Search", sessions: 4_200, conversions: 126, revenue: 110_000, cac: 195 },
+      { channel: "Social Media", sessions: 6_800, conversions: 109, revenue: 61_500, cac: 102 },
+    ],
+  },
+];
+
 // ─── Alerts ───────────────────────────────────────────────────────────────────
 
 export const alerts: Alert[] = [
