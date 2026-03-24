@@ -14,7 +14,7 @@
   }
 
   body {
-    @apply bg-gray-950 text-gray-100 font-sans antialiased;
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
   }
 
   ::-webkit-scrollbar {
@@ -23,45 +23,45 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-900;
+    @apply bg-gray-100;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-700 rounded-full;
+    @apply bg-gray-300 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-600;
+    @apply bg-gray-400;
   }
 }
 
 @layer components {
   .card {
-    @apply bg-gray-900 border border-gray-800 rounded-xl;
+    @apply bg-white border border-gray-200 rounded-xl shadow-sm;
   }
 
   .card-hover {
-    @apply transition-all duration-200 hover:border-gray-700 hover:shadow-lg hover:shadow-black/20;
+    @apply transition-all duration-200 hover:border-gray-300 hover:shadow-md;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600;
   }
 
   .badge-green {
-    @apply badge bg-emerald-500/15 text-emerald-400;
+    @apply badge bg-emerald-50 text-emerald-700 border border-emerald-100;
   }
 
   .badge-red {
-    @apply badge bg-red-500/15 text-red-400;
+    @apply badge bg-red-50 text-red-700 border border-red-100;
   }
 
   .badge-yellow {
-    @apply badge bg-yellow-500/15 text-yellow-400;
+    @apply badge bg-amber-50 text-amber-700 border border-amber-100;
   }
 
   .badge-blue {
-    @apply badge bg-blue-500/15 text-blue-400;
+    @apply badge bg-blue-50 text-blue-700 border border-blue-100;
   }
 
   .btn-primary {
@@ -69,7 +69,7 @@
   }
 
   .btn-secondary {
-    @apply px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-lg text-sm font-medium transition-colors border border-gray-700;
+    @apply px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors border border-gray-300;
   }
 
   /* ── Layout de página padrão ───────────────────────────────────────────── */
@@ -77,35 +77,140 @@
     @apply px-4 sm:px-6 md:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6;
   }
 
-  /* ── Card header padronizado (h2 + descrição) ──────────────────────────── */
+  /* ── Card header padronizado ─────────────────────────────────────────── */
   .card-title {
-    @apply text-sm font-semibold text-white;
+    @apply text-sm font-semibold text-gray-900;
   }
 
   .card-subtitle {
     @apply text-xs text-gray-500 mt-0.5;
   }
 
-  /* ── Stat cards (KPI-style) ────────────────────────────────────────────── */
+  /* ── Stat cards ──────────────────────────────────────────────────────── */
   .stat-value {
-    @apply text-xl sm:text-2xl font-bold text-white tabular-nums;
+    @apply text-xl sm:text-2xl font-bold text-gray-900 tabular-nums;
   }
 
   .stat-label {
     @apply text-xs text-gray-500 font-medium;
   }
 
-  /* ── Tabelas padrão ────────────────────────────────────────────────────── */
+  /* ── Tabelas padrão ──────────────────────────────────────────────────── */
   .table-th {
-    @apply text-left pb-3 pr-4 text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap;
+    @apply text-left pb-3 pr-4 text-[10px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap;
   }
 
   .table-td {
-    @apply py-3 pr-4 text-sm text-gray-300;
+    @apply py-3 pr-4 text-sm text-gray-700;
   }
 
-  /* ── Divisor de seção ──────────────────────────────────────────────────── */
+  /* ── Divisor de seção ────────────────────────────────────────────────── */
   .section-divider {
-    @apply border-t border-gray-800 pt-4 mt-4;
+    @apply border-t border-gray-200 pt-4 mt-4;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Light-mode overrides: remapeia classes Tailwind dark usadas nos componentes
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Backgrounds ─────────────────────────────────────────────────────────── */
+.bg-gray-950   { background-color: #f8fafc !important; }
+
+.bg-gray-900   { background-color: #ffffff !important; }
+.bg-gray-900\/50 { background-color: rgba(255,255,255,0.7) !important; }
+.bg-gray-900\/95 { background-color: rgba(255,255,255,0.97) !important; }
+
+.bg-gray-800   { background-color: #f1f5f9 !important; }
+.bg-gray-800\/20 { background-color: rgba(241,245,249,0.4) !important; }
+.bg-gray-800\/30 { background-color: rgba(241,245,249,0.5) !important; }
+.bg-gray-800\/40 { background-color: rgba(241,245,249,0.6) !important; }
+.bg-gray-800\/50 { background-color: rgba(241,245,249,0.7) !important; }
+.bg-gray-800\/60 { background-color: rgba(241,245,249,0.8) !important; }
+
+.bg-gray-700   { background-color: #e2e8f0 !important; }
+
+/* ── Text colors ─────────────────────────────────────────────────────────── */
+/* "Light" text classes used on dark bg → remap to dark for light bg */
+.text-white    { color: #0f172a !important; }
+.text-gray-100 { color: #1e293b !important; }
+.text-gray-200 { color: #334155 !important; }
+.text-gray-300 { color: #475569 !important; }
+.text-gray-400 { color: #64748b !important; }
+
+/* "Muted" text — already gray, just nudge for light bg */
+.text-gray-600 { color: #64748b !important; }
+.text-gray-700 { color: #94a3b8 !important; }
+.text-gray-800 { color: #cbd5e1 !important; }
+
+/* ── Borders ─────────────────────────────────────────────────────────────── */
+.border-gray-950 { border-color: #e2e8f0 !important; }
+.border-gray-800 { border-color: #e2e8f0 !important; }
+.border-gray-800\/30 { border-color: rgba(226,232,240,0.5) !important; }
+.border-gray-800\/50 { border-color: rgba(226,232,240,0.7) !important; }
+.border-gray-800\/60 { border-color: rgba(226,232,240,0.8) !important; }
+.border-gray-700 { border-color: #cbd5e1 !important; }
+.border-gray-700\/30 { border-color: rgba(203,213,225,0.5) !important; }
+.border-gray-700\/40 { border-color: rgba(203,213,225,0.6) !important; }
+.border-gray-700\/50 { border-color: rgba(203,213,225,0.7) !important; }
+.border-gray-700\/60 { border-color: rgba(203,213,225,0.8) !important; }
+
+/* ── Divide (table rows) ─────────────────────────────────────────────────── */
+.divide-gray-800 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
+.divide-gray-700 > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1 !important; }
+
+/* ── Accent colors: darken para contraste em fundo branco ─────────────────── */
+.text-emerald-400 { color: #059669 !important; }   /* → emerald-600 */
+.text-emerald-500 { color: #047857 !important; }   /* → emerald-700 */
+
+.text-red-400     { color: #dc2626 !important; }   /* → red-600 */
+.text-red-500     { color: #b91c1c !important; }   /* → red-700 */
+
+.text-blue-400    { color: #2563eb !important; }   /* → blue-600 */
+
+.text-brand-300   { color: #4338ca !important; }   /* → brand-700 */
+.text-brand-400   { color: #4f46e5 !important; }   /* → brand-600 */
+
+.text-yellow-400  { color: #d97706 !important; }   /* → amber-600 */
+.text-amber-400   { color: #d97706 !important; }
+
+.text-orange-400  { color: #ea580c !important; }   /* → orange-600 */
+.text-orange-600  { color: #c2410c !important; }
+.text-orange-700  { color: #9a3412 !important; }
+
+.text-purple-400  { color: #7c3aed !important; }
+
+/* ── Accent backgrounds: tints já funcionam em fundo branco ─────────────── */
+/* emerald/5, red/5, blue/5, brand/5 → mantidos (são transparências leves) */
+/* Apenas os que ficam claros demais precisam de ajuste: */
+.bg-emerald-500\/5  { background-color: #f0fdf4 !important; }
+.bg-emerald-500\/10 { background-color: #dcfce7 !important; }
+.bg-red-500\/5      { background-color: #fef2f2 !important; }
+.bg-red-500\/10     { background-color: #fee2e2 !important; }
+.bg-blue-500\/5     { background-color: #eff6ff !important; }
+.bg-brand-500\/5    { background-color: #eef2ff !important; }
+.bg-brand-600\/10   { background-color: #e0e7ff !important; }
+.bg-brand-600\/20   { background-color: #c7d2fe !important; }
+.bg-orange-500\/5   { background-color: #fff7ed !important; }
+.bg-yellow-500\/10  { background-color: #fefce8 !important; }
+
+/* ── Accent borders: tornar mais visíveis em fundo branco ─────────────── */
+.border-emerald-500\/20 { border-color: #a7f3d0 !important; }
+.border-red-500\/20     { border-color: #fecaca !important; }
+.border-blue-500\/20    { border-color: #bfdbfe !important; }
+.border-brand-500\/20   { border-color: #c7d2fe !important; }
+.border-orange-500\/20  { border-color: #fed7aa !important; }
+
+/* ── Hover states ────────────────────────────────────────────────────────── */
+.hover\:bg-gray-800\/20:hover { background-color: rgba(241,245,249,0.5) !important; }
+.hover\:bg-gray-700\/50:hover { background-color: rgba(226,232,240,0.7) !important; }
+.hover\:bg-gray-800\/50:hover { background-color: rgba(241,245,249,0.7) !important; }
+.hover\:text-gray-200:hover   { color: #334155 !important; }
+.hover\:text-gray-300:hover   { color: #475569 !important; }
+.hover\:border-gray-700:hover { border-color: #cbd5e1 !important; }
+
+/* ── Code blocks ─────────────────────────────────────────────────────────── */
+code.bg-gray-800 { background-color: #f1f5f9 !important; color: #334155 !important; }
+
+/* ── Ring / focus ─────────────────────────────────────────────────────────── */
+.ring-gray-800 { --tw-ring-color: #e2e8f0 !important; }
