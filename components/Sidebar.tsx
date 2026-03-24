@@ -57,8 +57,8 @@ const busDefinidas: BUDef[] = [
   },
   {
     id: "m4e",
-    label: "M4E",
-    sublabel: "Metodologia & Frameworks",
+    label: "Media for Equity",
+    sublabel: "M4E · AWQ Group",
     rootHref: "/m4e",
     cor: "emerald",
     navItems: [

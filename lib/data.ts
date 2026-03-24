@@ -235,6 +235,25 @@ export const contasData: ContaData[] = [
     responsividadeCliente: "Alta",
     gestaoRiscoDanilo: "Boa",
   },
+  {
+    id: "6",
+    nome: "Caza Vision",
+    segmento: "Empresa / Produtora",
+    saude: "Saudável",
+    risco: "Baixo",
+    oportunidade: "Média",
+    pendencias: 1,
+    ultimaVisita: "2026-03-15",
+    proximaVisita: "2026-04-10",
+    donoProximaAcao: "Danilo",
+    observacoes: "Produtora de conteúdo. FEE mensal R$6.741,36. Conta nova na carteira.",
+    tendencia: "subindo",
+    motivoRisco: null,
+    pendenciasVencidas: 0,
+    pendenciasCriticas: 0,
+    responsividadeCliente: "Alta",
+    gestaoRiscoDanilo: "Boa",
+  },
 ];
 
 // ─── Account Health Distribution ─────────────────────────────────────────────
@@ -305,11 +324,12 @@ export interface MiniPLConta {
 }
 
 export const miniPLContas: MiniPLConta[] = [
-  { conta: "CEM",             fee: 3200,   danilo: 960,  cogs: 160,  opex: 140, freelancer: 0  },
-  { conta: "André Vieira",    fee: 1500,   danilo: 450,  cogs: 60,   opex: 140, freelancer: 15 },
-  { conta: "Carol Bertolini", fee: 1790,   danilo: 537,  cogs: 89.5, opex: 140, freelancer: 0  },
-  { conta: "Tati Simões",     fee: 1790,   danilo: 537,  cogs: 74.5, opex: 140, freelancer: 15 },
-  { conta: "Luis Vieira",     fee: 0,      danilo: 0,    cogs: 0,    opex: 0,   freelancer: 0  },
+  { conta: "CEM",             fee: 3200,    danilo: 960,    cogs: 160,   opex: 140, freelancer: 0  },
+  { conta: "André Vieira",    fee: 1500,    danilo: 450,    cogs: 60,    opex: 140, freelancer: 15 },
+  { conta: "Carol Bertolini", fee: 1790,    danilo: 537,    cogs: 89.5,  opex: 140, freelancer: 0  },
+  { conta: "Tati Simões",     fee: 1790,    danilo: 537,    cogs: 74.5,  opex: 140, freelancer: 15 },
+  { conta: "Luis Vieira",     fee: 1500,    danilo: 450,    cogs: 60,    opex: 140, freelancer: 0  },
+  { conta: "Caza Vision",     fee: 6741.36, danilo: 2022,   cogs: 337,   opex: 140, freelancer: 0  },
 ];
 
 export const miniPLMes = "Março 2026";
@@ -329,11 +349,12 @@ export interface ContaReceber {
 }
 
 export const contasReceber: ContaReceber[] = [
-  { id: "AR001", conta: "CEM",             descricao: "FEE Março 2026",       valor: 3200,  vencimento: "2026-03-05", status: "recebido",    mes: "Março 2026" },
-  { id: "AR002", conta: "André Vieira",    descricao: "FEE Março 2026",       valor: 1500,  vencimento: "2026-03-10", status: "recebido",    mes: "Março 2026" },
-  { id: "AR003", conta: "Carol Bertolini", descricao: "FEE Março 2026",       valor: 1790,  vencimento: "2026-03-10", status: "recebido",    mes: "Março 2026" },
-  { id: "AR004", conta: "Tati Simões",     descricao: "FEE Março 2026",       valor: 1790,  vencimento: "2026-03-15", status: "a_vencer",    mes: "Março 2026" },
-  { id: "AR005", conta: "CEM",             descricao: "Upsell — Setup Extra", valor:  800,  vencimento: "2026-03-28", status: "em_negociacao", mes: "Março 2026" },
+  { id: "AR001", conta: "CEM",             descricao: "FEE Março 2026",  valor: 3200,    vencimento: "2026-03-05", status: "recebido",     mes: "Março 2026" },
+  { id: "AR002", conta: "Tati Simões",     descricao: "FEE Março 2026",  valor: 1790,    vencimento: "2026-03-05", status: "recebido",     mes: "Março 2026" },
+  { id: "AR003", conta: "Luis Vieira",     descricao: "FEE Março 2026",  valor: 1500,    vencimento: "2026-03-05", status: "recebido",     mes: "Março 2026" },
+  { id: "AR004", conta: "Carol Bertolini", descricao: "FEE Março 2026",  valor: 1790,    vencimento: "2026-03-16", status: "recebido",     mes: "Março 2026" },
+  { id: "AR005", conta: "Caza Vision",     descricao: "FEE Março 2026",  valor: 6741.36, vencimento: "2026-03-20", status: "recebido",     mes: "Março 2026" },
+  { id: "AR006", conta: "André Vieira",    descricao: "FEE Março 2026",  valor: 1500,    vencimento: "2026-03-26", status: "a_vencer",     mes: "Março 2026" },
 ];
 
 // ─── Contas a Pagar (AP) ───────────────────────────────────────────────────────
@@ -463,9 +484,9 @@ export const dreGerencial: DREGerencial = {
   mes: "Março 2026",
 
   // ── Receita Bruta ──────────────────────────────────────────────────────────
-  // Fonte: Notion Mini P&L · FEE total = R$8.280
+  // Fonte: Notion Mini P&L · FEE total = R$16.521,36
   receitaBruta: {
-    recorrente:    8280,   // FEE mensal CEM + André + Carol + Tati
+    recorrente:    16521,  // FEE mensal CEM + André + Carol + Tati + Luis + Caza Vision
     projetoSetup:     0,   // sem projetos/setup em março
     variavel:         0,   // sem receita variável em março
     extraordinaria:   0,   // sem receitas extraordinárias
@@ -2273,6 +2294,7 @@ export interface AWQBuCard {
   saude: "Saudável" | "Estável" | "Em Atenção" | "Em Construção" | null;
   href: string;                 // rota interna (ou "#" se não disponível)
   cor: string;                  // cor de destaque Tailwind (ex: "brand", "emerald")
+  caixa?: number;               // posição de caixa da BU (R$)
 }
 
 // ─── M4E BU — Metodologia & Frameworks ───────────────────────────────────────
@@ -2436,21 +2458,22 @@ export const awqBus: AWQBuCard[] = [
     id: "jacqes",
     nome: "JACQES BU",
     tag: "CS & Operações",
-    descricao: "Customer Success & Ops — carteira D2C/e-commerce com 4 contas ativas. Score M4E, visitas, atendimento e financial.",
+    descricao: "Customer Success & Ops — carteira com 6 contas ativas. Score M4E, visitas, atendimento e financial.",
     status: "ativo",
     responsavel: "Danilo",
-    mrr: 8280,
-    mrrMeta: 9000,
-    contas: 4,
+    mrr: 16521,
+    mrrMeta: 20000,
+    contas: 6,
     scoreCS: 69,
     saude: "Estável",
     href: "/",
     cor: "brand",
+    caixa: 8000,
   },
   {
     id: "m4e",
-    nome: "M4E",
-    tag: "Metodologia & Frameworks",
+    nome: "Media for Equity",
+    tag: "M4E · AWQ Group",
     descricao: "Sistema de score e metodologia de CS — licenciamento, implementação e consultoria do Modelo M4E para empresas.",
     status: "ativo",
     responsavel: "Danilo",
