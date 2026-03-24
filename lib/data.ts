@@ -2275,6 +2275,162 @@ export interface AWQBuCard {
   cor: string;                  // cor de destaque Tailwind (ex: "brand", "emerald")
 }
 
+// ─── M4E BU — Metodologia & Frameworks ───────────────────────────────────────
+// M4E é o sistema de score e metodologia de CS operado como BU própria.
+// Clientes: empresas que licenciam e implementam o Modelo M4E.
+
+export interface M4EContaData {
+  id: string;
+  cliente: string;
+  segmento: string;
+  produto: "M4E Standard" | "M4E Enterprise" | "M4E Consultoria" | "Prospecção";
+  fee: number;                // R$/mês
+  status: "Ativo" | "Onboarding" | "Prospecção" | "Churned";
+  saude: "Saudável" | "Estável" | "Em Atenção" | "Prospecção" | null;
+  scoreM4E: number | null;    // score no modelo M4E (0–100)
+  faseM4E: string | null;     // fase do modelo
+  responsavel: string;
+  inicioCiclo: string | null; // YYYY-MM-DD
+  proximaRevisao: string | null;
+  pendencias: number;
+  oportunidade: "Sem Oportunidade" | "Leve" | "Média" | "Forte";
+  observacoes: string;
+}
+
+export const m4eContasData: M4EContaData[] = [
+  {
+    id: "m4e-001",
+    cliente: "TechFlow",
+    segmento: "SaaS B2B",
+    produto: "M4E Standard",
+    fee: 2000,
+    status: "Ativo",
+    saude: "Estável",
+    scoreM4E: 72,
+    faseM4E: "Operador em Formação",
+    responsavel: "Danilo",
+    inicioCiclo: "2026-01-10",
+    proximaRevisao: "2026-04-10",
+    pendencias: 2,
+    oportunidade: "Média",
+    observacoes: "Score subindo desde jan/26. Boa adesão ao processo de visitas.",
+  },
+  {
+    id: "m4e-002",
+    cliente: "Prismo",
+    segmento: "E-commerce",
+    produto: "M4E Enterprise",
+    fee: 3500,
+    status: "Ativo",
+    saude: "Saudável",
+    scoreM4E: 81,
+    faseM4E: "Bom",
+    responsavel: "Danilo",
+    inicioCiclo: "2025-11-01",
+    proximaRevisao: "2026-04-01",
+    pendencias: 1,
+    oportunidade: "Forte",
+    observacoes: "Cliente mais maduro. Candidato a caso de sucesso e expansão.",
+  },
+  {
+    id: "m4e-003",
+    cliente: "Vega Digital",
+    segmento: "Agência",
+    produto: "Prospecção",
+    fee: 0,
+    status: "Prospecção",
+    saude: "Prospecção",
+    scoreM4E: null,
+    faseM4E: null,
+    responsavel: "Miguel",
+    inicioCiclo: null,
+    proximaRevisao: "2026-03-30",
+    pendencias: 3,
+    oportunidade: "Forte",
+    observacoes: "Em avaliação do M4E Enterprise. Proposta enviada em 15/03.",
+  },
+  {
+    id: "m4e-004",
+    cliente: "Orbis Labs",
+    segmento: "Healthtech",
+    produto: "M4E Consultoria",
+    fee: 1800,
+    status: "Onboarding",
+    saude: "Em Atenção",
+    scoreM4E: 58,
+    faseM4E: "Abaixo da Linha",
+    responsavel: "Danilo",
+    inicioCiclo: "2026-02-15",
+    proximaRevisao: "2026-03-31",
+    pendencias: 4,
+    oportunidade: "Leve",
+    observacoes: "Onboarding lento. Dificuldade de adesão do time interno.",
+  },
+];
+
+export interface M4EScoreMensal {
+  mes: string;
+  scoreProduto: number;       // documentação e evolução do modelo M4E (0–20)
+  scorePipeline: number;      // vendas e prospecção ativa (0–20)
+  scoreEntrega: number;       // qualidade das implementações (0–20)
+  scoreClientes: number;      // satisfação e saúde da carteira (0–20)
+  scoreOperacao: number;      // operação interna da BU (0–20)
+  scoreTotal: number;
+  status: string;
+  fase: string;
+  variavelPaga: boolean;
+  clientesAtivos: number;
+  churnMes: number;
+  mrr: number;
+  mrrMeta: number;
+  principalAvanco: string;
+  principalFalha: string;
+  focoProximoMes: string;
+}
+
+export const m4eScoreMensal: M4EScoreMensal = {
+  mes: "Março 2026",
+  scoreProduto:   16,
+  scorePipeline:  12,
+  scoreEntrega:   15,
+  scoreClientes:  14,
+  scoreOperacao:  13,
+  scoreTotal:     70,
+  status:         "🟡 Amarelo",
+  fase:           "Operador em Formação",
+  variavelPaga:   false,
+  clientesAtivos: 3,
+  churnMes:       0,
+  mrr:            7300,   // TechFlow 2k + Prismo 3.5k + Orbis 1.8k
+  mrrMeta:        12000,
+  principalAvanco:  "Prismo atingiu fase 'Bom' — primeiro caso de sucesso M4E",
+  principalFalha:   "Orbis Labs com baixa adesão no onboarding — risco de churn",
+  focoProximoMes:   "Fechar Vega Digital + elevar Orbis para 65+ pts",
+};
+
+export const m4eScoreDimensions = [
+  { dimensao: "Produto",    score: 16, max: 20 },
+  { dimensao: "Pipeline",   score: 12, max: 20 },
+  { dimensao: "Entrega",    score: 15, max: 20 },
+  { dimensao: "Clientes",   score: 14, max: 20 },
+  { dimensao: "Operação",   score: 13, max: 20 },
+];
+
+export interface M4EMiniPLConta {
+  cliente: string;
+  fee: number;
+  danilo: number;
+  cogs: number;
+  opex: number;
+}
+
+export const m4eMiniPLContas: M4EMiniPLConta[] = [
+  { cliente: "TechFlow",  fee: 2000, danilo: 600,  cogs: 80,  opex: 120 },
+  { cliente: "Prismo",    fee: 3500, danilo: 1050, cogs: 140, opex: 120 },
+  { cliente: "Orbis Labs",fee: 1800, danilo: 540,  cogs: 72,  opex: 120 },
+  { cliente: "Vega Digital",fee: 0,  danilo: 0,    cogs: 0,   opex: 0   },
+];
+
 export const awqBus: AWQBuCard[] = [
   {
     id: "jacqes",
@@ -2292,6 +2448,21 @@ export const awqBus: AWQBuCard[] = [
     cor: "brand",
   },
   {
+    id: "m4e",
+    nome: "M4E",
+    tag: "Metodologia & Frameworks",
+    descricao: "Sistema de score e metodologia de CS — licenciamento, implementação e consultoria do Modelo M4E para empresas.",
+    status: "ativo",
+    responsavel: "Danilo",
+    mrr: 7300,
+    mrrMeta: 12000,
+    contas: 3,
+    scoreCS: 70,
+    saude: "Estável",
+    href: "/m4e",
+    cor: "emerald",
+  },
+  {
     id: "agencia",
     nome: "AWQ Agência",
     tag: "Marketing Digital",
@@ -2304,7 +2475,7 @@ export const awqBus: AWQBuCard[] = [
     scoreCS: null,
     saude: "Em Construção",
     href: "#",
-    cor: "emerald",
+    cor: "purple",
   },
   {
     id: "produtora",
