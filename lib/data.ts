@@ -235,25 +235,6 @@ export const contasData: ContaData[] = [
     responsividadeCliente: "Alta",
     gestaoRiscoDanilo: "Boa",
   },
-  {
-    id: "6",
-    nome: "Caza Vision",
-    segmento: "Empresa / Produtora",
-    saude: "Saudável",
-    risco: "Baixo",
-    oportunidade: "Média",
-    pendencias: 1,
-    ultimaVisita: "2026-03-15",
-    proximaVisita: "2026-04-10",
-    donoProximaAcao: "Danilo",
-    observacoes: "Produtora de conteúdo. FEE mensal R$6.741,36. Conta nova na carteira.",
-    tendencia: "subindo",
-    motivoRisco: null,
-    pendenciasVencidas: 0,
-    pendenciasCriticas: 0,
-    responsividadeCliente: "Alta",
-    gestaoRiscoDanilo: "Boa",
-  },
 ];
 
 // ─── Account Health Distribution ─────────────────────────────────────────────
@@ -329,7 +310,6 @@ export const miniPLContas: MiniPLConta[] = [
   { conta: "Carol Bertolini", fee: 1790,    danilo: 537,    cogs: 89.5,  opex: 140, freelancer: 0  },
   { conta: "Tati Simões",     fee: 1790,    danilo: 537,    cogs: 74.5,  opex: 140, freelancer: 15 },
   { conta: "Luis Vieira",     fee: 1500,    danilo: 450,    cogs: 60,    opex: 140, freelancer: 0  },
-  { conta: "Caza Vision",     fee: 6741.36, danilo: 2022,   cogs: 337,   opex: 140, freelancer: 0  },
 ];
 
 export const miniPLMes = "Março 2026";
@@ -353,7 +333,6 @@ export const contasReceber: ContaReceber[] = [
   { id: "AR002", conta: "Tati Simões",     descricao: "FEE Março 2026",  valor: 1790,    vencimento: "2026-03-05", status: "recebido",     mes: "Março 2026" },
   { id: "AR003", conta: "Luis Vieira",     descricao: "FEE Março 2026",  valor: 1500,    vencimento: "2026-03-05", status: "recebido",     mes: "Março 2026" },
   { id: "AR004", conta: "Carol Bertolini", descricao: "FEE Março 2026",  valor: 1790,    vencimento: "2026-03-16", status: "recebido",     mes: "Março 2026" },
-  { id: "AR005", conta: "Caza Vision",     descricao: "FEE Março 2026",  valor: 6741.36, vencimento: "2026-03-20", status: "recebido",     mes: "Março 2026" },
   { id: "AR006", conta: "André Vieira",    descricao: "FEE Março 2026",  valor: 1500,    vencimento: "2026-03-26", status: "a_vencer",     mes: "Março 2026" },
 ];
 
@@ -484,9 +463,9 @@ export const dreGerencial: DREGerencial = {
   mes: "Março 2026",
 
   // ── Receita Bruta ──────────────────────────────────────────────────────────
-  // Fonte: Notion Mini P&L · FEE total = R$16.521,36
+  // Fonte: Notion Mini P&L · FEE total = R$9.780
   receitaBruta: {
-    recorrente:    16521,  // FEE mensal CEM + André + Carol + Tati + Luis + Caza Vision
+    recorrente:    9780,   // FEE mensal CEM + André + Carol + Tati + Luis
     projetoSetup:     0,   // sem projetos/setup em março
     variavel:         0,   // sem receita variável em março
     extraordinaria:   0,   // sem receitas extraordinárias
@@ -1947,6 +1926,29 @@ export const fluxoCaixaCategorias: FluxoCaixaCategoria[] = [
   },
 ];
 
+// ─── Fluxo Anual JACQES · Projeção 2026 ──────────────────────────────────────
+
+export interface FluxoAnualMes {
+  mes: string;          // "Jan", "Fev", ...
+  mesIdx: number;       // 1–12
+  tipo: "historico" | "atual" | "projetado";
+  receita: number;
+  custos: number;
+  resultado: number;
+}
+
+// Histórico Jan-Fev: antes de Luis entrar (MRR = R$8.280)
+// Atual  Mar: Luis entrou dia 5 (MRR = R$9.780)
+// Projetado Abr-Dez: crescimento gradual partindo de R$9.780
+export const fluxoAnualHistorico: FluxoAnualMes[] = [
+  { mes: "Jan", mesIdx: 1, tipo: "historico",  receita: 8280,  custos: 2698, resultado: 5582 },
+  { mes: "Fev", mesIdx: 2, tipo: "historico",  receita: 8280,  custos: 2698, resultado: 5582 },
+];
+
+// Multiplicadores de receita mensais para projeção (base = receita de Março)
+// Abr=+0%, Mai=+4%, Jun=+4%, Jul=+10%, Ago=+10%, Set=+17%, Out=+22%, Nov=+28%, Dez=+33%
+export const fluxoAnualGrowth = [1.00, 1.04, 1.04, 1.10, 1.10, 1.17, 1.22, 1.28, 1.33];
+
 // ─── Agência · Funções & Organograma ─────────────────────────────────────────
 
 export type FuncaoStatus = "ativo" | "vago" | "a_estruturar";
@@ -2295,6 +2297,7 @@ export interface AWQBuCard {
   href: string;                 // rota interna (ou "#" se não disponível)
   cor: string;                  // cor de destaque Tailwind (ex: "brand", "emerald")
   caixa?: number;               // posição de caixa da BU (R$)
+  categoria: string;
 }
 
 // ─── M4E BU — Metodologia & Frameworks ───────────────────────────────────────
@@ -2456,25 +2459,26 @@ export const m4eMiniPLContas: M4EMiniPLConta[] = [
 export const awqBus: AWQBuCard[] = [
   {
     id: "jacqes",
-    nome: "JACQES BU",
-    tag: "CS & Operações",
-    descricao: "Customer Success & Ops — carteira com 6 contas ativas. Score M4E, visitas, atendimento e financial.",
+    nome: "JACQES",
+    tag: "Agência",
+    descricao: "Agência de CS & Operações — carteira com 5 contas ativas.",
     status: "ativo",
     responsavel: "Danilo",
-    mrr: 16521,
+    mrr: 9780,
     mrrMeta: 20000,
-    contas: 6,
+    contas: 5,
     scoreCS: 69,
     saude: "Estável",
     href: "/",
     cor: "brand",
     caixa: 8000,
+    categoria: "business_unit",
   },
   {
     id: "m4e",
-    nome: "Media for Equity",
-    tag: "M4E · AWQ Group",
-    descricao: "Sistema de score e metodologia de CS — licenciamento, implementação e consultoria do Modelo M4E para empresas.",
+    nome: "AWQ Venture",
+    tag: "Venture · AWQ Group",
+    descricao: "Venture de CS e metodologia — score, licenciamento e consultoria do modelo AWQ para empresas.",
     status: "ativo",
     responsavel: "Danilo",
     mrr: 7300,
@@ -2484,6 +2488,24 @@ export const awqBus: AWQBuCard[] = [
     saude: "Estável",
     href: "/m4e",
     cor: "emerald",
+    categoria: "business_unit",
+  },
+  {
+    id: "cazavision",
+    nome: "Caza Vision",
+    tag: "Produtora de Conteúdo",
+    descricao: "Produtora de vídeo, foto e conteúdo criativo para marcas D2C e e-commerce da carteira AWQ Group.",
+    status: "ativo",
+    responsavel: "Danilo",
+    mrr: 6741.36,
+    mrrMeta: 12000,
+    contas: 3,
+    scoreCS: null,
+    saude: "Saudável",
+    href: "/cazavision",
+    cor: "purple",
+    caixa: 0,
+    categoria: "business_unit",
   },
   {
     id: "agencia",
@@ -2499,6 +2521,7 @@ export const awqBus: AWQBuCard[] = [
     saude: "Em Construção",
     href: "#",
     cor: "purple",
+    categoria: "business_unit",
   },
   {
     id: "produtora",
@@ -2514,6 +2537,7 @@ export const awqBus: AWQBuCard[] = [
     saude: "Em Construção",
     href: "#",
     cor: "purple",
+    categoria: "business_unit",
   },
   {
     id: "tech",
@@ -2529,6 +2553,7 @@ export const awqBus: AWQBuCard[] = [
     saude: "Em Construção",
     href: "#",
     cor: "blue",
+    categoria: "business_unit",
   },
 ];
 

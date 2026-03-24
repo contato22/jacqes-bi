@@ -39,8 +39,8 @@ export default function M4EPage() {
   return (
     <>
       <Header
-        title="M4E — Visão Geral"
-        subtitle="Metodologia & Frameworks · AWQ Group · Março 2026"
+        title="AWQ Venture — Visão Geral"
+        subtitle="Venture · AWQ Group · Março 2026"
       />
 
       <div className="page-content">
@@ -169,7 +169,7 @@ export default function M4EPage() {
         {/* ── Carteira rápida ── */}
         <div className="card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-white">Carteira M4E · {s.mes}</h2>
+            <h2 className="text-sm font-semibold text-white">Carteira AWQ Venture · {s.mes}</h2>
             <span className="text-xs text-gray-500">{m4eContasData.length} clientes</span>
           </div>
           <div className="space-y-2">

@@ -129,10 +129,15 @@ export default function GroupPage() {
         </div>
 
         {/* BU list */}
-        <div className="space-y-2">
-          {awqBus.map((bu) => (
-            <BURow key={bu.id} bu={bu} />
-          ))}
+        <div className="space-y-3">
+          <div className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest px-1">
+            Business Units
+          </div>
+          <div className="space-y-2">
+            {awqBus.map((bu) => (
+              <BURow key={bu.id} bu={bu} />
+            ))}
+          </div>
         </div>
 
         {/* Footer */}

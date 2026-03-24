@@ -30,7 +30,7 @@ export default function DashboardPage() {
     <>
       <Header
         title="Visão Geral"
-        subtitle="Danilo · CS & Operações · AWQ Group · Março 2026"
+        subtitle="Danilo · JACQES · Agência · AWQ Group · Março 2026"
       />
 
       <PeriodFilterBar available={["mensal"]} label="Março 2026">

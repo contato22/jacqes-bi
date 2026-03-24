@@ -8,10 +8,13 @@ import {
   contasReceber,
   contasPagar,
   inventarioData,
+  fluxoAnualHistorico,
+  fluxoAnualGrowth,
   type DRELinha,
   type ContaReceber,
   type ContaPagar,
   type InventarioItem,
+  type FluxoAnualMes,
 } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -21,8 +24,12 @@ import {
   Database, Edit3, GitBranch, Calendar, TrendingUp, TrendingDown,
   Package, FileText, AlertTriangle, CheckCircle, Clock,
 } from "lucide-react";
+import {
+  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Cell, ReferenceLine,
+} from "recharts";
 
-type Tab = "dre" | "fluxo" | "minipl" | "ar_ap" | "estoque";
+type Tab = "dre" | "fluxo" | "minipl" | "ar_ap" | "estoque" | "anual";
 
 // ── available months ──────────────────────────────────────────────────────────
 
@@ -250,6 +257,7 @@ export default function FinancialPage() {
     { id: "minipl", label: "Mini P&L"       },
     { id: "ar_ap",  label: "AR & AP"        },
     { id: "estoque", label: "Inventário"    },
+    { id: "anual",  label: "Fluxo Anual"   },
   ];
 
   return (
@@ -257,7 +265,7 @@ export default function FinancialPage() {
 
       {/* ── Header ── */}
       <div>
-        <h1 className="text-xl font-bold text-white">Financial · JACQES BU</h1>
+        <h1 className="text-xl font-bold text-white">Financial · JACQES</h1>
         <p className="text-sm text-gray-500 mt-0.5">
           {contasAtivas.length} contas ativas ·{" "}
           <span className="text-orange-700 text-xs">
@@ -345,7 +353,7 @@ export default function FinancialPage() {
               {/* DRE Waterfall */}
               <div className="card p-6">
                 <div className="flex items-center justify-between mb-1">
-                  <h2 className="text-sm font-semibold text-white">DRE Gerencial — JACQES BU</h2>
+                  <h2 className="text-sm font-semibold text-white">DRE Gerencial — JACQES</h2>
                   <div className="flex items-center gap-3 text-[10px] text-gray-600">
                     <span className="flex items-center gap-1"><Database size={9} className="text-emerald-600" /> Notion</span>
                     <span className="flex items-center gap-1"><GitBranch size={9} className="text-brand-600" /> Derivado</span>
@@ -626,6 +634,147 @@ export default function FinancialPage() {
 
           {/* ── Inventário tab ── */}
           {tab === "estoque" && <EstoqueTab />}
+
+          {/* ── Anual tab ── */}
+          {tab === "anual" && (() => {
+            // Build 12-month data connected to current DRE values
+            const receitaMar = recBruta;  // from dreGerencial (live)
+            const custosMar  = totalCustosVariaveis + totalCustosFixos;
+            const meses: FluxoAnualMes[] = [
+              ...fluxoAnualHistorico,
+              { mes: "Mar", mesIdx: 3, tipo: "atual",     receita: receitaMar, custos: custosMar, resultado: receitaMar - custosMar },
+              ...fluxoAnualGrowth.map((g, i) => {
+                const rec = Math.round(receitaMar * g);
+                const cus = Math.round(custosMar  * (1 + (g - 1) * 0.3));
+                return { mes: ["Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"][i], mesIdx: i + 4, tipo: "projetado" as const, receita: rec, custos: cus, resultado: rec - cus };
+              }),
+            ];
+
+            // cumulative caixa from April (March ending = caixaAtual from awqBus JACQES)
+            const caixaBase = 8000;
+            let acum = caixaBase;
+            const comCaixa = meses.map((m, idx) => {
+              if (idx >= 3) { acum += m.resultado; return { ...m, caixaFim: acum }; }
+              return { ...m, caixaFim: null };
+            });
+
+            const totalReceita = meses.reduce((s, m) => s + m.receita, 0);
+            const totalCustos  = meses.reduce((s, m) => s + m.custos, 0);
+            const totalResult  = meses.reduce((s, m) => s + m.resultado, 0);
+
+            return (
+              <div className="space-y-4">
+                {/* KPIs */}
+                <div className="grid grid-cols-3 gap-4">
+                  {[
+                    { label: "Receita Anual Projetada",  valor: totalReceita, color: "text-emerald-400" },
+                    { label: "Custos Anuais Projetados", valor: totalCustos,  color: "text-red-400"     },
+                    { label: "Resultado Anual",          valor: totalResult,  color: totalResult >= 0 ? "text-brand-400" : "text-red-400" },
+                  ].map((k) => (
+                    <div key={k.label} className="card p-5">
+                      <div className={cn("text-xl font-bold tabular-nums", k.color)}>{formatCurrency(k.valor)}</div>
+                      <div className="text-xs text-gray-500 mt-1">{k.label}</div>
+                      <div className="text-[10px] text-gray-700 mt-0.5">Jan–Dez 2026</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Chart */}
+                <div className="card p-5">
+                  <h2 className="text-sm font-semibold text-white mb-1">Fluxo Anual · JACQES · 2026</h2>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Jan–Fev histórico · Mar atual · Abr–Dez projetado
+                  </p>
+                  <ResponsiveContainer width="100%" height={280}>
+                    <ComposedChart data={comCaixa} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                      <XAxis dataKey="mes" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
+                      <Tooltip
+                        contentStyle={{ background: "#111827", border: "1px solid #1f2937", borderRadius: "8px", fontSize: 12 }}
+                        formatter={(value: number, name: string) => [formatCurrency(value), name]}
+                        labelStyle={{ color: "#e5e7eb", fontWeight: 600 }}
+                      />
+                      <Bar dataKey="receita" name="Receita" radius={[4,4,0,0]}>
+                        {comCaixa.map((m) => (
+                          <Cell key={m.mes} fill={m.tipo === "atual" ? "#6366f1" : m.tipo === "historico" ? "#374151" : "#10b981"} fillOpacity={0.7} />
+                        ))}
+                      </Bar>
+                      <Bar dataKey="custos" name="Custos" fill="#ef4444" fillOpacity={0.5} radius={[4,4,0,0]} />
+                      <Line dataKey="resultado" name="Resultado" type="monotone" stroke="#818cf8" strokeWidth={2} dot={{ fill: "#818cf8", r: 3 }} />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                  <div className="flex items-center gap-4 mt-3 text-[10px] text-gray-600">
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-gray-600 inline-block" /> Histórico</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-brand-500 inline-block" /> Atual (Mar)</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block" /> Projetado</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-1 bg-brand-400 inline-block rounded" /> Resultado</span>
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div className="card p-5">
+                  <h2 className="text-sm font-semibold text-white mb-4">Detalhamento Mensal</h2>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-800">
+                          <th className="table-th">Mês</th>
+                          <th className="table-th">Tipo</th>
+                          <th className="table-th text-right">Receita</th>
+                          <th className="table-th text-right">Custos</th>
+                          <th className="table-th text-right">Resultado</th>
+                          <th className="table-th text-right">Margem</th>
+                          <th className="table-th text-right">Caixa (fim)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-800">
+                        {comCaixa.map((m) => {
+                          const margem = m.receita > 0 ? (m.resultado / m.receita) * 100 : 0;
+                          return (
+                            <tr key={m.mes} className={m.tipo === "atual" ? "bg-brand-500/5" : ""}>
+                              <td className="table-td font-semibold text-white">{m.mes}</td>
+                              <td className="table-td">
+                                <span className={cn("badge text-[10px]",
+                                  m.tipo === "historico" ? "badge" :
+                                  m.tipo === "atual" ? "badge-blue" : "badge-green"
+                                )}>
+                                  {m.tipo === "historico" ? "Histórico" : m.tipo === "atual" ? "Atual" : "Projetado"}
+                                </span>
+                              </td>
+                              <td className="table-td text-right tabular-nums text-emerald-400">{formatCurrency(m.receita)}</td>
+                              <td className="table-td text-right tabular-nums text-red-400">{formatCurrency(m.custos)}</td>
+                              <td className={cn("table-td text-right tabular-nums font-semibold", m.resultado >= 0 ? "text-brand-400" : "text-red-400")}>
+                                {formatCurrency(m.resultado)}
+                              </td>
+                              <td className={cn("table-td text-right tabular-nums", margem >= 60 ? "text-emerald-400" : margem >= 40 ? "text-yellow-400" : "text-red-400")}>
+                                {margem.toFixed(1)}%
+                              </td>
+                              <td className="table-td text-right tabular-nums text-gray-400">
+                                {m.caixaFim !== null ? formatCurrency(m.caixaFim) : <span className="text-gray-700">—</span>}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                      <tfoot>
+                        <tr className="border-t border-gray-700 font-semibold">
+                          <td className="table-td text-gray-500" colSpan={2}>TOTAL 2026</td>
+                          <td className="table-td text-right tabular-nums text-emerald-400">{formatCurrency(totalReceita)}</td>
+                          <td className="table-td text-right tabular-nums text-red-400">{formatCurrency(totalCustos)}</td>
+                          <td className="table-td text-right tabular-nums text-brand-400">{formatCurrency(totalResult)}</td>
+                          <td className="table-td text-right tabular-nums text-emerald-400">
+                            {totalReceita > 0 ? ((totalResult / totalReceita) * 100).toFixed(1) + "%" : "—"}
+                          </td>
+                          <td className="table-td text-right text-gray-600">—</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </>
       )}
     </div>
@@ -933,7 +1082,7 @@ function EstoqueTab() {
       })}
 
       <p className="text-xs text-gray-700 text-center">
-        Inventário · JACQES BU · {dreGerencial.mes} · preencher mensalmente
+        Inventário · JACQES · {dreGerencial.mes} · preencher mensalmente
       </p>
     </div>
   );

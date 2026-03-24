@@ -27,7 +27,7 @@ import { useState } from "react";
 
 // ── BU definitions ─────────────────────────────────────────────────────────────
 
-type BUId = "jacqes" | "m4e";
+type BUId = "jacqes" | "m4e" | "cazavision" | "group";
 
 interface BUDef {
   id: BUId;
@@ -41,8 +41,8 @@ interface BUDef {
 const busDefinidas: BUDef[] = [
   {
     id: "jacqes",
-    label: "JACQES BU",
-    sublabel: "CS & Operações",
+    label: "JACQES",
+    sublabel: "Agência · AWQ Group",
     rootHref: "/",
     cor: "brand",
     navItems: [
@@ -57,14 +57,24 @@ const busDefinidas: BUDef[] = [
   },
   {
     id: "m4e",
-    label: "Media for Equity",
-    sublabel: "M4E · AWQ Group",
+    label: "AWQ Venture",
+    sublabel: "Venture · AWQ Group",
     rootHref: "/m4e",
     cor: "emerald",
     navItems: [
       { label: "Visão Geral", href: "/m4e",            icon: LayoutDashboard },
       { label: "Carteira",    href: "/m4e/customers",  icon: Users           },
       { label: "Financial",   href: "/m4e/financial",  icon: DollarSign      },
+    ],
+  },
+  {
+    id: "cazavision" as BUId,
+    label: "Caza Vision",
+    sublabel: "Produtora · AWQ Group",
+    rootHref: "/cazavision",
+    cor: "purple",
+    navItems: [
+      { label: "Visão Geral", href: "/cazavision", icon: LayoutDashboard },
     ],
   },
 ];
@@ -80,12 +90,19 @@ const corClasses: Record<string, { pill: string; active: string; accent: string 
     active: "bg-emerald-600/20 text-emerald-400 border border-emerald-500/20",
     accent: "text-emerald-400",
   },
+  purple: {
+    pill:   "bg-purple-600/10 border-purple-500/20",
+    active: "bg-purple-600/20 text-purple-400 border border-purple-500/20",
+    accent: "text-purple-400",
+  },
 };
 
 // ── detect active BU from pathname ────────────────────────────────────────────
 
 function detectBU(pathname: string): BUId {
+  if (pathname === "/group") return "group";
   if (pathname.startsWith("/m4e")) return "m4e";
+  if (pathname.startsWith("/cazavision")) return "cazavision";
   return "jacqes";
 }
 
@@ -155,7 +172,7 @@ export default function Sidebar() {
           >
             <div className={cn(
               "w-6 h-6 rounded-md flex items-center justify-center shrink-0",
-              activeBU.cor === "brand" ? "bg-brand-600/20" : "bg-emerald-600/20"
+              activeBU.cor === "brand" ? "bg-brand-600/20" : activeBU.cor === "purple" ? "bg-purple-600/20" : "bg-emerald-600/20"
             )}>
               <Building2 size={12} className={cor.accent} />
             </div>
@@ -213,15 +230,24 @@ export default function Sidebar() {
 
       {/* ── Navigation ──────────────────────────────────────────────── */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        <div className="px-3 mb-2">
-          <span className="text-[9px] font-semibold text-gray-600 uppercase tracking-widest">
-            {activeBU.label} · Navegação
-          </span>
-        </div>
+        {activeBUId === "group" ? (
+          <div className="px-3 mb-3">
+            <span className="text-[9px] font-semibold text-gray-600 uppercase tracking-widest">
+              AWQ Group · Matriz
+            </span>
+            <p className="text-[10px] text-gray-700 mt-1 leading-relaxed">
+              Selecione uma BU no seletor acima para navegar.
+            </p>
+          </div>
+        ) : (
+          <div className="px-3 mb-2">
+            <span className="text-[9px] font-semibold text-gray-600 uppercase tracking-widest">
+              {activeBU.label} · Navegação
+            </span>
+          </div>
+        )}
 
-        {activeBU.navItems
-          .filter((item) => isAdmin || item.href === activeBU.rootHref)
-          .map((item) => {
+        {activeBUId !== "group" && activeBU.navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
               item.href === activeBU.rootHref
@@ -250,8 +276,8 @@ export default function Sidebar() {
             );
           })}
 
-        {/* Modo Carreira — apenas JACQES + admin */}
-        {isAdmin && activeBUId === "jacqes" && (
+        {/* Modo Carreira — apenas JACQES */}
+        {activeBUId === "jacqes" && (
           <>
             <div className="px-3 mt-4 mb-2">
               <span className="text-[9px] font-semibold text-gray-600 uppercase tracking-widest">
@@ -279,17 +305,17 @@ export default function Sidebar() {
           </>
         )}
 
-        {/* M4E: link para metodologia doc (futuro) */}
-        {activeBUId === "m4e" && isAdmin && (
+        {/* AWQ Venture: docs (futuro) */}
+        {activeBUId === "m4e" && (
           <>
             <div className="px-3 mt-4 mb-2">
               <span className="text-[9px] font-semibold text-gray-600 uppercase tracking-widest">
-                Produto
+                Venture
               </span>
             </div>
             <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 cursor-not-allowed">
               <BookOpen size={15} className="text-gray-700 shrink-0" />
-              <span className="flex-1">Metodologia Docs</span>
+              <span className="flex-1">Venture Docs</span>
               <span className="text-[9px] text-gray-700">em breve</span>
             </div>
           </>

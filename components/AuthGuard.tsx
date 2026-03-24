@@ -11,7 +11,7 @@ import OpenClaw from "@/components/OpenClaw";
 const PUBLIC_PATHS = ["/login"];
 
 // Rotas acessíveis a todos os usuários autenticados (não apenas admin)
-const ALL_USER_PATHS = ["/", "/group", "/m4e"];
+const ALL_USER_PATHS = ["/", "/group", "/m4e", "/cazavision"];
 
 function AuthGuardInner({ children }: { children: React.ReactNode }) {
   const router   = useRouter();
