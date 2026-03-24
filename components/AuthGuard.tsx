@@ -10,6 +10,9 @@ import OpenClaw from "@/components/OpenClaw";
 
 const PUBLIC_PATHS = ["/login"];
 
+// Rotas acessíveis a todos os usuários autenticados (não apenas admin)
+const ALL_USER_PATHS = ["/", "/group", "/m4e"];
+
 function AuthGuardInner({ children }: { children: React.ReactNode }) {
   const router   = useRouter();
   const pathname = usePathname();
@@ -22,7 +25,10 @@ function AuthGuardInner({ children }: { children: React.ReactNode }) {
     if (PUBLIC_PATHS.some((p) => pathname?.startsWith(p))) { setReady(true); return; }
     if (!user) {
       router.replace(`/login?from=${encodeURIComponent(pathname ?? "/")}`);
-    } else if (user.role === "user" && pathname !== "/") {
+    } else if (
+      user.role === "user" &&
+      !ALL_USER_PATHS.some((p) => pathname === p || pathname?.startsWith(p + "/"))
+    ) {
       router.replace("/");
     } else {
       setReady(true);
