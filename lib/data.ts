@@ -2254,3 +2254,97 @@ export const agenciaContaGestao: ContaGestao[] = [
     ],
   },
 ];
+
+// ─── AWQ Group — Plataforma Central ───────────────────────────────────────────
+// Cada BU é uma plataforma dentro do AWQ Group.
+// JACQES BU é a primeira ativa; as demais estão em construção.
+
+export interface AWQBuCard {
+  id: string;
+  nome: string;
+  tag: string;                  // ex: "CS & Ops", "Marketing", "Produção"
+  descricao: string;
+  status: "ativo" | "em_construcao" | "prospeccao" | "inativo";
+  responsavel: string;
+  mrr: number;                  // MRR atual (R$)
+  mrrMeta: number;              // meta de MRR
+  contas: number;               // contas/clientes ativos
+  scoreCS: number | null;       // score CS (0–100) — null se não aplicável
+  saude: "Saudável" | "Estável" | "Em Atenção" | "Em Construção" | null;
+  href: string;                 // rota interna (ou "#" se não disponível)
+  cor: string;                  // cor de destaque Tailwind (ex: "brand", "emerald")
+}
+
+export const awqBus: AWQBuCard[] = [
+  {
+    id: "jacqes",
+    nome: "JACQES BU",
+    tag: "CS & Operações",
+    descricao: "Customer Success & Ops — carteira D2C/e-commerce com 4 contas ativas. Score M4E, visitas, atendimento e financial.",
+    status: "ativo",
+    responsavel: "Danilo",
+    mrr: 8280,
+    mrrMeta: 9000,
+    contas: 4,
+    scoreCS: 69,
+    saude: "Estável",
+    href: "/",
+    cor: "brand",
+  },
+  {
+    id: "agencia",
+    nome: "AWQ Agência",
+    tag: "Marketing Digital",
+    descricao: "Agência de performance — tráfego pago, SEO, redes sociais e gestão de campanhas para clientes da carteira.",
+    status: "em_construcao",
+    responsavel: "A contratar",
+    mrr: 0,
+    mrrMeta: 15000,
+    contas: 0,
+    scoreCS: null,
+    saude: "Em Construção",
+    href: "#",
+    cor: "emerald",
+  },
+  {
+    id: "produtora",
+    nome: "AWQ Produtora",
+    tag: "Produção de Conteúdo",
+    descricao: "Produtora de conteúdo — vídeo, foto, copy e criação para marcas D2C e e-commerce da carteira AWQ.",
+    status: "em_construcao",
+    responsavel: "A contratar",
+    mrr: 0,
+    mrrMeta: 10000,
+    contas: 0,
+    scoreCS: null,
+    saude: "Em Construção",
+    href: "#",
+    cor: "purple",
+  },
+  {
+    id: "tech",
+    nome: "AWQ Tech",
+    tag: "Produto & Tecnologia",
+    descricao: "Desenvolvimento de produtos digitais, automações e infraestrutura de dados para o grupo e clientes.",
+    status: "em_construcao",
+    responsavel: "Miguel",
+    mrr: 0,
+    mrrMeta: 20000,
+    contas: 0,
+    scoreCS: null,
+    saude: "Em Construção",
+    href: "#",
+    cor: "blue",
+  },
+];
+
+export const awqGroupMeta = {
+  nome: "AWQ Group",
+  tagline: "Plataforma Central",
+  mrrTotal: awqBus.reduce((s, b) => s + b.mrr, 0),
+  mrrMeta:  awqBus.reduce((s, b) => s + b.mrrMeta, 0),
+  busAtivas: awqBus.filter((b) => b.status === "ativo").length,
+  busTotal:  awqBus.length,
+  contasTotal: awqBus.reduce((s, b) => s + b.contas, 0),
+  mesReferencia: "Março 2026",
+};
