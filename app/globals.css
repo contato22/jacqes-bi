@@ -4,213 +4,175 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
+/* ═══════════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════════ */
+
 @layer base {
-  :root {
-    --sidebar-width: 260px;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    @apply bg-gray-50 text-gray-900 font-sans antialiased;
-  }
-
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400;
-  }
+  :root { --sidebar-width: 260px; }
+  * { box-sizing: border-box; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   COMPONENTS — estrutura (sem cores, válido em ambos os temas)
+   ═══════════════════════════════════════════════════════════════════ */
 
 @layer components {
-  .card {
-    @apply bg-white border border-gray-200 rounded-xl shadow-sm;
-  }
-
-  .card-hover {
-    @apply transition-all duration-200 hover:border-gray-300 hover:shadow-md;
-  }
-
-  .badge {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600;
-  }
-
-  .badge-green {
-    @apply badge bg-emerald-50 text-emerald-700 border border-emerald-100;
-  }
-
-  .badge-red {
-    @apply badge bg-red-50 text-red-700 border border-red-100;
-  }
-
-  .badge-yellow {
-    @apply badge bg-amber-50 text-amber-700 border border-amber-100;
-  }
-
-  .badge-blue {
-    @apply badge bg-blue-50 text-blue-700 border border-blue-100;
-  }
-
-  .btn-primary {
-    @apply px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors;
-  }
-
-  .btn-secondary {
-    @apply px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors border border-gray-300;
-  }
-
-  /* ── Layout de página padrão ───────────────────────────────────────────── */
-  .page-content {
-    @apply px-4 sm:px-6 md:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6;
-  }
-
-  /* ── Card header padronizado ─────────────────────────────────────────── */
-  .card-title {
-    @apply text-sm font-semibold text-gray-900;
-  }
-
-  .card-subtitle {
-    @apply text-xs text-gray-500 mt-0.5;
-  }
-
-  /* ── Stat cards ──────────────────────────────────────────────────────── */
-  .stat-value {
-    @apply text-xl sm:text-2xl font-bold text-gray-900 tabular-nums;
-  }
-
-  .stat-label {
-    @apply text-xs text-gray-500 font-medium;
-  }
-
-  /* ── Tabelas padrão ──────────────────────────────────────────────────── */
-  .table-th {
-    @apply text-left pb-3 pr-4 text-[10px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap;
-  }
-
-  .table-td {
-    @apply py-3 pr-4 text-sm text-gray-700;
-  }
-
-  /* ── Divisor de seção ────────────────────────────────────────────────── */
-  .section-divider {
-    @apply border-t border-gray-200 pt-4 mt-4;
-  }
+  .page-content   { @apply px-4 sm:px-6 md:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6; }
+  .card           { @apply rounded-xl; }
+  .card-hover     { @apply transition-all duration-200; }
+  .badge          { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium; }
+  .badge-green    { @apply badge; }
+  .badge-red      { @apply badge; }
+  .badge-yellow   { @apply badge; }
+  .badge-blue     { @apply badge; }
+  .btn-primary    { @apply px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors; }
+  .btn-secondary  { @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors border; }
+  .card-title     { @apply text-sm font-semibold; }
+  .card-subtitle  { @apply text-xs mt-0.5; }
+  .stat-value     { @apply text-xl sm:text-2xl font-bold tabular-nums; }
+  .stat-label     { @apply text-xs font-medium; }
+  .table-th       { @apply text-left pb-3 pr-4 text-[10px] font-semibold uppercase tracking-wider whitespace-nowrap; }
+  .table-td       { @apply py-3 pr-4 text-sm; }
+  .section-divider{ @apply border-t pt-4 mt-4; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   Light-mode overrides: remapeia classes Tailwind dark usadas nos componentes
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   DARK THEME  (.dark no <html>)
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Backgrounds ─────────────────────────────────────────────────────────── */
-.bg-gray-950   { background-color: #f8fafc !important; }
+html.dark body {
+  background-color: #030712; /* gray-950 */
+  color: #f3f4f6;            /* gray-100 */
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 
-.bg-gray-900   { background-color: #ffffff !important; }
-.bg-gray-900\/50 { background-color: rgba(255,255,255,0.7) !important; }
-.bg-gray-900\/95 { background-color: rgba(255,255,255,0.97) !important; }
+html.dark ::-webkit-scrollbar-track  { background: #111827; }
+html.dark ::-webkit-scrollbar-thumb  { background: #374151; border-radius: 9999px; }
+html.dark ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
 
-.bg-gray-800   { background-color: #f1f5f9 !important; }
-.bg-gray-800\/20 { background-color: rgba(241,245,249,0.4) !important; }
-.bg-gray-800\/30 { background-color: rgba(241,245,249,0.5) !important; }
-.bg-gray-800\/40 { background-color: rgba(241,245,249,0.6) !important; }
-.bg-gray-800\/50 { background-color: rgba(241,245,249,0.7) !important; }
-.bg-gray-800\/60 { background-color: rgba(241,245,249,0.8) !important; }
+html.dark .card          { background: #111827; border: 1px solid #1f2937; }
+html.dark .card-hover:hover { border-color: #374151; box-shadow: 0 10px 15px -3px rgb(0 0 0 / .2); }
+html.dark .badge         { background: #1f2937; color: #9ca3af; }
+html.dark .badge-green   { background: rgb(16 185 129 / .15); color: #34d399; }
+html.dark .badge-red     { background: rgb(239 68 68 / .15);  color: #f87171; }
+html.dark .badge-yellow  { background: rgb(234 179 8 / .15);  color: #facc15; }
+html.dark .badge-blue    { background: rgb(59 130 246 / .15); color: #60a5fa; }
+html.dark .btn-secondary { background: #1f2937; color: #e5e7eb; border-color: #374151; }
+html.dark .btn-secondary:hover { background: #374151; }
+html.dark .card-title    { color: #fff; }
+html.dark .card-subtitle { color: #6b7280; }
+html.dark .stat-value    { color: #fff; }
+html.dark .stat-label    { color: #6b7280; }
+html.dark .table-th      { color: #4b5563; }
+html.dark .table-td      { color: #d1d5db; }
+html.dark .section-divider { border-color: #1f2937; }
 
-.bg-gray-700   { background-color: #e2e8f0 !important; }
+/* ═══════════════════════════════════════════════════════════════════
+   LIGHT THEME  (sem .dark no <html>)
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Text colors ─────────────────────────────────────────────────────────── */
-/* "Light" text classes used on dark bg → remap to dark for light bg */
-.text-white    { color: #0f172a !important; }
-.text-gray-100 { color: #1e293b !important; }
-.text-gray-200 { color: #334155 !important; }
-.text-gray-300 { color: #475569 !important; }
-.text-gray-400 { color: #64748b !important; }
+html:not(.dark) body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* "Muted" text — already gray, just nudge for light bg */
-.text-gray-600 { color: #64748b !important; }
-.text-gray-700 { color: #94a3b8 !important; }
-.text-gray-800 { color: #cbd5e1 !important; }
+html:not(.dark) ::-webkit-scrollbar-track  { background: #f1f5f9; }
+html:not(.dark) ::-webkit-scrollbar-thumb  { background: #cbd5e1; border-radius: 9999px; }
+html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* ── Borders ─────────────────────────────────────────────────────────────── */
-.border-gray-950 { border-color: #e2e8f0 !important; }
-.border-gray-800 { border-color: #e2e8f0 !important; }
-.border-gray-800\/30 { border-color: rgba(226,232,240,0.5) !important; }
-.border-gray-800\/50 { border-color: rgba(226,232,240,0.7) !important; }
-.border-gray-800\/60 { border-color: rgba(226,232,240,0.8) !important; }
-.border-gray-700 { border-color: #cbd5e1 !important; }
-.border-gray-700\/30 { border-color: rgba(203,213,225,0.5) !important; }
-.border-gray-700\/40 { border-color: rgba(203,213,225,0.6) !important; }
-.border-gray-700\/50 { border-color: rgba(203,213,225,0.7) !important; }
-.border-gray-700\/60 { border-color: rgba(203,213,225,0.8) !important; }
+html:not(.dark) .card          { background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgb(0 0 0 / .05); }
+html:not(.dark) .card-hover:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px -1px rgb(0 0 0 / .07); }
+html:not(.dark) .badge         { background: #f1f5f9; color: #475569; }
+html:not(.dark) .badge-green   { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+html:not(.dark) .badge-red     { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+html:not(.dark) .badge-yellow  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+html:not(.dark) .badge-blue    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+html:not(.dark) .btn-secondary { background: #fff; color: #374151; border-color: #d1d5db; }
+html:not(.dark) .btn-secondary:hover { background: #f9fafb; }
+html:not(.dark) .card-title    { color: #0f172a; }
+html:not(.dark) .card-subtitle { color: #64748b; }
+html:not(.dark) .stat-value    { color: #0f172a; }
+html:not(.dark) .stat-label    { color: #64748b; }
+html:not(.dark) .table-th      { color: #64748b; }
+html:not(.dark) .table-td      { color: #374151; }
+html:not(.dark) .section-divider { border-color: #e2e8f0; }
 
-/* ── Divide (table rows) ─────────────────────────────────────────────────── */
-.divide-gray-800 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
-.divide-gray-700 > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1 !important; }
+/* ── Overrides das classes Tailwind utilitárias (light only) ── */
 
-/* ── Accent colors: darken para contraste em fundo branco ─────────────────── */
-.text-emerald-400 { color: #059669 !important; }   /* → emerald-600 */
-.text-emerald-500 { color: #047857 !important; }   /* → emerald-700 */
+html:not(.dark) .bg-gray-950    { background-color: #f8fafc !important; }
+html:not(.dark) .bg-gray-900    { background-color: #ffffff !important; }
+html:not(.dark) .bg-gray-900\/50  { background-color: rgba(255,255,255,.7) !important; }
+html:not(.dark) .bg-gray-900\/95  { background-color: rgba(255,255,255,.97) !important; }
+html:not(.dark) .bg-gray-800    { background-color: #f1f5f9 !important; }
+html:not(.dark) .bg-gray-800\/20  { background-color: rgba(241,245,249,.4) !important; }
+html:not(.dark) .bg-gray-800\/30  { background-color: rgba(241,245,249,.5) !important; }
+html:not(.dark) .bg-gray-800\/40  { background-color: rgba(241,245,249,.6) !important; }
+html:not(.dark) .bg-gray-800\/50  { background-color: rgba(241,245,249,.7) !important; }
+html:not(.dark) .bg-gray-800\/60  { background-color: rgba(241,245,249,.8) !important; }
+html:not(.dark) .bg-gray-700    { background-color: #e2e8f0 !important; }
 
-.text-red-400     { color: #dc2626 !important; }   /* → red-600 */
-.text-red-500     { color: #b91c1c !important; }   /* → red-700 */
+html:not(.dark) .text-white     { color: #0f172a !important; }
+html:not(.dark) .text-gray-100  { color: #1e293b !important; }
+html:not(.dark) .text-gray-200  { color: #334155 !important; }
+html:not(.dark) .text-gray-300  { color: #475569 !important; }
+html:not(.dark) .text-gray-400  { color: #64748b !important; }
+html:not(.dark) .text-gray-600  { color: #64748b !important; }
+html:not(.dark) .text-gray-700  { color: #94a3b8 !important; }
+html:not(.dark) .text-gray-800  { color: #cbd5e1 !important; }
 
-.text-blue-400    { color: #2563eb !important; }   /* → blue-600 */
+html:not(.dark) .border-gray-950   { border-color: #e2e8f0 !important; }
+html:not(.dark) .border-gray-800   { border-color: #e2e8f0 !important; }
+html:not(.dark) .border-gray-800\/30 { border-color: rgba(226,232,240,.5) !important; }
+html:not(.dark) .border-gray-800\/50 { border-color: rgba(226,232,240,.7) !important; }
+html:not(.dark) .border-gray-800\/60 { border-color: rgba(226,232,240,.8) !important; }
+html:not(.dark) .border-gray-700   { border-color: #cbd5e1 !important; }
+html:not(.dark) .border-gray-700\/30 { border-color: rgba(203,213,225,.5) !important; }
+html:not(.dark) .border-gray-700\/40 { border-color: rgba(203,213,225,.6) !important; }
+html:not(.dark) .border-gray-700\/50 { border-color: rgba(203,213,225,.7) !important; }
+html:not(.dark) .border-gray-700\/60 { border-color: rgba(203,213,225,.8) !important; }
 
-.text-brand-300   { color: #4338ca !important; }   /* → brand-700 */
-.text-brand-400   { color: #4f46e5 !important; }   /* → brand-600 */
+html:not(.dark) .divide-gray-800 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
+html:not(.dark) .divide-gray-700 > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1 !important; }
 
-.text-yellow-400  { color: #d97706 !important; }   /* → amber-600 */
-.text-amber-400   { color: #d97706 !important; }
+html:not(.dark) .text-emerald-400 { color: #059669 !important; }
+html:not(.dark) .text-emerald-500 { color: #047857 !important; }
+html:not(.dark) .text-red-400     { color: #dc2626 !important; }
+html:not(.dark) .text-red-500     { color: #b91c1c !important; }
+html:not(.dark) .text-blue-400    { color: #2563eb !important; }
+html:not(.dark) .text-brand-300   { color: #4338ca !important; }
+html:not(.dark) .text-brand-400   { color: #4f46e5 !important; }
+html:not(.dark) .text-yellow-400  { color: #d97706 !important; }
+html:not(.dark) .text-amber-400   { color: #d97706 !important; }
+html:not(.dark) .text-orange-400  { color: #ea580c !important; }
+html:not(.dark) .text-orange-600  { color: #c2410c !important; }
+html:not(.dark) .text-orange-700  { color: #9a3412 !important; }
+html:not(.dark) .text-purple-400  { color: #7c3aed !important; }
 
-.text-orange-400  { color: #ea580c !important; }   /* → orange-600 */
-.text-orange-600  { color: #c2410c !important; }
-.text-orange-700  { color: #9a3412 !important; }
+html:not(.dark) .bg-emerald-500\/5  { background-color: #f0fdf4 !important; }
+html:not(.dark) .bg-emerald-500\/10 { background-color: #dcfce7 !important; }
+html:not(.dark) .bg-red-500\/5      { background-color: #fef2f2 !important; }
+html:not(.dark) .bg-red-500\/10     { background-color: #fee2e2 !important; }
+html:not(.dark) .bg-blue-500\/5     { background-color: #eff6ff !important; }
+html:not(.dark) .bg-brand-500\/5    { background-color: #eef2ff !important; }
+html:not(.dark) .bg-brand-600\/10   { background-color: #e0e7ff !important; }
+html:not(.dark) .bg-brand-600\/20   { background-color: #c7d2fe !important; }
+html:not(.dark) .bg-orange-500\/5   { background-color: #fff7ed !important; }
+html:not(.dark) .bg-yellow-500\/10  { background-color: #fefce8 !important; }
 
-.text-purple-400  { color: #7c3aed !important; }
+html:not(.dark) .border-emerald-500\/20 { border-color: #a7f3d0 !important; }
+html:not(.dark) .border-red-500\/20     { border-color: #fecaca !important; }
+html:not(.dark) .border-blue-500\/20    { border-color: #bfdbfe !important; }
+html:not(.dark) .border-brand-500\/20   { border-color: #c7d2fe !important; }
+html:not(.dark) .border-orange-500\/20  { border-color: #fed7aa !important; }
 
-/* ── Accent backgrounds: tints já funcionam em fundo branco ─────────────── */
-/* emerald/5, red/5, blue/5, brand/5 → mantidos (são transparências leves) */
-/* Apenas os que ficam claros demais precisam de ajuste: */
-.bg-emerald-500\/5  { background-color: #f0fdf4 !important; }
-.bg-emerald-500\/10 { background-color: #dcfce7 !important; }
-.bg-red-500\/5      { background-color: #fef2f2 !important; }
-.bg-red-500\/10     { background-color: #fee2e2 !important; }
-.bg-blue-500\/5     { background-color: #eff6ff !important; }
-.bg-brand-500\/5    { background-color: #eef2ff !important; }
-.bg-brand-600\/10   { background-color: #e0e7ff !important; }
-.bg-brand-600\/20   { background-color: #c7d2fe !important; }
-.bg-orange-500\/5   { background-color: #fff7ed !important; }
-.bg-yellow-500\/10  { background-color: #fefce8 !important; }
-
-/* ── Accent borders: tornar mais visíveis em fundo branco ─────────────── */
-.border-emerald-500\/20 { border-color: #a7f3d0 !important; }
-.border-red-500\/20     { border-color: #fecaca !important; }
-.border-blue-500\/20    { border-color: #bfdbfe !important; }
-.border-brand-500\/20   { border-color: #c7d2fe !important; }
-.border-orange-500\/20  { border-color: #fed7aa !important; }
-
-/* ── Hover states ────────────────────────────────────────────────────────── */
-.hover\:bg-gray-800\/20:hover { background-color: rgba(241,245,249,0.5) !important; }
-.hover\:bg-gray-700\/50:hover { background-color: rgba(226,232,240,0.7) !important; }
-.hover\:bg-gray-800\/50:hover { background-color: rgba(241,245,249,0.7) !important; }
-.hover\:text-gray-200:hover   { color: #334155 !important; }
-.hover\:text-gray-300:hover   { color: #475569 !important; }
-.hover\:border-gray-700:hover { border-color: #cbd5e1 !important; }
-
-/* ── Code blocks ─────────────────────────────────────────────────────────── */
-code.bg-gray-800 { background-color: #f1f5f9 !important; color: #334155 !important; }
-
-/* ── Ring / focus ─────────────────────────────────────────────────────────── */
-.ring-gray-800 { --tw-ring-color: #e2e8f0 !important; }
+html:not(.dark) .hover\:bg-gray-800\/20:hover { background-color: rgba(241,245,249,.5) !important; }
+html:not(.dark) .hover\:bg-gray-700\/50:hover { background-color: rgba(226,232,240,.7) !important; }
+html:not(.dark) .hover\:bg-gray-800\/50:hover { background-color: rgba(241,245,249,.7) !important; }
+html:not(.dark) .hover\:text-gray-200:hover   { color: #334155 !important; }
+html:not(.dark) .hover\:text-gray-300:hover   { color: #475569 !important; }
+html:not(.dark) .hover\:border-gray-700:hover { border-color: #cbd5e1 !important; }

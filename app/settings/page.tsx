@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
-import { Settings, Bell, Shield, Database, Info, Zap, Eye, EyeOff, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Settings, Bell, Shield, Database, Info, Zap, Eye, EyeOff, CheckCircle, XCircle, Loader2, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const API_KEY_STORAGE = "jacqes_anthropic_key";
 
@@ -177,6 +178,41 @@ function OpenClawConfig() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// ── Theme Toggle ──────────────────────────────────────────────────────────────
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark";
+
+  return (
+    <div className="flex items-center justify-between py-2">
+      <div>
+        <div className="text-sm text-gray-300">Modo de exibição</div>
+        <div className="text-xs text-gray-600 mt-0.5">
+          {isDark ? "Tema escuro ativo" : "Tema claro ativo"}
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <Sun size={13} className={isDark ? "text-gray-600" : "text-amber-500"} />
+        <button
+          onClick={() => setTheme(isDark ? "light" : "dark")}
+          className={`relative w-11 h-6 rounded-full transition-colors duration-300 focus:outline-none ${
+            isDark ? "bg-brand-600" : "bg-gray-300"
+          }`}
+          aria-label="Alternar tema"
+        >
+          <span
+            className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-300 ${
+              isDark ? "translate-x-6" : "translate-x-1"
+            }`}
+          />
+        </button>
+        <Moon size={13} className={isDark ? "text-brand-400" : "text-gray-400"} />
+      </div>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const { user } = useAuth();
   return (
@@ -211,6 +247,8 @@ export default function SettingsPage() {
           title="Geral"
           description="Preferências do workspace e visualização"
         >
+          <ThemeToggle />
+          <div className="border-t border-gray-800 pt-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">Nome do workspace</label>
