@@ -3,24 +3,35 @@ import BUCard from "@/components/BUCard";
 import { businessUnits } from "@/lib/data";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 
-export default function BusinessUnitsPage() {
+interface PageProps {
+  searchParams: { bu?: string };
+}
+
+export default function BusinessUnitsPage({ searchParams }: PageProps) {
+  const activeBuId = searchParams.bu ?? null;
+  const activeBU = businessUnits.find((b) => b.id === activeBuId) ?? null;
+
   const totalRevenue = businessUnits.reduce((s, bu) => s + bu.revenue, 0);
   const totalCustomers = businessUnits.reduce((s, bu) => s + bu.customers, 0);
   const avgMargin =
     businessUnits.reduce((s, bu) => s + bu.margin, 0) / businessUnits.length;
 
   const summaryStats = [
-    { label: "Business Units", value: String(businessUnits.length), sub: "active units" },
-    { label: "Combined Revenue", value: formatCurrency(totalRevenue, "USD", true), sub: "FY 2026" },
-    { label: "Total Customers", value: formatNumber(totalCustomers), sub: "across all BUs" },
-    { label: "Avg. Gross Margin", value: `${avgMargin.toFixed(1)}%`, sub: "blended margin" },
+    { label: "Business Units", value: String(businessUnits.length), sub: "unidades ativas" },
+    { label: "Receita Combinada", value: formatCurrency(totalRevenue, "USD", true), sub: "FY 2026" },
+    { label: "Total Clientes", value: formatNumber(totalCustomers), sub: "em todas as BUs" },
+    { label: "Margem Média", value: `${avgMargin.toFixed(1)}%`, sub: "margem bruta" },
   ];
 
   return (
     <>
       <Header
-        title="Business Units"
-        subtitle="Performance overview — click a BU to expand the full session breakdown"
+        title={activeBU ? activeBU.name : "Business Units"}
+        subtitle={
+          activeBU
+            ? `${activeBU.description} · Clique na BU para ver a sessão completa`
+            : "AWQ Group · Clique em uma BU para expandir a sessão completa"
+        }
       />
 
       <div className="px-8 py-6 space-y-6">
@@ -38,12 +49,21 @@ export default function BusinessUnitsPage() {
         {/* BU list */}
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-white">All Business Units</h2>
-            <span className="text-xs text-gray-500">Click a BU to view session details</span>
+            <h2 className="text-sm font-semibold text-white">
+              {activeBU ? `BU Selecionada · ${activeBU.name}` : "Todas as Business Units"}
+            </h2>
+            <span className="text-xs text-gray-500">
+              Clique em uma BU para ver a sessão completa
+            </span>
           </div>
+
           <div className="space-y-3">
             {businessUnits.map((bu) => (
-              <BUCard key={bu.id} bu={bu} />
+              <BUCard
+                key={bu.id}
+                bu={bu}
+                defaultExpanded={bu.id === activeBuId}
+              />
             ))}
           </div>
         </div>

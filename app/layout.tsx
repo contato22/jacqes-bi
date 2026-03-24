@@ -3,9 +3,9 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "JACQES BI — Business Intelligence Dashboard",
+  title: "AWQ Group — Plataforma Central BI",
   description:
-    "Business Intelligence dashboard for JACQES, a portfolio company of AWQ Group.",
+    "Business Intelligence centralizado do AWQ Group — gestão de BUs, receita e performance.",
   icons: {
     icon: "/favicon.ico",
   },

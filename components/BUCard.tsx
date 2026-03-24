@@ -15,6 +15,7 @@ import { formatCurrency, formatNumber, cn } from "@/lib/utils";
 
 interface BUCardProps {
   bu: BusinessUnit;
+  defaultExpanded?: boolean;
 }
 
 const statusConfig = {
@@ -23,8 +24,8 @@ const statusConfig = {
   declining: { label: "Declining", color: "text-red-400", badgeClass: "badge-red", Icon: TrendingDown },
 };
 
-export default function BUCard({ bu }: BUCardProps) {
-  const [expanded, setExpanded] = useState(false);
+export default function BUCard({ bu, defaultExpanded = false }: BUCardProps) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
   const delta = ((bu.revenue - bu.previousRevenue) / bu.previousRevenue) * 100;
   const status = statusConfig[bu.status];
