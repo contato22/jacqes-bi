@@ -32,18 +32,44 @@ export default function OpenClawPanel() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  function handleSaveKey() {
+  async function handleSaveKey() {
     const trimmed = inputKey.trim();
-    if (!trimmed.startsWith("sk-ant-") && !trimmed.startsWith("sk-")) {
-      setError("Chave inválida. Deve começar com sk-ant- ou sk-");
+    if (!trimmed) {
+      setError("Insira uma chave de API.");
       return;
     }
     setSaving(true);
-    setTimeout(() => {
+    setError("");
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": trimmed,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 1,
+          messages: [{ role: "user", content: "hi" }],
+        }),
+      });
+      if (res.status === 401 || res.status === 403) {
+        setError("Chave inválida ou sem permissão.");
+        setSaving(false);
+        return;
+      }
+      // Any other response (200 or other errors) — key is valid
       localStorage.setItem(STORAGE_KEY, trimmed);
       setApiKey(trimmed);
+    } catch {
+      // Network/CORS error — save anyway, error will surface on first message
+      localStorage.setItem(STORAGE_KEY, trimmed);
+      setApiKey(trimmed);
+    } finally {
       setSaving(false);
-    }, 400);
+    }
   }
 
   function handleClearKey() {
