@@ -302,6 +302,103 @@ export const channelData: ChannelData[] = [
   { channel: "Email", sessions: 14_700, conversions: 588, revenue: 531_500, cac: 12 },
 ];
 
+// ─── AWQ Business Units ───────────────────────────────────────────────────────
+
+export interface BusinessUnit {
+  id: string;
+  name: string;
+  description: string;
+  revenue: number;
+  expenses: number;
+  profit: number;
+  margin: number;
+  growth: number;
+  employees: number;
+  status: "ahead" | "on-track" | "at-risk";
+  color: string;
+}
+
+export interface AWQMonthlyData {
+  month: string;
+  revenue: number;
+  expenses: number;
+  profit: number;
+  jacqes: number;
+  ventures: number;
+  capital: number;
+  labs: number;
+}
+
+export const awqBusinessUnits: BusinessUnit[] = [
+  {
+    id: "BU001",
+    name: "JACQES",
+    description: "BI & Analytics Platform",
+    revenue: 4_821_500,
+    expenses: 1_580_000,
+    profit: 3_241_500,
+    margin: 67.2,
+    growth: 14.6,
+    employees: 84,
+    status: "ahead",
+    color: "#6366f1",
+  },
+  {
+    id: "BU002",
+    name: "AWQ Ventures",
+    description: "Investment & Portfolio",
+    revenue: 3_420_000,
+    expenses: 1_240_000,
+    profit: 2_180_000,
+    margin: 63.7,
+    growth: 22.3,
+    employees: 32,
+    status: "ahead",
+    color: "#C9A84C",
+  },
+  {
+    id: "BU003",
+    name: "AWQ Capital",
+    description: "Financial Services",
+    revenue: 2_180_000,
+    expenses: 980_000,
+    profit: 1_200_000,
+    margin: 55.0,
+    growth: 8.9,
+    employees: 47,
+    status: "on-track",
+    color: "#22d3ee",
+  },
+  {
+    id: "BU004",
+    name: "AWQ Labs",
+    description: "R&D & Innovation",
+    revenue: 1_240_000,
+    expenses: 920_000,
+    profit: 320_000,
+    margin: 25.8,
+    growth: 31.4,
+    employees: 28,
+    status: "on-track",
+    color: "#34d399",
+  },
+];
+
+export const awqConsolidatedRevenue: AWQMonthlyData[] = [
+  { month: "Jan", revenue: 8_360_000, expenses: 3_540_000, profit: 4_820_000, jacqes: 3_210_000, ventures: 2_480_000, capital: 1_620_000, labs: 1_050_000 },
+  { month: "Feb", revenue: 8_970_000, expenses: 3_780_000, profit: 5_190_000, jacqes: 3_480_000, ventures: 2_650_000, capital: 1_740_000, labs: 1_100_000 },
+  { month: "Mar", revenue: 9_290_000, expenses: 3_920_000, profit: 5_370_000, jacqes: 3_650_000, ventures: 2_740_000, capital: 1_790_000, labs: 1_110_000 },
+  { month: "Apr", revenue: 9_060_000, expenses: 3_820_000, profit: 5_240_000, jacqes: 3_520_000, ventures: 2_680_000, capital: 1_750_000, labs: 1_110_000 },
+  { month: "May", revenue: 9_830_000, expenses: 4_080_000, profit: 5_750_000, jacqes: 3_900_000, ventures: 2_890_000, capital: 1_920_000, labs: 1_120_000 },
+  { month: "Jun", revenue: 10_340_000, expenses: 4_280_000, profit: 6_060_000, jacqes: 4_120_000, ventures: 3_020_000, capital: 2_060_000, labs: 1_140_000 },
+  { month: "Jul", revenue: 10_620_000, expenses: 4_380_000, profit: 6_240_000, jacqes: 4_250_000, ventures: 3_080_000, capital: 2_120_000, labs: 1_170_000 },
+  { month: "Aug", revenue: 10_970_000, expenses: 4_480_000, profit: 6_490_000, jacqes: 4_380_000, ventures: 3_180_000, capital: 2_190_000, labs: 1_220_000 },
+  { month: "Sep", revenue: 11_260_000, expenses: 4_580_000, profit: 6_680_000, jacqes: 4_510_000, ventures: 3_240_000, capital: 2_270_000, labs: 1_240_000 },
+  { month: "Oct", revenue: 11_510_000, expenses: 4_660_000, profit: 6_850_000, jacqes: 4_620_000, ventures: 3_310_000, capital: 2_340_000, labs: 1_240_000 },
+  { month: "Nov", revenue: 11_740_000, expenses: 4_730_000, profit: 7_010_000, jacqes: 4_730_000, ventures: 3_360_000, capital: 2_410_000, labs: 1_240_000 },
+  { month: "Dec", revenue: 11_661_500, expenses: 4_720_000, profit: 6_941_500, jacqes: 4_821_500, ventures: 3_420_000, capital: 2_180_000, labs: 1_240_000 },
+];
+
 // ─── Alerts ───────────────────────────────────────────────────────────────────
 
 export const alerts: Alert[] = [
