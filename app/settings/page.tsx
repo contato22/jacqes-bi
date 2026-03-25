@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { Settings, Bell, Shield, Palette, Database, Users } from "lucide-react";
+import { Settings, Bell, Shield, Palette, Database, Users, Building2, ChevronRight } from "lucide-react";
 
 interface SettingsSectionProps {
   icon: React.ElementType;
@@ -168,6 +168,62 @@ export default function SettingsPage() {
               </span>
             </div>
           ))}
+        </SettingsSection>
+
+        <SettingsSection
+          icon={Building2}
+          title="Business Units"
+          description="Portfolio companies managed under AWQ Group"
+        >
+          <div className="space-y-2">
+            {[
+              {
+                name: "JACQES",
+                category: "Agência",
+                icon: "J",
+                color: "from-brand-600 to-brand-400",
+                href: "/",
+                active: true,
+              },
+              {
+                name: "Caza Vision",
+                category: "Tecnologia",
+                icon: "CV",
+                color: "from-emerald-600 to-emerald-400",
+                href: null,
+                active: false,
+              },
+              {
+                name: "AWQ Venture",
+                category: "Investimentos",
+                icon: "AV",
+                color: "from-amber-600 to-amber-400",
+                href: null,
+                active: false,
+              },
+            ].map((unit) => (
+              <div
+                key={unit.name}
+                className="flex items-center gap-3 py-2.5 border-b border-gray-800 last:border-0"
+              >
+                <div
+                  className={`w-9 h-9 rounded-xl bg-gradient-to-br ${unit.color} flex items-center justify-center text-[10px] font-bold text-white shrink-0`}
+                >
+                  {unit.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-gray-200">{unit.name}</div>
+                  <div className="text-xs text-gray-500">{unit.category}</div>
+                </div>
+                {unit.active && (
+                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-brand-600/20 text-brand-400 border border-brand-500/20 uppercase tracking-wide">
+                    BI
+                  </span>
+                )}
+                <ChevronRight size={14} className="text-gray-600" />
+              </div>
+            ))}
+          </div>
         </SettingsSection>
 
         {/* Save button */}
