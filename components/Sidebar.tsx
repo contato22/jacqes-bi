@@ -10,10 +10,16 @@ import {
   Settings,
   ChevronRight,
   Zap,
+  Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
+  {
+    label: "AWQ Group",
+    href: "/awq",
+    icon: Building2,
+  },
   {
     label: "Overview",
     href: "/",
