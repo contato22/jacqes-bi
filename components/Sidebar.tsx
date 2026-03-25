@@ -5,33 +5,52 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   TrendingUp,
-  Users,
+  Briefcase,
+  BarChart2,
+  HeartPulse,
+  DollarSign,
   FileBarChart,
   Settings,
   ChevronRight,
   Zap,
+  GraduationCap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Overview",
+    label: "Visão Geral",
     href: "/",
     icon: LayoutDashboard,
   },
   {
-    label: "Revenue",
-    href: "/revenue",
+    label: "Desempenho",
+    href: "/desempenho",
     icon: TrendingUp,
   },
   {
-    label: "Customers",
-    href: "/customers",
-    icon: Users,
+    label: "Carteira",
+    href: "/carteira",
+    icon: Briefcase,
   },
   {
-    label: "Reports",
-    href: "/reports",
+    label: "Análise",
+    href: "/analise",
+    icon: BarChart2,
+  },
+  {
+    label: "CS Ops",
+    href: "/cs-ops",
+    icon: HeartPulse,
+  },
+  {
+    label: "Financial",
+    href: "/financial",
+    icon: DollarSign,
+  },
+  {
+    label: "Relatórios",
+    href: "/relatorios",
     icon: FileBarChart,
   },
 ];
@@ -58,7 +77,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         <div className="px-3 mb-3">
           <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">
-            Analytics
+            Análises
           </span>
         </div>
 
@@ -95,9 +114,35 @@ export default function Sidebar() {
 
         <div className="px-3 mt-5 mb-3">
           <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">
-            System
+            Sistema
           </span>
         </div>
+
+        <Link
+          href="/modo-carreira"
+          className={cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group",
+            pathname === "/modo-carreira"
+              ? "bg-brand-600/20 text-brand-400 border border-brand-500/20"
+              : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+          )}
+        >
+          <GraduationCap
+            size={16}
+            className={cn(
+              "transition-colors",
+              pathname === "/modo-carreira"
+                ? "text-brand-400"
+                : "text-gray-500 group-hover:text-gray-300"
+            )}
+          />
+          Modo Carreira
+          {pathname !== "/modo-carreira" && (
+            <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded px-1.5 py-0.5">
+              NOVO
+            </span>
+          )}
+        </Link>
 
         <Link
           href="/settings"
@@ -117,7 +162,7 @@ export default function Sidebar() {
                 : "text-gray-500 group-hover:text-gray-300"
             )}
           />
-          Settings
+          Configurações
         </Link>
       </nav>
 
