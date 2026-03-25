@@ -10,6 +10,7 @@ import {
   Settings,
   ChevronRight,
   Zap,
+  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -122,7 +123,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-gray-800">
+      <div className="px-4 py-4 border-t border-gray-800 space-y-3">
         <div className="flex items-center gap-3 px-2">
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-awq-gold to-amber-600 flex items-center justify-center text-xs font-bold text-white">
             AW
@@ -131,6 +132,18 @@ export default function Sidebar() {
             <div className="text-xs font-semibold text-gray-300 truncate">AWQ Group</div>
             <div className="text-[10px] text-gray-600 truncate">admin@awqgroup.com</div>
           </div>
+        </div>
+        <div className="px-2">
+          <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
+            Outras unidades de negócio do AWQ Group são acessadas pelo portal AWQ.
+          </p>
+          <a
+            href="#"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-amber-500 border border-amber-700/30 hover:bg-amber-900/20 transition-colors"
+          >
+            <ExternalLink size={12} />
+            Acessar Portal AWQ
+          </a>
         </div>
       </div>
     </aside>
