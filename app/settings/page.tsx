@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { Settings, Bell, Shield, Palette, Database, Users } from "lucide-react";
+import { Settings, Bell, Shield, Database } from "lucide-react";
 
 interface SettingsSectionProps {
   icon: React.ElementType;
@@ -56,52 +56,43 @@ function ToggleRow({ label, description, defaultChecked = false }: ToggleRowProp
 export default function SettingsPage() {
   return (
     <>
-      <Header title="Settings" subtitle="Manage your JACQES BI workspace preferences" />
+      <Header title="Settings" subtitle="Preferências da plataforma AWQ Group" />
 
       <div className="px-8 py-6 space-y-4">
         <SettingsSection
           icon={Settings}
-          title="General"
-          description="Workspace and display preferences"
+          title="Geral"
+          description="Preferências de workspace e exibição"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Workspace Name
+                Nome do Workspace
               </label>
               <input
                 type="text"
-                defaultValue="JACQES BI"
+                defaultValue="AWQ Group"
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500"
               />
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Default Currency
+                Moeda Padrão
               </label>
               <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
                 <option>USD — US Dollar</option>
                 <option>EUR — Euro</option>
-                <option>GBP — British Pound</option>
+                <option>BRL — Real Brasileiro</option>
               </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                Fiscal Year Start
+                Fuso Horário
               </label>
               <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
-                <option>January</option>
-                <option>April</option>
-                <option>July</option>
-                <option>October</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1.5">Time Zone</label>
-              <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
-                <option>UTC+0 — London</option>
-                <option>UTC-5 — New York</option>
-                <option>UTC+8 — Singapore</option>
+                <option>UTC-3 — Brasília</option>
+                <option>UTC+0 — Londres</option>
+                <option>UTC-5 — Nova York</option>
               </select>
             </div>
           </div>
@@ -109,29 +100,27 @@ export default function SettingsPage() {
 
         <SettingsSection
           icon={Bell}
-          title="Notifications"
-          description="Configure alerts and notification delivery"
+          title="Notificações"
+          description="Configure alertas e entregas de notificação"
         >
-          <ToggleRow label="Revenue milestone alerts" defaultChecked={true} />
-          <ToggleRow label="At-risk customer warnings" description="Alert when churn probability > 70%" defaultChecked={true} />
-          <ToggleRow label="Weekly digest email" defaultChecked={true} />
-          <ToggleRow label="Slack integration alerts" description="Post to #analytics channel" defaultChecked={false} />
-          <ToggleRow label="Data refresh notifications" defaultChecked={false} />
+          <ToggleRow label="Alertas de receita consolidada" defaultChecked={true} />
+          <ToggleRow label="Atualizações de Business Units" defaultChecked={true} />
+          <ToggleRow label="Digest semanal" defaultChecked={true} />
+          <ToggleRow label="Alertas via Slack" description="Postar no canal #awq-grupo" defaultChecked={false} />
         </SettingsSection>
 
         <SettingsSection
           icon={Shield}
-          title="Security & Access"
-          description="Manage team permissions and data access"
+          title="Segurança & Acesso"
+          description="Gerencie permissões da equipe AWQ"
         >
           <div className="space-y-2">
             {[
               { name: "Alex Whitmore", email: "alex@awqgroup.com", role: "Owner" },
-              { name: "Sam Chen", email: "s.chen@jacqes.com", role: "Admin" },
-              { name: "Priya Nair", email: "p.nair@jacqes.com", role: "Analyst" },
+              { name: "Sam Chen", email: "s.chen@awqgroup.com", role: "Admin" },
             ].map((member) => (
               <div key={member.email} className="flex items-center gap-3 py-2 border-b border-gray-800 last:border-0">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 flex items-center justify-center text-[10px] font-bold text-white">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-awq-gold to-amber-600 flex items-center justify-center text-[10px] font-bold text-white">
                   {member.name.split(" ").map((n) => n[0]).join("")}
                 </div>
                 <div className="flex-1">
@@ -142,37 +131,33 @@ export default function SettingsPage() {
               </div>
             ))}
           </div>
-          <button className="btn-secondary text-xs mt-2">+ Invite Member</button>
+          <button className="btn-secondary text-xs mt-2">+ Convidar Membro</button>
         </SettingsSection>
 
         <SettingsSection
           icon={Database}
-          title="Data Sources"
-          description="Connected integrations and data pipelines"
+          title="Fontes de Dados"
+          description="Integrações e pipelines de dados conectados"
         >
           {[
-            { name: "Stripe", status: "Connected", lastSync: "2 min ago" },
-            { name: "Salesforce CRM", status: "Connected", lastSync: "15 min ago" },
-            { name: "Google Analytics", status: "Connected", lastSync: "1 hr ago" },
-            { name: "HubSpot", status: "Disconnected", lastSync: "—" },
+            { name: "JACQES BI", status: "Conectado", lastSync: "2 min atrás" },
+            { name: "Caza Vision", status: "Pendente", lastSync: "—" },
+            { name: "AWQ Venture", status: "Pendente", lastSync: "—" },
           ].map((source) => (
             <div key={source.name} className="flex items-center justify-between py-2 border-b border-gray-800 last:border-0">
               <div>
                 <div className="text-sm font-medium text-gray-300">{source.name}</div>
-                <div className="text-xs text-gray-600">Last sync: {source.lastSync}</div>
+                <div className="text-xs text-gray-600">Última sync: {source.lastSync}</div>
               </div>
-              <span
-                className={`badge ${source.status === "Connected" ? "badge-green" : "badge-red"}`}
-              >
+              <span className={`badge ${source.status === "Conectado" ? "badge-green" : "badge-yellow"}`}>
                 {source.status}
               </span>
             </div>
           ))}
         </SettingsSection>
 
-        {/* Save button */}
         <div className="flex justify-end">
-          <button className="btn-primary">Save Changes</button>
+          <button className="btn-primary">Salvar Alterações</button>
         </div>
       </div>
     </>

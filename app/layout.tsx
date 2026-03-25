@@ -3,12 +3,8 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "JACQES BI — Business Intelligence Dashboard",
-  description:
-    "Business Intelligence dashboard for JACQES, a portfolio company of AWQ Group.",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  title: "AWQ Group — Plataforma Central",
+  description: "Plataforma central de gestão de portfolio do AWQ Group.",
 };
 
 export default function RootLayout({
@@ -17,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="pt-BR" className="dark">
       <body>
         <div className="flex h-screen overflow-hidden">
           <Sidebar />
