@@ -55,16 +55,20 @@ export default function OpenClawPanel() {
           messages: [{ role: "user", content: "hi" }],
         }),
       });
-      if (res.status === 401 || res.status === 403) {
-        setError("Chave inválida ou sem permissão.");
-        setSaving(false);
-        return;
+      if (res.status === 401) {
+        // 401 = chave inválida; 403 = chave válida sem acesso ao modelo (salva mesmo assim)
+        const body = await res.json().catch(() => ({}));
+        const errorType = body?.error?.type;
+        if (errorType === "authentication_error" || res.status === 401) {
+          setError("Chave inválida ou sem permissão.");
+          return;
+        }
       }
-      // Any other response (200 or other errors) — key is valid
+      // 200, 403 (modelo restrito) ou qualquer outro status — chave aceita
       localStorage.setItem(STORAGE_KEY, trimmed);
       setApiKey(trimmed);
     } catch {
-      // Network/CORS error — save anyway, error will surface on first message
+      // Erro de rede/CORS — salva assim mesmo; erro aparecerá na primeira mensagem
       localStorage.setItem(STORAGE_KEY, trimmed);
       setApiKey(trimmed);
     } finally {
