@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import OpenClawNotification from "@/components/OpenClawNotification";
 
 export const metadata: Metadata = {
   title: "JACQES BI — Business Intelligence Dashboard",
@@ -27,6 +28,7 @@ export default function RootLayout({
             </main>
           </div>
         </div>
+        <OpenClawNotification />
       </body>
     </html>
   );
