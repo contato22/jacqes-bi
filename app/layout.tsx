@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import SidebarWrapper from "@/components/SidebarWrapper";
 
 export const metadata: Metadata = {
   title: "JACQES BI — Business Intelligence Dashboard",
@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body>
         <div className="flex h-screen overflow-hidden">
-          <Sidebar />
+          <SidebarWrapper />
           <div className="flex-1 flex flex-col overflow-hidden">
             <main className="flex-1 overflow-y-auto">
               {children}
