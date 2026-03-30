@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "close-month": "tsx scripts/close-month.ts"
   },
   "dependencies": {
     "next": "14.2.5",
@@ -27,6 +28,7 @@
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4",
-    "autoprefixer": "^10.4.20"
+    "autoprefixer": "^10.4.20",
+    "tsx": "^4.19.1"
   }
 }
