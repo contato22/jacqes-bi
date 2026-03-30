@@ -1,0 +1,384 @@
+{
+  "period": "2026-03",
+  "year": 2026,
+  "month": 3,
+  "closedAt": "2026-03-30T20:26:09.007Z",
+  "kpis": [
+    {
+      "id": "revenue",
+      "label": "Total Revenue",
+      "value": 4821500,
+      "previousValue": 4205800,
+      "unit": "currency",
+      "icon": "DollarSign",
+      "color": "brand"
+    },
+    {
+      "id": "customers",
+      "label": "Active Customers",
+      "value": 3847,
+      "previousValue": 3512,
+      "unit": "number",
+      "icon": "Users",
+      "color": "emerald"
+    },
+    {
+      "id": "orders",
+      "label": "Monthly Orders",
+      "value": 12394,
+      "previousValue": 11280,
+      "unit": "number",
+      "icon": "ShoppingCart",
+      "color": "blue"
+    },
+    {
+      "id": "margin",
+      "label": "Gross Margin",
+      "value": 67.4,
+      "previousValue": 63.1,
+      "unit": "percent",
+      "suffix": "%",
+      "icon": "TrendingUp",
+      "color": "purple"
+    }
+  ],
+  "revenueData": [
+    {
+      "month": "Jan",
+      "revenue": 3210000,
+      "expenses": 1120000,
+      "profit": 2090000
+    },
+    {
+      "month": "Feb",
+      "revenue": 3480000,
+      "expenses": 1195000,
+      "profit": 2285000
+    },
+    {
+      "month": "Mar",
+      "revenue": 3650000,
+      "expenses": 1240000,
+      "profit": 2410000
+    },
+    {
+      "month": "Apr",
+      "revenue": 3520000,
+      "expenses": 1180000,
+      "profit": 2340000
+    },
+    {
+      "month": "May",
+      "revenue": 3900000,
+      "expenses": 1310000,
+      "profit": 2590000
+    },
+    {
+      "month": "Jun",
+      "revenue": 4120000,
+      "expenses": 1390000,
+      "profit": 2730000
+    },
+    {
+      "month": "Jul",
+      "revenue": 4250000,
+      "expenses": 1420000,
+      "profit": 2830000
+    },
+    {
+      "month": "Aug",
+      "revenue": 4380000,
+      "expenses": 1450000,
+      "profit": 2930000
+    },
+    {
+      "month": "Sep",
+      "revenue": 4510000,
+      "expenses": 1500000,
+      "profit": 3010000
+    },
+    {
+      "month": "Oct",
+      "revenue": 4620000,
+      "expenses": 1530000,
+      "profit": 3090000
+    },
+    {
+      "month": "Nov",
+      "revenue": 4730000,
+      "expenses": 1560000,
+      "profit": 3170000
+    },
+    {
+      "month": "Dec",
+      "revenue": 4821500,
+      "expenses": 1580000,
+      "profit": 3241500
+    }
+  ],
+  "customerSegments": [
+    {
+      "name": "Enterprise",
+      "value": 42,
+      "color": "#6366f1"
+    },
+    {
+      "name": "SMB",
+      "value": 31,
+      "color": "#22d3ee"
+    },
+    {
+      "name": "Startup",
+      "value": 18,
+      "color": "#f59e0b"
+    },
+    {
+      "name": "Individual",
+      "value": 9,
+      "color": "#ec4899"
+    }
+  ],
+  "topProducts": [
+    {
+      "id": "P001",
+      "name": "JACQES Platform Pro",
+      "category": "SaaS",
+      "revenue": 1842000,
+      "units": 412,
+      "growth": 18.4,
+      "status": "trending"
+    },
+    {
+      "id": "P002",
+      "name": "Analytics Suite",
+      "category": "SaaS",
+      "revenue": 1120500,
+      "units": 289,
+      "growth": 12.7,
+      "status": "trending"
+    },
+    {
+      "id": "P003",
+      "name": "Data Connector API",
+      "category": "API",
+      "revenue": 756000,
+      "units": 1840,
+      "growth": 9.2,
+      "status": "stable"
+    },
+    {
+      "id": "P004",
+      "name": "Enterprise Reporting",
+      "category": "Add-on",
+      "revenue": 580000,
+      "units": 124,
+      "growth": -2.1,
+      "status": "declining"
+    },
+    {
+      "id": "P005",
+      "name": "Custom Dashboards",
+      "category": "Service",
+      "revenue": 523000,
+      "units": 98,
+      "growth": 6.8,
+      "status": "stable"
+    }
+  ],
+  "customers": [
+    {
+      "id": "C001",
+      "name": "Sarah Mitchell",
+      "company": "Nexus Corp",
+      "email": "s.mitchell@nexuscorp.com",
+      "segment": "Enterprise",
+      "ltv": 284500,
+      "lastOrder": "2026-03-12",
+      "status": "active",
+      "country": "US"
+    },
+    {
+      "id": "C002",
+      "name": "James Okafor",
+      "company": "Zenith Digital",
+      "email": "james@zenithdigital.io",
+      "segment": "SMB",
+      "ltv": 94200,
+      "lastOrder": "2026-03-10",
+      "status": "active",
+      "country": "UK"
+    },
+    {
+      "id": "C003",
+      "name": "Amara Patel",
+      "company": "Stellar Labs",
+      "email": "apatel@stellarlabs.co",
+      "segment": "Startup",
+      "ltv": 38700,
+      "lastOrder": "2026-02-28",
+      "status": "at-risk",
+      "country": "CA"
+    },
+    {
+      "id": "C004",
+      "name": "Lena Hoffmann",
+      "company": "EuroVenture GmbH",
+      "email": "lhoffmann@euroventure.de",
+      "segment": "Enterprise",
+      "ltv": 312000,
+      "lastOrder": "2026-03-15",
+      "status": "active",
+      "country": "DE"
+    },
+    {
+      "id": "C005",
+      "name": "Kwame Asante",
+      "company": "AfricaTech Hub",
+      "email": "kasante@africatechhub.com",
+      "segment": "SMB",
+      "ltv": 67400,
+      "lastOrder": "2026-01-20",
+      "status": "at-risk",
+      "country": "GH"
+    },
+    {
+      "id": "C006",
+      "name": "Yuki Tanaka",
+      "company": "Shibuya Solutions",
+      "email": "y.tanaka@shibuya.jp",
+      "segment": "Enterprise",
+      "ltv": 198000,
+      "lastOrder": "2026-03-14",
+      "status": "active",
+      "country": "JP"
+    },
+    {
+      "id": "C007",
+      "name": "Diego Ramirez",
+      "company": "LatamScale",
+      "email": "diego@latamscale.mx",
+      "segment": "Startup",
+      "ltv": 22100,
+      "lastOrder": "2025-11-30",
+      "status": "churned",
+      "country": "MX"
+    },
+    {
+      "id": "C008",
+      "name": "Nina Volkov",
+      "company": "Baltic Systems",
+      "email": "nvolkov@balticsys.ee",
+      "segment": "SMB",
+      "ltv": 81500,
+      "lastOrder": "2026-03-08",
+      "status": "active",
+      "country": "EE"
+    }
+  ],
+  "regionData": [
+    {
+      "region": "North America",
+      "revenue": 1928600,
+      "customers": 1542,
+      "growth": 14.2
+    },
+    {
+      "region": "Europe",
+      "revenue": 1445000,
+      "customers": 1089,
+      "growth": 11.8
+    },
+    {
+      "region": "Asia Pacific",
+      "revenue": 896500,
+      "customers": 712,
+      "growth": 22.5
+    },
+    {
+      "region": "Middle East & Africa",
+      "revenue": 337200,
+      "customers": 284,
+      "growth": 31
+    },
+    {
+      "region": "Latin America",
+      "revenue": 214200,
+      "customers": 220,
+      "growth": 8.4
+    }
+  ],
+  "channelData": [
+    {
+      "channel": "Organic Search",
+      "sessions": 48200,
+      "conversions": 1204,
+      "revenue": 1420000,
+      "cac": 0
+    },
+    {
+      "channel": "Paid Search",
+      "sessions": 22400,
+      "conversions": 672,
+      "revenue": 890000,
+      "cac": 180
+    },
+    {
+      "channel": "Direct",
+      "sessions": 18900,
+      "conversions": 511,
+      "revenue": 760000,
+      "cac": 0
+    },
+    {
+      "channel": "Referral",
+      "sessions": 12500,
+      "conversions": 375,
+      "revenue": 640000,
+      "cac": 45
+    },
+    {
+      "channel": "Social Media",
+      "sessions": 31000,
+      "conversions": 496,
+      "revenue": 580000,
+      "cac": 95
+    },
+    {
+      "channel": "Email",
+      "sessions": 14700,
+      "conversions": 588,
+      "revenue": 531500,
+      "cac": 12
+    }
+  ],
+  "alerts": [
+    {
+      "id": "A1",
+      "type": "warning",
+      "title": "At-Risk Customers",
+      "message": "12 enterprise customers have not placed an order in 45+ days.",
+      "timestamp": "2026-03-18T09:15:00Z"
+    },
+    {
+      "id": "A2",
+      "type": "success",
+      "title": "Revenue Milestone",
+      "message": "Q1 2026 revenue exceeded target by 8.3% — $4.82M vs $4.45M goal.",
+      "timestamp": "2026-03-18T08:00:00Z"
+    },
+    {
+      "id": "A3",
+      "type": "info",
+      "title": "APAC Growth Surge",
+      "message": "Asia Pacific region showing 22.5% YoY growth — consider capacity planning.",
+      "timestamp": "2026-03-17T16:30:00Z"
+    },
+    {
+      "id": "A4",
+      "type": "error",
+      "title": "Analytics Suite Churn Signal",
+      "message": "NPS for Analytics Suite dropped to 32 this month from 48 last month.",
+      "timestamp": "2026-03-17T11:00:00Z"
+    }
+  ]
+}
