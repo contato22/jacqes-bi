@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import {
   AreaChart,
   Area,
@@ -8,7 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 import { revenueData } from "@/lib/data";
 
@@ -31,7 +31,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-xl p-3.5 shadow-xl shadow-black/40 min-w-[160px]">
-      <div className="text-xs font-semibold text-gray-400 mb-2">{label} 2025</div>
+      <div className="text-xs font-semibold text-gray-400 mb-2">{label} 2026</div>
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center justify-between gap-4 text-xs py-0.5">
           <div className="flex items-center gap-2">
@@ -48,20 +48,37 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
+const ranges = ["6M", "9M", "1Y"] as const;
+type Range = typeof ranges[number];
+
+const rangeSlice: Record<Range, number> = {
+  "6M": 6,
+  "9M": 9,
+  "1Y": 12,
+};
+
 export default function RevenueChart() {
+  const [selectedRange, setSelectedRange] = useState<Range>("1Y");
+
+  const filteredData = useMemo(() => {
+    const count = rangeSlice[selectedRange];
+    return revenueData.slice(revenueData.length - count);
+  }, [selectedRange]);
+
   return (
     <div className="card p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-sm font-semibold text-white">Revenue Overview</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Monthly P&amp;L — FY 2025</p>
+          <p className="text-xs text-gray-500 mt-0.5">Monthly P&amp;L — FY 2026</p>
         </div>
         <div className="flex gap-1">
-          {["6M", "9M", "1Y"].map((range, i) => (
+          {ranges.map((range) => (
             <button
               key={range}
+              onClick={() => setSelectedRange(range)}
               className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
-                i === 2
+                selectedRange === range
                   ? "bg-brand-600/20 text-brand-400 border border-brand-500/20"
                   : "text-gray-500 hover:text-gray-300"
               }`}
@@ -74,7 +91,7 @@ export default function RevenueChart() {
 
       <ResponsiveContainer width="100%" height={280}>
         <AreaChart
-          data={revenueData}
+          data={filteredData}
           margin={{ top: 4, right: 4, left: -10, bottom: 0 }}
         >
           <defs>

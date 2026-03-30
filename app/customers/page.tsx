@@ -40,7 +40,7 @@ export default function CustomersPage() {
         subtitle="Customer directory, health scores, and lifetime value"
       />
 
-      <div className="px-8 py-6 space-y-6">
+      <div className="px-4 sm:px-8 py-6 space-y-6">
         {/* Summary */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
           <div className="card p-5 flex items-center gap-4">

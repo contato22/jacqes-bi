@@ -55,7 +55,7 @@ export default function RevenuePage() {
         subtitle="Detailed financial performance and acquisition breakdown"
       />
 
-      <div className="px-8 py-6 space-y-6">
+      <div className="px-4 sm:px-8 py-6 space-y-6">
         {/* Summary stats */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryStats.map((stat) => (
@@ -77,7 +77,7 @@ export default function RevenuePage() {
         <div className="card p-6">
           <div className="mb-6">
             <h2 className="text-sm font-semibold text-white">Monthly Revenue vs Profit</h2>
-            <p className="text-xs text-gray-500 mt-0.5">FY 2025 — grouped bar comparison</p>
+            <p className="text-xs text-gray-500 mt-0.5">FY 2026 — grouped bar comparison</p>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart

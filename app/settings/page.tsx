@@ -1,5 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Header from "@/components/Header";
-import { Settings, Bell, Shield, Palette, Database, Users } from "lucide-react";
+import { Settings, Bell, Shield, Database } from "lucide-react";
 
 interface SettingsSectionProps {
   icon: React.ElementType;
@@ -28,37 +31,62 @@ function SettingsSection({ icon: Icon, title, description, children }: SettingsS
 interface ToggleRowProps {
   label: string;
   description?: string;
-  defaultChecked?: boolean;
+  checked: boolean;
+  onChange: (val: boolean) => void;
 }
 
-function ToggleRow({ label, description, defaultChecked = false }: ToggleRowProps) {
+function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
   return (
     <div className="flex items-center justify-between py-2">
       <div>
         <div className="text-sm text-gray-300">{label}</div>
         {description && <div className="text-xs text-gray-600 mt-0.5">{description}</div>}
       </div>
-      <div
-        className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${
-          defaultChecked ? "bg-brand-600" : "bg-gray-700"
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        onClick={() => onChange(!checked)}
+        className={`relative w-10 h-5 rounded-full transition-colors ${
+          checked ? "bg-brand-600" : "bg-gray-700"
         }`}
       >
         <div
           className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
-            defaultChecked ? "translate-x-5" : "translate-x-0.5"
+            checked ? "translate-x-5" : "translate-x-0.5"
           }`}
         />
-      </div>
+      </button>
     </div>
   );
 }
 
 export default function SettingsPage() {
+  const [toggles, setToggles] = useState({
+    revenueMilestones: true,
+    atRiskCustomers: true,
+    weeklyDigest: true,
+    slackAlerts: false,
+    dataRefresh: false,
+  });
+
+  const [saved, setSaved] = useState(false);
+
+  const updateToggle = (key: keyof typeof toggles) => (val: boolean) => {
+    setToggles((prev) => ({ ...prev, [key]: val }));
+    setSaved(false);
+  };
+
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
   return (
     <>
       <Header title="Settings" subtitle="Manage your JACQES BI workspace preferences" />
 
-      <div className="px-8 py-6 space-y-4">
+      <div className="px-4 sm:px-8 py-6 space-y-4">
         <SettingsSection
           icon={Settings}
           title="General"
@@ -112,11 +140,33 @@ export default function SettingsPage() {
           title="Notifications"
           description="Configure alerts and notification delivery"
         >
-          <ToggleRow label="Revenue milestone alerts" defaultChecked={true} />
-          <ToggleRow label="At-risk customer warnings" description="Alert when churn probability > 70%" defaultChecked={true} />
-          <ToggleRow label="Weekly digest email" defaultChecked={true} />
-          <ToggleRow label="Slack integration alerts" description="Post to #analytics channel" defaultChecked={false} />
-          <ToggleRow label="Data refresh notifications" defaultChecked={false} />
+          <ToggleRow
+            label="Revenue milestone alerts"
+            checked={toggles.revenueMilestones}
+            onChange={updateToggle("revenueMilestones")}
+          />
+          <ToggleRow
+            label="At-risk customer warnings"
+            description="Alert when churn probability > 70%"
+            checked={toggles.atRiskCustomers}
+            onChange={updateToggle("atRiskCustomers")}
+          />
+          <ToggleRow
+            label="Weekly digest email"
+            checked={toggles.weeklyDigest}
+            onChange={updateToggle("weeklyDigest")}
+          />
+          <ToggleRow
+            label="Slack integration alerts"
+            description="Post to #analytics channel"
+            checked={toggles.slackAlerts}
+            onChange={updateToggle("slackAlerts")}
+          />
+          <ToggleRow
+            label="Data refresh notifications"
+            checked={toggles.dataRefresh}
+            onChange={updateToggle("dataRefresh")}
+          />
         </SettingsSection>
 
         <SettingsSection
@@ -171,8 +221,13 @@ export default function SettingsPage() {
         </SettingsSection>
 
         {/* Save button */}
-        <div className="flex justify-end">
-          <button className="btn-primary">Save Changes</button>
+        <div className="flex justify-end items-center gap-3">
+          {saved && (
+            <span className="text-xs text-emerald-400 font-medium">Settings saved successfully</span>
+          )}
+          <button className="btn-primary" onClick={handleSave}>
+            Save Changes
+          </button>
         </div>
       </div>
     </>

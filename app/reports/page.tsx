@@ -1,5 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Header from "@/components/Header";
-import { FileBarChart, Download, Calendar, TrendingUp, Users, Globe } from "lucide-react";
+import { FileBarChart, Download, Calendar, TrendingUp, Users, Globe, Check } from "lucide-react";
 
 interface ReportCardProps {
   icon: React.ElementType;
@@ -11,6 +14,13 @@ interface ReportCardProps {
 }
 
 function ReportCard({ icon: Icon, title, description, lastGenerated, type, color }: ReportCardProps) {
+  const [exporting, setExporting] = useState(false);
+
+  const handleExport = () => {
+    setExporting(true);
+    setTimeout(() => setExporting(false), 2000);
+  };
+
   return (
     <div className="card card-hover p-5 flex flex-col gap-4">
       <div className="flex items-start justify-between">
@@ -25,9 +35,22 @@ function ReportCard({ icon: Icon, title, description, lastGenerated, type, color
       </div>
       <div className="flex items-center justify-between pt-2 border-t border-gray-800">
         <span className="text-xs text-gray-600">Generated: {lastGenerated}</span>
-        <button className="flex items-center gap-1.5 text-xs text-brand-400 hover:text-brand-300 font-medium transition-colors">
-          <Download size={12} />
-          Export
+        <button
+          onClick={handleExport}
+          disabled={exporting}
+          className="flex items-center gap-1.5 text-xs text-brand-400 hover:text-brand-300 font-medium transition-colors disabled:opacity-60"
+        >
+          {exporting ? (
+            <>
+              <Check size={12} className="text-emerald-400" />
+              <span className="text-emerald-400">Exported</span>
+            </>
+          ) : (
+            <>
+              <Download size={12} />
+              Export
+            </>
+          )}
         </button>
       </div>
     </div>
@@ -92,6 +115,13 @@ const reports: ReportCardProps[] = [
 ];
 
 export default function ReportsPage() {
+  const [generating, setGenerating] = useState<string | null>(null);
+
+  const handleGenerate = (label: string) => {
+    setGenerating(label);
+    setTimeout(() => setGenerating(null), 1500);
+  };
+
   return (
     <>
       <Header
@@ -99,7 +129,7 @@ export default function ReportsPage() {
         subtitle="Generated reports and data exports for JACQES stakeholders"
       />
 
-      <div className="px-8 py-6 space-y-6">
+      <div className="px-4 sm:px-8 py-6 space-y-6">
         {/* Quick action bar */}
         <div className="card p-4 flex items-center gap-3 flex-wrap">
           <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider mr-2">
@@ -109,9 +139,13 @@ export default function ReportsPage() {
             (label) => (
               <button
                 key={label}
-                className={label === "Custom Report" ? "btn-primary" : "btn-secondary"}
+                onClick={() => handleGenerate(label)}
+                disabled={generating === label}
+                className={`${label === "Custom Report" ? "btn-primary" : "btn-secondary"} ${
+                  generating === label ? "opacity-60" : ""
+                }`}
               >
-                {label}
+                {generating === label ? "Generating..." : label}
               </button>
             )
           )}
