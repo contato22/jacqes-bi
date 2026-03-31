@@ -1,43 +1,49 @@
 import Header from "@/components/Header";
 import { customers } from "@/lib/data";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { UserCheck, UserX, AlertTriangle, Users } from "lucide-react";
+import { UserCheck, UserX, AlertTriangle, Users, Clock } from "lucide-react";
 
 const statusConfig = {
-  active: {
-    label: "Active",
+  Ativo: {
+    label: "Ativo",
     classes: "badge-green",
     Icon: UserCheck,
   },
-  "at-risk": {
-    label: "At Risk",
+  "Em Proposta": {
+    label: "Em Proposta",
     classes: "badge-yellow",
     Icon: AlertTriangle,
   },
-  churned: {
-    label: "Churned",
+  Convertido: {
+    label: "Convertido",
+    classes: "badge-blue",
+    Icon: Clock,
+  },
+  Perdido: {
+    label: "Perdido",
     classes: "badge-red",
     Icon: UserX,
   },
 };
 
-const segmentConfig = {
-  Enterprise: "badge-blue",
-  SMB: "badge-green",
+const tipoConfig: Record<string, string> = {
+  Marca: "badge-blue",
+  Agência: "badge-green",
+  Empresa: "badge-blue",
   Startup: "badge-yellow",
 };
 
-const activeCount = customers.filter((c) => c.status === "active").length;
-const atRiskCount = customers.filter((c) => c.status === "at-risk").length;
-const churnedCount = customers.filter((c) => c.status === "churned").length;
-const totalLTV = customers.reduce((sum, c) => sum + c.ltv, 0);
+const ativoCount = customers.filter((c) => c.status === "Ativo").length;
+const propostaCount = customers.filter((c) => c.status === "Em Proposta").length;
+const perdidoCount = customers.filter((c) => c.status === "Perdido").length;
+const totalBudget = customers.reduce((sum, c) => sum + c.budgetAnual, 0);
 
 export default function CustomersPage() {
   return (
     <>
       <Header
-        title="Customers"
-        subtitle="Customer directory, health scores, and lifetime value"
+        title="Clientes"
+        subtitle="Carteira de clientes Caza Vision · via Notion"
       />
 
       <div className="px-8 py-6 space-y-6">
@@ -49,7 +55,7 @@ export default function CustomersPage() {
             </div>
             <div>
               <div className="text-2xl font-bold text-white">{customers.length}</div>
-              <div className="text-xs text-gray-500 mt-0.5">Total Accounts</div>
+              <div className="text-xs text-gray-500 mt-0.5">Total Clientes</div>
             </div>
           </div>
           <div className="card p-5 flex items-center gap-4">
@@ -57,8 +63,8 @@ export default function CustomersPage() {
               <UserCheck size={18} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{activeCount}</div>
-              <div className="text-xs text-gray-500 mt-0.5">Active</div>
+              <div className="text-2xl font-bold text-white">{ativoCount}</div>
+              <div className="text-xs text-gray-500 mt-0.5">Ativos</div>
             </div>
           </div>
           <div className="card p-5 flex items-center gap-4">
@@ -66,8 +72,8 @@ export default function CustomersPage() {
               <AlertTriangle size={18} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{atRiskCount}</div>
-              <div className="text-xs text-gray-500 mt-0.5">At Risk</div>
+              <div className="text-2xl font-bold text-white">{propostaCount}</div>
+              <div className="text-xs text-gray-500 mt-0.5">Em Proposta</div>
             </div>
           </div>
           <div className="card p-5 flex items-center gap-4">
@@ -75,26 +81,26 @@ export default function CustomersPage() {
               <UserX size={18} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{churnedCount}</div>
-              <div className="text-xs text-gray-500 mt-0.5">Churned</div>
+              <div className="text-2xl font-bold text-white">{perdidoCount}</div>
+              <div className="text-xs text-gray-500 mt-0.5">Perdidos</div>
             </div>
           </div>
         </div>
 
-        {/* Total LTV highlight */}
+        {/* Total Budget */}
         <div className="card p-5 flex items-center justify-between">
           <div>
             <div className="text-xs text-gray-500 uppercase tracking-widest font-semibold">
-              Portfolio Lifetime Value
+              Budget Anual Total da Carteira
             </div>
             <div className="text-3xl font-bold text-white mt-1 tabular-nums">
-              {formatCurrency(totalLTV)}
+              {formatCurrency(totalBudget)}
             </div>
           </div>
           <div className="text-xs text-gray-600 text-right">
-            <div>Avg LTV per account</div>
+            <div>Média por cliente</div>
             <div className="text-lg font-bold text-gray-300 mt-1">
-              {formatCurrency(Math.round(totalLTV / customers.length))}
+              {formatCurrency(Math.round(totalBudget / customers.length))}
             </div>
           </div>
         </div>
@@ -103,8 +109,8 @@ export default function CustomersPage() {
         <div className="card p-6">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-sm font-semibold text-white">Customer Directory</h2>
-              <p className="text-xs text-gray-500 mt-0.5">All accounts with health status</p>
+              <h2 className="text-sm font-semibold text-white">Diretório de Clientes</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Fonte: Caza Vision — Clientes (Notion)</p>
             </div>
           </div>
 
@@ -112,7 +118,7 @@ export default function CustomersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-800">
-                  {["Customer", "Company", "Segment", "LTV", "Last Order", "Country", "Status"].map(
+                  {["Cliente", "Segmento", "Tipo", "Budget Anual", "Desde", "Telefone", "Status"].map(
                     (h) => (
                       <th
                         key={h}
@@ -127,7 +133,7 @@ export default function CustomersPage() {
               <tbody>
                 {customers.map((c) => {
                   const status = statusConfig[c.status];
-                  const segClass = segmentConfig[c.segment];
+                  const tipoClass = tipoConfig[c.tipo] ?? "badge-blue";
 
                   return (
                     <tr
@@ -148,18 +154,18 @@ export default function CustomersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 pr-4 text-gray-400">{c.company}</td>
+                      <td className="py-3 pr-4 text-gray-400 text-xs">{c.segmento}</td>
                       <td className="py-3 pr-4">
-                        <span className={`badge ${segClass}`}>{c.segment}</span>
+                        <span className={`badge ${tipoClass}`}>{c.tipo}</span>
                       </td>
                       <td className="py-3 pr-4 font-semibold text-white tabular-nums">
-                        {formatCurrency(c.ltv, "USD", true)}
+                        {formatCurrency(c.budgetAnual, "BRL", true)}
                       </td>
                       <td className="py-3 pr-4 text-gray-400 tabular-nums">
-                        {formatDate(c.lastOrder)}
+                        {formatDate(c.desde)}
                       </td>
-                      <td className="py-3 pr-4 text-gray-400 font-mono text-xs">
-                        {c.country}
+                      <td className="py-3 pr-4 text-gray-400 text-xs font-mono">
+                        {c.telefone}
                       </td>
                       <td className="py-3">
                         <span className={`badge ${status.classes}`}>{status.label}</span>
