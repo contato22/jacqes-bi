@@ -41,7 +41,7 @@ const reports: ReportCardProps[] = [
     description:
       "Comprehensive breakdown of revenue, expenses, and profit margins with YoY comparisons and segment analysis.",
     lastGenerated: "Mar 18, 2026",
-    type: "Financial",
+    type: "ERP",
     color: "bg-brand-500/10 border border-brand-500/20 text-brand-400",
   },
   {

@@ -52,7 +52,7 @@ export default function RevenuePage() {
     <>
       <Header
         title="Revenue"
-        subtitle="Detailed financial performance and acquisition breakdown"
+        subtitle="Detailed ERP performance and acquisition breakdown"
       />
 
       <div className="px-8 py-6 space-y-6">
