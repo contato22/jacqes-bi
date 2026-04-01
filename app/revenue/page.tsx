@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import Header from "@/components/Header";
 import ChannelTable from "@/components/ChannelTable";
-import { revenueData } from "@/lib/data";
+import { revenueData, projects } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
 
 interface CustomTooltipProps {
@@ -48,6 +48,8 @@ const summaryStats = [
 ];
 
 export default function RevenuePage() {
+  const totalFee = projects.reduce((sum, p) => sum + p.fee, 0);
+
   return (
     <>
       <Header
@@ -71,6 +73,47 @@ export default function RevenuePage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Projects / FEE table */}
+        <div className="card p-6">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-white">Projetos Ativos — FEE Mensal</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Base de dados interna JACQES BI</p>
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-gray-500">MRR Total</div>
+              <div className="text-lg font-bold text-emerald-400 tabular-nums">
+                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totalFee)}
+              </div>
+            </div>
+          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-800">
+                <th className="text-left text-xs font-medium text-gray-500 pb-3">Projeto</th>
+                <th className="text-right text-xs font-medium text-gray-500 pb-3">FEE Mensal</th>
+                <th className="text-right text-xs font-medium text-gray-500 pb-3">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map((project) => (
+                <tr key={project.id} className="border-b border-gray-800/50 last:border-0">
+                  <td className="py-3 text-sm font-semibold text-white">{project.nome_projeto}</td>
+                  <td className="py-3 text-sm text-right tabular-nums text-white">
+                    {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(project.fee)}
+                  </td>
+                  <td className="py-3 text-right">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      {project.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {/* Bar chart */}

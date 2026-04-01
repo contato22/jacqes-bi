@@ -70,6 +70,13 @@ export interface Alert {
   timestamp: string;
 }
 
+export interface ProjectRecord {
+  id: string;
+  nome_projeto: string;
+  fee: number;
+  status: "ativo" | "pausado" | "encerrado";
+}
+
 // ─── KPIs ─────────────────────────────────────────────────────────────────────
 
 export const kpis: KPI[] = [
@@ -333,4 +340,14 @@ export const alerts: Alert[] = [
     message: "NPS for Analytics Suite dropped to 32 this month from 48 last month.",
     timestamp: "2026-03-17T11:00:00Z",
   },
+];
+
+// ─── Projects (Base de Dados Interna) ────────────────────────────────────────
+
+export const projects: ProjectRecord[] = [
+  { id: "PRJ001", nome_projeto: "CEM", fee: 3200, status: "ativo" },
+  { id: "PRJ002", nome_projeto: "ANDRÉ VIEIRA", fee: 1500, status: "ativo" },
+  { id: "PRJ003", nome_projeto: "CAROL BERTOLINI", fee: 1790, status: "ativo" },
+  { id: "PRJ004", nome_projeto: "TATI SIMÕES", fee: 1790, status: "ativo" },
+  { id: "PRJ005", nome_projeto: "LUIS VIEIRA", fee: 1500, status: "ativo" },
 ];
