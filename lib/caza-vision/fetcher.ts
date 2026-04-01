@@ -1,7 +1,8 @@
-// ─── CAZA VISION — Fetchers (internal SQLite) ──────────────────────────────────
-// Server-side only. Reads from data/caza-vision.db via better-sqlite3.
+// ─── CAZA VISION — Fetchers (static data) ─────────────────────────────────────
+// Reads from lib/db/data.ts — static TypeScript constants embedded at build time.
+// Compatible with Next.js static export (output: 'export') and GitHub Pages.
 
-import { getDb } from '@/lib/db/client'
+import { PROJETOS_DATA, FINANCEIRO_DATA, CLIENTES_DATA } from '@/lib/db/data'
 import type {
   ProjetoRecord, FinanceiroRecord, ClienteRecord,
   FetchResult, OverviewMetrics, PipelineGroup, ProjetoStatus,
@@ -9,8 +10,11 @@ import type {
 
 // ── Row → domain mappers ───────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function toProjetoRecord(row: any): ProjetoRecord {
+type ProjetoRow = typeof PROJETOS_DATA[number]
+type FinanceiroRow = typeof FINANCEIRO_DATA[number]
+type ClienteRow = typeof CLIENTES_DATA[number]
+
+function toProjetoRecord(row: ProjetoRow): ProjetoRecord {
   return {
     id:      row.id,
     titulo:  row.titulo,
@@ -18,14 +22,13 @@ function toProjetoRecord(row: any): ProjetoRecord {
     diretor: row.diretor   ?? null,
     inicio:  row.inicio    ? new Date(row.inicio) : null,
     prazo:   row.prazo     ? new Date(row.prazo)  : null,
-    status:  row.status    ?? null,
-    tipo:    row.tipo      ?? null,
+    status:  (row.status   ?? null) as ProjetoRecord['status'],
+    tipo:    (row.tipo     ?? null) as ProjetoRecord['tipo'],
     valor:   row.valor     ?? null,
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function toFinanceiroRecord(row: any): FinanceiroRecord {
+function toFinanceiroRecord(row: FinanceiroRow): FinanceiroRecord {
   const margem = row.receita > 0 ? (row.lucro / row.receita) * 100 : null
   return {
     id:        row.id,
@@ -39,18 +42,17 @@ function toFinanceiroRecord(row: any): FinanceiroRecord {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function toClienteRecord(row: any): ClienteRecord {
+function toClienteRecord(row: ClienteRow): ClienteRecord {
   return {
     id:          row.id,
     nome:        row.nome,
     email:       row.email        ?? null,
     segmento:    row.segmento     ?? null,
-    status:      row.status       ?? null,
+    status:      (row.status      ?? null) as ClienteRecord['status'],
     desde:       row.desde        ? new Date(row.desde) : null,
     telefone:    row.telefone     ?? null,
     budgetAnual: row.budget_anual ?? null,
-    tipo:        row.tipo         ?? null,
+    tipo:        (row.tipo        ?? null) as ClienteRecord['tipo'],
   }
 }
 
@@ -58,22 +60,23 @@ function toClienteRecord(row: any): ClienteRecord {
 
 export async function fetchProjetos(): Promise<FetchResult<ProjetoRecord>> {
   const fetchedAt = new Date().toISOString()
-  const rows = getDb().prepare('SELECT * FROM projetos ORDER BY created_at ASC').all()
-  const data = rows.map(toProjetoRecord)
+  const data = [...PROJETOS_DATA].map(toProjetoRecord)
   return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
 }
 
 export async function fetchFinanceiro(): Promise<FetchResult<FinanceiroRecord>> {
   const fetchedAt = new Date().toISOString()
-  const rows = getDb().prepare('SELECT * FROM financeiro ORDER BY mes_order ASC').all()
-  const data = rows.map(toFinanceiroRecord)
+  const data = [...FINANCEIRO_DATA]
+    .sort((a, b) => a.mes_order - b.mes_order)
+    .map(toFinanceiroRecord)
   return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
 }
 
 export async function fetchClientes(): Promise<FetchResult<ClienteRecord>> {
   const fetchedAt = new Date().toISOString()
-  const rows = getDb().prepare('SELECT * FROM clientes ORDER BY nome ASC').all()
-  const data = rows.map(toClienteRecord)
+  const data = [...CLIENTES_DATA]
+    .sort((a, b) => a.nome.localeCompare(b.nome))
+    .map(toClienteRecord)
   return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
 }
 

@@ -62,7 +62,7 @@ export default async function ProjetosPage() {
   const entregues = records.filter((r) => r.status === 'Entregue')
   const comValor  = records.filter((r) => r.valor !== null)
   const receita   = comValor.reduce((s, r) => s + r.valor!, 0)
-  const clientes  = [...new Set(records.map((r) => r.cliente).filter(Boolean))]
+  const clientes  = Array.from(new Set(records.map((r) => r.cliente).filter(Boolean)))
 
   return (
     <>

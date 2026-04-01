@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    serverComponentsExternalPackages: ['better-sqlite3'],
-  },
+  output: 'export',
+  basePath: '/jacqes-bi',
+  trailingSlash: true,
+  images: { unoptimized: true },
 };
 
 export default nextConfig;
