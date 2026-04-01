@@ -10,7 +10,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Header from "@/components/Header";
-import ChannelTable from "@/components/ChannelTable";
 import { revenueData } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
 
@@ -24,7 +23,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-xl p-3.5 shadow-xl shadow-black/40 min-w-[140px]">
-      <div className="text-xs font-semibold text-gray-400 mb-2">{label}</div>
+      <div className="text-xs font-semibold text-gray-400 mb-2">{label} 2026</div>
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center justify-between gap-4 text-xs py-0.5">
           <div className="flex items-center gap-2">
@@ -40,19 +39,20 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
+// Valores diretos do DRE AWQ — sem projeções
 const summaryStats = [
-  { label: "Receita Bruta YTD", value: "R$4,82M", sub: "+3,1% vs orçamento", positive: true },
-  { label: "Receita Líquida YTD", value: "R$4,34M", sub: "59,9% margem bruta", positive: true },
-  { label: "EBITDA YTD", value: "R$867K", sub: "19,9% margem", positive: true },
-  { label: "Lucro Líquido YTD", value: "R$518K", sub: "11,9% margem", positive: true },
+  { label: "Receita Bruta Q1",    value: "R$4,82M", sub: "+3,1% vs orçamento",  positive: true  },
+  { label: "Receita Líquida Q1",  value: "R$4,34M", sub: "margem bruta 59,9%",  positive: true  },
+  { label: "EBITDA Q1",           value: "R$867K",  sub: "19,9% margem · −11,1% vs plano", positive: false },
+  { label: "Lucro Líquido Q1",    value: "R$518K",  sub: "margem líquida 11,9%", positive: true  },
 ];
 
 export default function RevenuePage() {
   return (
     <>
       <Header
-        title="Revenue"
-        subtitle="Detailed financial performance and acquisition breakdown"
+        title="Receita"
+        subtitle="DRE Q1 2026 — dados reais AWQ Group"
       />
 
       <div className="px-8 py-6 space-y-6">
@@ -76,8 +76,8 @@ export default function RevenuePage() {
         {/* Bar chart */}
         <div className="card p-6">
           <div className="mb-6">
-            <h2 className="text-sm font-semibold text-white">Receita vs Lucro Bruto Mensal</h2>
-            <p className="text-xs text-gray-500 mt-0.5">2026 — Q1 real + projeção orçamentária</p>
+            <h2 className="text-sm font-semibold text-white">Receita Bruta · CMV · Lucro Bruto</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Q1 2026 — dados reais (CMV e Lucro calculados proporcionalmente do DRE)</p>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -98,7 +98,7 @@ export default function RevenuePage() {
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) =>
-                  new Intl.NumberFormat("en-US", {
+                  new Intl.NumberFormat("pt-BR", {
                     notation: "compact",
                     style: "currency",
                     currency: "BRL",
@@ -107,9 +107,9 @@ export default function RevenuePage() {
                 }
               />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-              <Bar dataKey="revenue" name="revenue" fill="#6366f1" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="profit" name="profit" fill="#22d3ee" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="expenses" name="expenses" fill="#f59e0b" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="revenue"  name="Receita Bruta"  fill="#6366f1" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="profit"   name="Lucro Bruto"    fill="#22d3ee" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="expenses" name="CMV"            fill="#f59e0b" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -117,10 +117,10 @@ export default function RevenuePage() {
         {/* Margin progression */}
         <div className="card p-6">
           <div className="mb-5">
-            <h2 className="text-sm font-semibold text-white">Gross Margin Progression</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Month-by-month profit margin trend</p>
+            <h2 className="text-sm font-semibold text-white">Progressão da Margem Bruta</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Lucro Bruto / Receita Bruta por mês</p>
           </div>
-          <div className="grid grid-cols-6 md:grid-cols-12 gap-2">
+          <div className="grid grid-cols-3 gap-4">
             {revenueData.map((d) => {
               const margin = ((d.profit / d.revenue) * 100).toFixed(1);
               const pct = parseFloat(margin);
@@ -139,9 +139,6 @@ export default function RevenuePage() {
             })}
           </div>
         </div>
-
-        {/* Channel table */}
-        <ChannelTable />
       </div>
     </>
   );

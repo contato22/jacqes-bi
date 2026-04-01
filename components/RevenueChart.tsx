@@ -54,22 +54,9 @@ export default function RevenueChart() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-sm font-semibold text-white">Revenue Overview</h2>
-          <p className="text-xs text-gray-500 mt-0.5">P&amp;L Mensal — 2026 (Q1 real + projeção)</p>
+          <p className="text-xs text-gray-500 mt-0.5">P&amp;L Mensal — Q1 2026 (dados reais AWQ)</p>
         </div>
-        <div className="flex gap-1">
-          {["6M", "9M", "1Y"].map((range, i) => (
-            <button
-              key={range}
-              className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
-                i === 2
-                  ? "bg-brand-600/20 text-brand-400 border border-brand-500/20"
-                  : "text-gray-500 hover:text-gray-300"
-              }`}
-            >
-              {range}
-            </button>
-          ))}
-        </div>
+        <span className="text-xs text-gray-600 bg-gray-800 px-2 py-1 rounded-md">Q1 2026</span>
       </div>
 
       <ResponsiveContainer width="100%" height={280}>

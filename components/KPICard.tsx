@@ -36,9 +36,13 @@ interface KPICardProps {
 
 export default function KPICard({ kpi }: KPICardProps) {
   const Icon = iconMap[kpi.icon] ?? TrendingUp;
-  const delta = ((kpi.value - kpi.previousValue) / kpi.previousValue) * 100;
-  const isPositive = delta >= 0;
   const colorClasses = colorMap[kpi.color] ?? colorMap.brand;
+
+  const hasDelta = kpi.previousValue !== undefined && kpi.previousValue !== 0;
+  const delta = hasDelta
+    ? ((kpi.value - kpi.previousValue!) / kpi.previousValue!) * 100
+    : null;
+  const isPositive = delta !== null && delta >= 0;
 
   return (
     <div className="card card-hover p-5">
@@ -46,21 +50,23 @@ export default function KPICard({ kpi }: KPICardProps) {
         <div className={cn("w-10 h-10 rounded-xl border flex items-center justify-center", colorClasses)}>
           <Icon size={18} />
         </div>
-        <div
-          className={cn(
-            "flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full",
-            isPositive
-              ? "text-emerald-400 bg-emerald-500/10"
-              : "text-red-400 bg-red-500/10"
-          )}
-        >
-          {isPositive ? (
-            <ArrowUpRight size={12} />
-          ) : (
-            <ArrowDownRight size={12} />
-          )}
-          {formatPercent(Math.abs(delta), 1).replace("+", "")}
-        </div>
+        {delta !== null && (
+          <div
+            className={cn(
+              "flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full",
+              isPositive
+                ? "text-emerald-400 bg-emerald-500/10"
+                : "text-red-400 bg-red-500/10"
+            )}
+          >
+            {isPositive ? (
+              <ArrowUpRight size={12} />
+            ) : (
+              <ArrowDownRight size={12} />
+            )}
+            {formatPercent(Math.abs(delta), 1).replace("+", "")}
+          </div>
+        )}
       </div>
 
       <div className="space-y-1">
@@ -71,17 +77,21 @@ export default function KPICard({ kpi }: KPICardProps) {
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-800">
-        <span className="text-xs text-gray-600">
-          vs prev period:{" "}
-          <span className={cn("font-medium", isPositive ? "text-emerald-500" : "text-red-500")}>
-            {isPositive ? "+" : ""}
-            {kpi.unit === "currency"
-              ? formatCurrency(kpi.value - kpi.previousValue, "BRL", true)
-              : kpi.unit === "percent"
-              ? `${(kpi.value - kpi.previousValue).toFixed(1)}pp`
-              : formatNumber(kpi.value - kpi.previousValue, true)}
+        {hasDelta && delta !== null ? (
+          <span className="text-xs text-gray-600">
+            vs ref:{" "}
+            <span className={cn("font-medium", isPositive ? "text-emerald-500" : "text-red-500")}>
+              {isPositive ? "+" : ""}
+              {kpi.unit === "currency"
+                ? formatCurrency(kpi.value - kpi.previousValue!, "BRL", true)
+                : kpi.unit === "percent"
+                ? `${(kpi.value - kpi.previousValue!).toFixed(1)}pp`
+                : formatNumber(kpi.value - kpi.previousValue!, true)}
+            </span>
           </span>
-        </span>
+        ) : (
+          <span className="text-xs text-gray-600">sem dado comparativo</span>
+        )}
       </div>
     </div>
   );
