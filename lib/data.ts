@@ -1,3 +1,33 @@
+// ─── Caza Vision — Financeiro (fonte: Notion · collection://d5ddce05-5065-4cd5-a382-a866f71e9647) ──
+
+export interface CazaVisionMes {
+  mes: string;
+  orcamento: number; // valor contratado / orçado
+  receita: number;   // receita realizada
+  despesas: number;  // total despesas
+  lucro: number;
+}
+
+// Dados sincronizados do Notion em 2026-03-31
+// Meses com 0 = sem lançamento registrado no período
+export const cazaVisionFinanceiro: CazaVisionMes[] = [
+  { mes: "Jan/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Fev/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Mar/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Abr/25", orcamento: 30000, receita: 30000, despesas: 0, lucro: 30000 },
+  { mes: "Mai/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Jun/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Jul/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Ago/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Set/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Out/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Nov/25", orcamento:  2300, receita:  2300, despesas: 0, lucro:  2300 },
+  { mes: "Dez/25", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Jan/26", orcamento:     0, receita:     0, despesas: 0, lucro:     0 },
+  { mes: "Fev/26", orcamento: 12400, receita: 12400, despesas: 0, lucro: 12400 },
+  { mes: "Mar/26", orcamento: 33900, receita: 33900, despesas: 0, lucro: 33900 },
+];
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface KPI {

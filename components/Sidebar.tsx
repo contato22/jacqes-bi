@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, TrendingUp, Building2, Settings,
-  ChevronRight, Zap, LogOut, BarChart3,
+  ChevronRight, Zap, LogOut, BarChart3, DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { JACQES_URL } from "@/lib/config";
@@ -42,6 +42,11 @@ const businessUnits = [
     icon: TrendingUp,
     color: "bg-amber-600",
   },
+];
+
+const cazaVisionNav = [
+  { label: "Visão Geral", href: "/caza-vision",           icon: LayoutDashboard },
+  { label: "Financial",   href: "/caza-vision/financial", icon: DollarSign },
 ];
 
 const sistemaNav = [
@@ -91,8 +96,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+  const isActive = (href: string) => pathname === href;
 
   return (
     <aside className="w-[260px] flex-shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
@@ -148,6 +152,18 @@ export default function Sidebar() {
             );
           })}
         </div>
+
+        {/* Caza Vision sub-nav — aparece quando /caza-vision está ativo */}
+        {pathname.startsWith("/caza-vision") && (
+          <>
+            <SectionLabel>Caza Vision</SectionLabel>
+            <div className="space-y-0.5">
+              {cazaVisionNav.map((item) => (
+                <NavItem key={item.href} {...item} active={isActive(item.href)} />
+              ))}
+            </div>
+          </>
+        )}
 
         <SectionLabel>Sistema</SectionLabel>
         <div className="space-y-0.5">
