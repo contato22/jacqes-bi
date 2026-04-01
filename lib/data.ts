@@ -302,6 +302,21 @@ export const channelData: ChannelData[] = [
   { channel: "Email", sessions: 14_700, conversions: 588, revenue: 531_500, cac: 12 },
 ];
 
+// ─── Business Units ───────────────────────────────────────────────────────────
+
+export interface BusinessUnit {
+  name: string;
+  revenue: number;
+  customers: number;
+  orders: number;
+  growth: number;
+}
+
+export const businessUnits: BusinessUnit[] = [
+  { name: "Advisor", revenue: 0, customers: 0, orders: 0, growth: 0 },
+  { name: "Venture", revenue: 0, customers: 0, orders: 0, growth: 0 },
+];
+
 // ─── Alerts ───────────────────────────────────────────────────────────────────
 
 export const alerts: Alert[] = [
