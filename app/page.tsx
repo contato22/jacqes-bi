@@ -5,6 +5,7 @@ import CustomerSegmentChart from "@/components/CustomerSegmentChart";
 import TopProductsTable from "@/components/TopProductsTable";
 import RegionTable from "@/components/RegionTable";
 import AlertBanner from "@/components/AlertBanner";
+import BUOverview from "@/components/BUOverview";
 import { kpis, alerts } from "@/lib/data";
 
 export default function DashboardPage() {
@@ -54,6 +55,9 @@ export default function DashboardPage() {
 
         {/* Region table */}
         <RegionTable />
+
+        {/* AWQ Business Units — real-time */}
+        <BUOverview />
       </div>
     </>
   );

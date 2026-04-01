@@ -2,14 +2,39 @@
 
 import { Bell, Search, RefreshCw } from "lucide-react";
 import { alerts } from "@/lib/data";
+import { useState, useEffect, useCallback } from "react";
 
 interface HeaderProps {
   title: string;
   subtitle?: string;
 }
 
+function useNow(intervalMs = 1000) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), intervalMs);
+    return () => clearInterval(id);
+  }, [intervalMs]);
+  return now;
+}
+
 export default function Header({ title, subtitle }: HeaderProps) {
   const unreadCount = alerts.filter((a) => a.type === "warning" || a.type === "error").length;
+  const [spinning, setSpinning] = useState(false);
+  const now = useNow();
+
+  const handleRefresh = useCallback(() => {
+    setSpinning(true);
+    // Reload all client-side data by triggering a page router refresh
+    window.dispatchEvent(new CustomEvent("jacqes:refresh"));
+    setTimeout(() => setSpinning(false), 800);
+  }, []);
+
+  const timeLabel = now.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 
   return (
     <header className="px-8 py-5 border-b border-gray-800 bg-gray-950 flex items-center justify-between gap-4">
@@ -35,8 +60,12 @@ export default function Header({ title, subtitle }: HeaderProps) {
         </div>
 
         {/* Refresh */}
-        <button className="p-2 text-gray-500 hover:text-gray-300 hover:bg-gray-800 rounded-lg transition-colors" title="Refresh data">
-          <RefreshCw size={15} />
+        <button
+          onClick={handleRefresh}
+          className="p-2 text-gray-500 hover:text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+          title="Refresh data"
+        >
+          <RefreshCw size={15} className={spinning ? "animate-spin" : ""} />
         </button>
 
         {/* Notifications */}
@@ -47,10 +76,10 @@ export default function Header({ title, subtitle }: HeaderProps) {
           )}
         </button>
 
-        {/* Date range chip */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs text-gray-400">
+        {/* Live clock chip */}
+        <div className="hidden lg:flex items-center gap-2 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs text-gray-400 tabular-nums">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          Live · Mar 2026
+          Live · {timeLabel}
         </div>
       </div>
     </header>

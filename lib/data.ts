@@ -302,6 +302,72 @@ export const channelData: ChannelData[] = [
   { channel: "Email", sessions: 14_700, conversions: 588, revenue: 531_500, cac: 12 },
 ];
 
+// ─── AWQ Business Units ───────────────────────────────────────────────────────
+
+export interface BusinessUnit {
+  id: string;
+  name: string;
+  sector: string;
+  revenue: number;
+  previousRevenue: number;
+  employees: number;
+  status: "on-track" | "at-risk" | "critical";
+  lastUpdated: string;
+}
+
+export const awqBusinessUnits: BusinessUnit[] = [
+  {
+    id: "BU001",
+    name: "JACQES",
+    sector: "SaaS / BI",
+    revenue: 4_821_500,
+    previousRevenue: 4_205_800,
+    employees: 142,
+    status: "on-track",
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: "BU002",
+    name: "AWQ Capital",
+    sector: "Financial Services",
+    revenue: 8_340_000,
+    previousRevenue: 7_920_000,
+    employees: 58,
+    status: "on-track",
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: "BU003",
+    name: "AWQ Digital",
+    sector: "Digital Marketing",
+    revenue: 2_180_000,
+    previousRevenue: 2_310_000,
+    employees: 94,
+    status: "at-risk",
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: "BU004",
+    name: "AWQ Ventures",
+    sector: "Venture Capital",
+    revenue: 12_600_000,
+    previousRevenue: 11_450_000,
+    employees: 31,
+    status: "on-track",
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: "BU005",
+    name: "AWQ Real Estate",
+    sector: "Property & Infrastructure",
+    revenue: 6_750_000,
+    previousRevenue: 5_980_000,
+    employees: 77,
+    status: "on-track",
+    lastUpdated: new Date().toISOString(),
+  },
+];
+
 // ─── Alerts ───────────────────────────────────────────────────────────────────
 
 export const alerts: Alert[] = [
