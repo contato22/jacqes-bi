@@ -73,7 +73,8 @@ const CHECKLIST: CloseItem[] = [
   },
 ];
 
-const STATUS_CONFIG: Record<CloseItemStatus, { icon: React.ReactNode; label: string; style: string }> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const STATUS_CONFIG: Record<CloseItemStatus, { icon: any; label: string; style: string }> = {
   completed: {
     icon: <CheckCircle2 size={16} />,
     label: "Completed",
