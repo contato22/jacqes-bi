@@ -104,7 +104,6 @@ export default function SettingsPage() {
           description="Configure alertas e entregas de notificação"
         >
           <ToggleRow label="Alertas de receita consolidada" defaultChecked={true} />
-          <ToggleRow label="Atualizações de Business Units" defaultChecked={true} />
           <ToggleRow label="Digest semanal" defaultChecked={true} />
           <ToggleRow label="Alertas via Slack" description="Postar no canal #awq-grupo" defaultChecked={false} />
         </SettingsSection>
@@ -141,8 +140,6 @@ export default function SettingsPage() {
         >
           {[
             { name: "JACQES BI", status: "Conectado", lastSync: "2 min atrás" },
-            { name: "Caza Vision", status: "Pendente", lastSync: "—" },
-            { name: "AWQ Venture", status: "Pendente", lastSync: "—" },
           ].map((source) => (
             <div key={source.name} className="flex items-center justify-between py-2 border-b border-gray-800 last:border-0">
               <div>
