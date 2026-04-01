@@ -10,6 +10,12 @@ import {
   Settings,
   ChevronRight,
   Zap,
+  FolderKanban,
+  DollarSign,
+  BarChart3,
+  GitBranch,
+  FileText,
+  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +40,15 @@ const navItems = [
     href: "/reports",
     icon: FileBarChart,
   },
+];
+
+const cazaVisionItems = [
+  { label: "Visão Geral",    href: "/caza-vision",                icon: LayoutDashboard },
+  { label: "Projetos",       href: "/caza-vision/projetos",       icon: FolderKanban    },
+  { label: "Financial",      href: "/caza-vision/financial",      icon: DollarSign      },
+  { label: "Unit Economics", href: "/caza-vision/unit-economics", icon: BarChart3       },
+  { label: "Pipeline",       href: "/caza-vision/pipeline",       icon: GitBranch       },
+  { label: "Relatórios",     href: "/caza-vision/relatorios",     icon: FileText        },
 ];
 
 export default function Sidebar() {
@@ -88,6 +103,49 @@ export default function Sidebar() {
               <span className="flex-1">{item.label}</span>
               {isActive && (
                 <ChevronRight size={14} className="text-brand-500" />
+              )}
+            </Link>
+          );
+        })}
+
+        {/* ── CAZA VISION BU ── */}
+        <div className="px-3 mt-5 mb-3 flex items-center gap-2">
+          <div className="w-4 h-4 rounded bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shrink-0">
+            <Eye size={9} className="text-white" />
+          </div>
+          <span className="text-[10px] font-semibold text-amber-500/80 uppercase tracking-widest">
+            Caza Vision
+          </span>
+        </div>
+
+        {cazaVisionItems.map((item) => {
+          const Icon = item.icon;
+          const isActive =
+            item.href === "/caza-vision"
+              ? pathname === "/caza-vision"
+              : pathname.startsWith(item.href);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 group",
+                isActive
+                  ? "bg-amber-500/15 text-amber-400 border border-amber-500/20"
+                  : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+              )}
+            >
+              <Icon
+                size={14}
+                className={cn(
+                  "transition-colors",
+                  isActive ? "text-amber-400" : "text-gray-500 group-hover:text-gray-300"
+                )}
+              />
+              <span className="flex-1 text-xs">{item.label}</span>
+              {isActive && (
+                <ChevronRight size={12} className="text-amber-500" />
               )}
             </Link>
           );
