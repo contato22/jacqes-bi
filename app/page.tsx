@@ -1,3 +1,7 @@
+// ─── JACQES BI — Overview Dashboard ──────────────────────────────────────────
+// Server Component: fetches normalised data from Notion at render time.
+// Falls back to static mock data when Notion is not yet configured (dev/demo).
+
 import Header from "@/components/Header";
 import KPICard from "@/components/KPICard";
 import RevenueChart from "@/components/RevenueChart";
@@ -6,8 +10,54 @@ import TopProductsTable from "@/components/TopProductsTable";
 import RegionTable from "@/components/RegionTable";
 import AlertBanner from "@/components/AlertBanner";
 import { kpis, alerts } from "@/lib/data";
+import type { KPI } from "@/lib/data";
 
-export default function DashboardPage() {
+// ─── Derive KPIs from live financial data (if available) ─────────────────────
+// When Notion is connected, the kpi values will be derived from the last
+// fetched period. Until then we fall back to the mock kpis from lib/data.
+
+async function getLiveKPIs(): Promise<KPI[]> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/notion/jacqes/financial`,
+      { next: { revalidate: parseInt(process.env.NOTION_CACHE_TTL ?? "300", 10) } }
+    );
+
+    if (!res.ok) return kpis; // fallback
+
+    const data = await res.json();
+    if (!data?.records?.length) return kpis; // no records yet → mock
+
+    // ── Map the latest month's financial record to KPI cards ─────────────────
+    // Sort descending by date and take the most recent record.
+    const sorted = [...data.records].sort(
+      (a: { date: string }, b: { date: string }) =>
+        (b.date ?? "").localeCompare(a.date ?? "")
+    );
+    const latest = sorted[0];
+
+    // Replace the two revenue/margin KPIs; keep other mock KPIs intact.
+    return kpis.map((kpi) => {
+      if (kpi.id === "revenue" && latest.netRevenue != null) {
+        return { ...kpi, value: latest.netRevenue };
+      }
+      if (kpi.id === "margin" && latest.grossProfit != null && latest.netRevenue) {
+        return {
+          ...kpi,
+          value: parseFloat(((latest.grossProfit / latest.netRevenue) * 100).toFixed(1)),
+        };
+      }
+      return kpi;
+    });
+  } catch {
+    // Notion not configured yet — use mock data silently
+    return kpis;
+  }
+}
+
+export default async function DashboardPage() {
+  const liveKPIs = await getLiveKPIs();
+
   return (
     <>
       <Header
@@ -18,7 +68,7 @@ export default function DashboardPage() {
       <div className="px-8 py-6 space-y-6">
         {/* KPI Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {kpis.map((kpi) => (
+          {liveKPIs.map((kpi) => (
             <KPICard key={kpi.id} kpi={kpi} />
           ))}
         </div>

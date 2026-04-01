@@ -10,30 +10,19 @@ import {
   Settings,
   ChevronRight,
   Zap,
+  Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  {
-    label: "Overview",
-    href: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Revenue",
-    href: "/revenue",
-    icon: TrendingUp,
-  },
-  {
-    label: "Customers",
-    href: "/customers",
-    icon: Users,
-  },
-  {
-    label: "Reports",
-    href: "/reports",
-    icon: FileBarChart,
-  },
+const analyticsItems = [
+  { label: "Overview",  href: "/",         icon: LayoutDashboard },
+  { label: "Revenue",   href: "/revenue",  icon: TrendingUp      },
+  { label: "Customers", href: "/customers",icon: Users           },
+  { label: "Reports",   href: "/reports",  icon: FileBarChart    },
+];
+
+const portfolioItems = [
+  { label: "AWQ Venture", href: "/awq-venture", icon: Briefcase },
 ];
 
 export default function Sidebar() {
@@ -55,18 +44,18 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {/* ── Analytics ─────────────────────────────────────────────── */}
         <div className="px-3 mb-3">
           <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">
             Analytics
           </span>
         </div>
 
-        {navItems.map((item) => {
+        {analyticsItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-
           return (
             <Link
               key={item.href}
@@ -78,21 +67,42 @@ export default function Sidebar() {
                   : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
               )}
             >
-              <Icon
-                size={16}
-                className={cn(
-                  "transition-colors",
-                  isActive ? "text-brand-400" : "text-gray-500 group-hover:text-gray-300"
-                )}
-              />
+              <Icon size={16} className={cn("transition-colors", isActive ? "text-brand-400" : "text-gray-500 group-hover:text-gray-300")} />
               <span className="flex-1">{item.label}</span>
-              {isActive && (
-                <ChevronRight size={14} className="text-brand-500" />
-              )}
+              {isActive && <ChevronRight size={14} className="text-brand-500" />}
             </Link>
           );
         })}
 
+        {/* ── Portfólio ─────────────────────────────────────────────── */}
+        <div className="px-3 mt-5 mb-3">
+          <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">
+            Portfólio
+          </span>
+        </div>
+
+        {portfolioItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group",
+                isActive
+                  ? "bg-amber-500/15 text-amber-400 border border-amber-500/20"
+                  : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+              )}
+            >
+              <Icon size={16} className={cn("transition-colors", isActive ? "text-amber-400" : "text-gray-500 group-hover:text-gray-300")} />
+              <span className="flex-1">{item.label}</span>
+              {isActive && <ChevronRight size={14} className="text-amber-500" />}
+            </Link>
+          );
+        })}
+
+        {/* ── System ────────────────────────────────────────────────── */}
         <div className="px-3 mt-5 mb-3">
           <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">
             System

@@ -1,5 +1,11 @@
 "use client";
+// ─── JACQES BI — Revenue Page ─────────────────────────────────────────────────
+// This page remains "use client" because Recharts requires it.
+// DATA REFACTOR: revenueData is now fetched from the Notion API route and
+// mapped to the same RevenueDataPoint shape the chart already expects.
+// Falls back to static mock data when Notion is not yet configured.
 
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -11,8 +17,32 @@ import {
 } from "recharts";
 import Header from "@/components/Header";
 import ChannelTable from "@/components/ChannelTable";
-import { revenueData } from "@/lib/data";
+import { revenueData as mockRevenueData, type RevenueDataPoint } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
+import type { FinancialRecord, NormalizationResult } from "@/lib/data-sources";
+
+// ─── Map Notion FinancialRecord → RevenueDataPoint ────────────────────────────
+
+function mapToRevenueDataPoints(records: FinancialRecord[]): RevenueDataPoint[] {
+  return records
+    .filter((r) => r.date || r.month)
+    .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""))
+    .map((r) => {
+      const grossRevenue = r.grossRevenue ?? r.netRevenue ?? 0;
+      const netRevenue   = r.netRevenue   ?? grossRevenue;
+      const expenses     = r.opex ?? (grossRevenue - (r.grossProfit ?? 0));
+      const profit       = r.grossProfit  ?? r.ebitda ?? (netRevenue - expenses);
+
+      return {
+        month:    r.month ?? r.date?.slice(0, 7) ?? "?",
+        revenue:  grossRevenue,
+        expenses: expenses,
+        profit:   profit,
+      };
+    });
+}
+
+// ─── Tooltip ──────────────────────────────────────────────────────────────────
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -40,14 +70,43 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
-const summaryStats = [
-  { label: "Total Revenue", value: "$4.82M", sub: "+14.6% YoY", positive: true },
-  { label: "Total Profit", value: "$3.24M", sub: "+21.3% YoY", positive: true },
-  { label: "Total Expenses", value: "$1.58M", sub: "+8.2% YoY", positive: false },
-  { label: "Avg Monthly Rev.", value: "$401.8K", sub: "per month", positive: true },
-];
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function RevenuePage() {
+  const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>(mockRevenueData);
+  const [isLive, setIsLive] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/notion/jacqes/financial")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: NormalizationResult<FinancialRecord> | null) => {
+        if (!data?.records?.length) return; // stay on mock
+        const mapped = mapToRevenueDataPoints(data.records);
+        if (mapped.length > 0) {
+          setRevenueData(mapped);
+          setIsLive(true);
+        }
+      })
+      .catch(() => {
+        // Notion not configured — keep mock data
+      });
+  }, []);
+
+  // Compute summary stats from whichever data source is active
+  const totalRevenue  = revenueData.at(-1)?.revenue  ?? 0;
+  const totalProfit   = revenueData.at(-1)?.profit   ?? 0;
+  const totalExpenses = revenueData.at(-1)?.expenses ?? 0;
+  const avgMonthly    = revenueData.length
+    ? revenueData.reduce((s, d) => s + d.revenue, 0) / revenueData.length
+    : 0;
+
+  const summaryStats = [
+    { label: "Total Revenue",     value: formatCurrency(totalRevenue,  "USD", true), sub: isLive ? "Live · Notion"      : "Mock data", positive: true  },
+    { label: "Total Profit",      value: formatCurrency(totalProfit,   "USD", true), sub: isLive ? "Live · last period" : "Mock data", positive: true  },
+    { label: "Total Expenses",    value: formatCurrency(totalExpenses, "USD", true), sub: isLive ? "Live · last period" : "Mock data", positive: false },
+    { label: "Avg Monthly Rev.",  value: formatCurrency(avgMonthly,    "USD", true), sub: "per month",                                positive: true  },
+  ];
+
   return (
     <>
       <Header
@@ -56,6 +115,14 @@ export default function RevenuePage() {
       />
 
       <div className="px-8 py-6 space-y-6">
+        {/* Data source indicator */}
+        {isLive && (
+          <div className="flex items-center gap-2 text-xs text-emerald-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Live data · JACQES Notion database
+          </div>
+        )}
+
         {/* Summary stats */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryStats.map((stat) => (
@@ -77,7 +144,7 @@ export default function RevenuePage() {
         <div className="card p-6">
           <div className="mb-6">
             <h2 className="text-sm font-semibold text-white">Monthly Revenue vs Profit</h2>
-            <p className="text-xs text-gray-500 mt-0.5">FY 2025 — grouped bar comparison</p>
+            <p className="text-xs text-gray-500 mt-0.5">Grouped bar comparison</p>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -107,8 +174,8 @@ export default function RevenuePage() {
                 }
               />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-              <Bar dataKey="revenue" name="revenue" fill="#6366f1" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="profit" name="profit" fill="#22d3ee" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="revenue"  name="revenue"  fill="#6366f1" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="profit"   name="profit"   fill="#22d3ee" radius={[3, 3, 0, 0]} />
               <Bar dataKey="expenses" name="expenses" fill="#f59e0b" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -122,7 +189,9 @@ export default function RevenuePage() {
           </div>
           <div className="grid grid-cols-6 md:grid-cols-12 gap-2">
             {revenueData.map((d) => {
-              const margin = ((d.profit / d.revenue) * 100).toFixed(1);
+              const margin = d.revenue > 0
+                ? ((d.profit / d.revenue) * 100).toFixed(1)
+                : "0.0";
               const pct = parseFloat(margin);
               return (
                 <div key={d.month} className="flex flex-col items-center gap-2">
@@ -130,7 +199,7 @@ export default function RevenuePage() {
                   <div className="w-full h-16 bg-gray-800 rounded-md overflow-hidden flex items-end">
                     <div
                       className="w-full bg-gradient-to-t from-brand-700 to-brand-500 rounded-md transition-all"
-                      style={{ height: `${pct}%` }}
+                      style={{ height: `${Math.min(pct, 100)}%` }}
                     />
                   </div>
                   <div className="text-[10px] text-gray-600">{d.month}</div>
