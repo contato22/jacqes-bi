@@ -64,13 +64,13 @@ export default function ChannelTable() {
                     <span className="text-cyan-400 font-medium">{cvr}%</span>
                   </td>
                   <td className="py-3 text-right font-semibold text-white tabular-nums">
-                    {formatCurrency(ch.revenue, "USD", true)}
+                    {formatCurrency(ch.revenue, "BRL", true)}
                   </td>
                   <td className="py-3 text-right tabular-nums">
                     {ch.cac === 0 ? (
                       <span className="badge-green badge">Organic</span>
                     ) : (
-                      <span className="text-gray-400">${ch.cac}</span>
+                      <span className="text-gray-400">{formatCurrency(ch.cac, "BRL", true)}</span>
                     )}
                   </td>
                 </tr>

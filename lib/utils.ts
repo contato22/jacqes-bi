@@ -7,18 +7,20 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrency(
   value: number,
-  currency = "USD",
+  currency = "BRL",
   compact = false
 ): string {
+  const prefix = currency === "BRL" ? "R$" : "$";
   if (compact) {
     if (value >= 1_000_000) {
-      return `$${(value / 1_000_000).toFixed(1)}M`;
+      return `${prefix}${(value / 1_000_000).toFixed(1)}M`;
     }
     if (value >= 1_000) {
-      return `$${(value / 1_000).toFixed(1)}K`;
+      return `${prefix}${(value / 1_000).toFixed(0)}K`;
     }
+    return `${prefix}${value}`;
   }
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency,
     maximumFractionDigits: 0,
@@ -30,7 +32,7 @@ export function formatNumber(value: number, compact = false): string {
     if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
     if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
   }
-  return new Intl.NumberFormat("en-US").format(value);
+  return new Intl.NumberFormat("pt-BR").format(value);
 }
 
 export function formatPercent(value: number, decimals = 1): string {
@@ -38,7 +40,7 @@ export function formatPercent(value: number, decimals = 1): string {
 }
 
 export function formatDate(date: Date | string): string {
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("pt-BR", {
     year: "numeric",
     month: "short",
     day: "numeric",

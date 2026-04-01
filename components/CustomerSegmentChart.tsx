@@ -35,8 +35,8 @@ export default function CustomerSegmentChart() {
   return (
     <div className="card p-6">
       <div className="mb-4">
-        <h2 className="text-sm font-semibold text-white">Customer Segments</h2>
-        <p className="text-xs text-gray-500 mt-0.5">Revenue distribution by tier</p>
+        <h2 className="text-sm font-semibold text-white">MRR por Setor</h2>
+        <p className="text-xs text-gray-500 mt-0.5">Distribuição de receita por setor</p>
       </div>
 
       <ResponsiveContainer width="100%" height={180}>

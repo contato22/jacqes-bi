@@ -12,7 +12,7 @@ export default function DashboardPage() {
     <>
       <Header
         title="Overview"
-        subtitle="JACQES · Business Intelligence Dashboard · March 2026"
+        subtitle="JACQES · Agência AWQ Group · Dashboard Q1 2026"
       />
 
       <div className="px-8 py-6 space-y-6">

@@ -13,8 +13,8 @@ export default function TopProductsTable() {
     <div className="card p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-sm font-semibold text-white">Top Products</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Revenue by product line</p>
+          <h2 className="text-sm font-semibold text-white">Top Services</h2>
+          <p className="text-xs text-gray-500 mt-0.5">Revenue by service line</p>
         </div>
         <button className="text-xs text-brand-400 hover:text-brand-300 transition-colors font-medium">
           View all →
@@ -25,7 +25,7 @@ export default function TopProductsTable() {
         <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-4 px-3 py-2 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-800">
           <span>Product</span>
           <span className="text-right">Revenue</span>
-          <span className="text-right">Units</span>
+          <span className="text-right">Contratos</span>
           <span className="text-right">Growth</span>
           <span className="text-right">Status</span>
         </div>
@@ -57,7 +57,7 @@ export default function TopProductsTable() {
               </div>
 
               <div className="text-sm font-semibold text-white text-right tabular-nums">
-                {formatCurrency(product.revenue, "USD", true)}
+                {formatCurrency(product.revenue, "BRL", true)}
               </div>
 
               <div className="text-xs text-gray-400 text-right tabular-nums">

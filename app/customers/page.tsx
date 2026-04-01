@@ -153,7 +153,7 @@ export default function CustomersPage() {
                         <span className={`badge ${segClass}`}>{c.segment}</span>
                       </td>
                       <td className="py-3 pr-4 font-semibold text-white tabular-nums">
-                        {formatCurrency(c.ltv, "USD", true)}
+                        {formatCurrency(c.ltv, "BRL", true)}
                       </td>
                       <td className="py-3 pr-4 text-gray-400 tabular-nums">
                         {formatDate(c.lastOrder)}

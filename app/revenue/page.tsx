@@ -32,7 +32,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
             <span className="text-gray-400 capitalize">{entry.name}</span>
           </div>
           <span className="font-semibold text-white">
-            {formatCurrency(entry.value, "USD", true)}
+            {formatCurrency(entry.value, "BRL", true)}
           </span>
         </div>
       ))}
@@ -41,10 +41,10 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 const summaryStats = [
-  { label: "Total Revenue", value: "$4.82M", sub: "+14.6% YoY", positive: true },
-  { label: "Total Profit", value: "$3.24M", sub: "+21.3% YoY", positive: true },
-  { label: "Total Expenses", value: "$1.58M", sub: "+8.2% YoY", positive: false },
-  { label: "Avg Monthly Rev.", value: "$401.8K", sub: "per month", positive: true },
+  { label: "Receita Bruta YTD", value: "R$4,82M", sub: "+3,1% vs orçamento", positive: true },
+  { label: "Receita Líquida YTD", value: "R$4,34M", sub: "59,9% margem bruta", positive: true },
+  { label: "EBITDA YTD", value: "R$867K", sub: "19,9% margem", positive: true },
+  { label: "Lucro Líquido YTD", value: "R$518K", sub: "11,9% margem", positive: true },
 ];
 
 export default function RevenuePage() {
@@ -76,8 +76,8 @@ export default function RevenuePage() {
         {/* Bar chart */}
         <div className="card p-6">
           <div className="mb-6">
-            <h2 className="text-sm font-semibold text-white">Monthly Revenue vs Profit</h2>
-            <p className="text-xs text-gray-500 mt-0.5">FY 2025 — grouped bar comparison</p>
+            <h2 className="text-sm font-semibold text-white">Receita vs Lucro Bruto Mensal</h2>
+            <p className="text-xs text-gray-500 mt-0.5">2026 — Q1 real + projeção orçamentária</p>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -101,7 +101,7 @@ export default function RevenuePage() {
                   new Intl.NumberFormat("en-US", {
                     notation: "compact",
                     style: "currency",
-                    currency: "USD",
+                    currency: "BRL",
                     maximumFractionDigits: 1,
                   }).format(v)
                 }

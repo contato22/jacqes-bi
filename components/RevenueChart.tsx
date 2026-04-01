@@ -24,14 +24,14 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   const fmt = (v: number) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: "BRL",
       notation: "compact",
       maximumFractionDigits: 1,
     }).format(v);
 
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-xl p-3.5 shadow-xl shadow-black/40 min-w-[160px]">
-      <div className="text-xs font-semibold text-gray-400 mb-2">{label} 2025</div>
+      <div className="text-xs font-semibold text-gray-400 mb-2">{label} 2026</div>
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center justify-between gap-4 text-xs py-0.5">
           <div className="flex items-center gap-2">
@@ -54,7 +54,7 @@ export default function RevenueChart() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-sm font-semibold text-white">Revenue Overview</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Monthly P&amp;L — FY 2025</p>
+          <p className="text-xs text-gray-500 mt-0.5">P&amp;L Mensal — 2026 (Q1 real + projeção)</p>
         </div>
         <div className="flex gap-1">
           {["6M", "9M", "1Y"].map((range, i) => (
@@ -111,7 +111,7 @@ export default function RevenueChart() {
               new Intl.NumberFormat("en-US", {
                 notation: "compact",
                 style: "currency",
-                currency: "USD",
+                currency: "BRL",
                 maximumFractionDigits: 1,
               }).format(v)
             }
