@@ -1,9 +1,12 @@
 import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatPercent } from "@/lib/utils";
+import { getHoldingConsolidatedFinancials } from "@/lib/awq/selectors/holding";
 import { awqStore } from "@/lib/awq/mockData";
 
 export default function AWQBudgetPage() {
+  // Holding layer — getHoldingConsolidatedFinancials for group context
+  const fin = getHoldingConsolidatedFinancials();
   const budgets = awqStore.budgets;
   const totalPlanned = budgets.reduce((s, b) => s + b.planned_amount, 0);
   const totalActual = budgets.reduce((s, b) => s + b.actual_amount, 0);
@@ -19,10 +22,10 @@ export default function AWQBudgetPage() {
   }
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-gray-950">
       <Header title="Budget" subtitle="AWQ Group · Budget vs Actual" />
 
-      <div className="px-8 py-6 space-y-6">
+      <main className="flex-1 p-8 space-y-8">
         {/* Summary */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
           {[
@@ -101,7 +104,7 @@ export default function AWQBudgetPage() {
             </div>
           );
         })}
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

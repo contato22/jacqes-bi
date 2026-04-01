@@ -16,10 +16,10 @@ export default function AWQForecastPage() {
   };
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-gray-950">
       <Header title="Forecast" subtitle="AWQ Group · Revenue & Expense Forecast" />
 
-      <div className="px-8 py-6 space-y-6">
+      <main className="flex-1 p-8 space-y-8">
         {/* Summary */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
           {[
@@ -82,7 +82,7 @@ export default function AWQForecastPage() {
             </table>
           </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }
