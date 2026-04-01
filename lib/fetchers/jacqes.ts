@@ -28,7 +28,7 @@ import {
   calcVariance,
 } from "@/lib/fetchers/base";
 
-import { resolveClientCanonicalId, normalizeToSlug } from "@/lib/consolidation/canonical-identity";
+import { queryJacqesCarteira } from "@/lib/notion/queries/jacqes";
 
 const BU_ID = "jacqes" as const;
 const SOURCE_PRIORITY = 80;
@@ -94,56 +94,7 @@ async function loadJacqesFinancials(): Promise<CanonicalFinancialRecord[]> {
   });
 }
 
-// ─── Customer Records ──────────────────────────────────────────────────────────
-
-async function loadJacqesCustomers(): Promise<CanonicalCustomerRecord[]> {
-  const raw = [
-    { id: "C001", name: "Nexus Corp",         email: "s.mitchell@nexuscorp.com",   cnpj: "12.345.678/0001-01", segment: "Enterprise" as const, ltv: 284_500, cac: 12_000, mrr: 23_700, nrr: 112, status: "active" as const,   country: "US" },
-    { id: "C002", name: "Zenith Digital",     email: "james@zenithdigital.io",     cnpj: "23.456.789/0001-02", segment: "SMB" as const,        ltv: 94_200,  cac:  4_200, mrr:  7_850, nrr: 108, status: "active" as const,   country: "UK" },
-    { id: "C003", name: "Stellar Labs",       email: "apatel@stellarlabs.co",      cnpj: "34.567.890/0001-03", segment: "Startup" as const,    ltv: 38_700,  cac:  2_100, mrr:  3_225, nrr:  95, status: "at-risk" as const,  country: "CA" },
-    { id: "C004", name: "EuroVenture GmbH",   email: "lhoffmann@euroventure.de",   cnpj: "45.678.901/0001-04", segment: "Enterprise" as const, ltv: 312_000, cac: 14_500, mrr: 26_000, nrr: 118, status: "active" as const,   country: "DE" },
-    { id: "C005", name: "AfricaTech Hub",     email: "kasante@africatechhub.com",  cnpj: "56.789.012/0001-05", segment: "SMB" as const,        ltv: 67_400,  cac:  3_800, mrr:  5_617, nrr:  92, status: "at-risk" as const,  country: "GH" },
-    { id: "C006", name: "Shibuya Solutions",  email: "y.tanaka@shibuya.jp",        cnpj: "67.890.123/0001-06", segment: "Enterprise" as const, ltv: 198_000, cac: 11_200, mrr: 16_500, nrr: 110, status: "active" as const,   country: "JP" },
-    { id: "C007", name: "LatamScale",         email: "diego@latamscale.mx",        cnpj: "78.901.234/0001-07", segment: "Startup" as const,    ltv: 22_100,  cac:  1_900, mrr:      0, nrr:   0, status: "churned" as const,  country: "MX" },
-    { id: "C008", name: "Baltic Systems",     email: "nvolkov@balticsys.ee",       cnpj: "89.012.345/0001-08", segment: "SMB" as const,        ltv: 81_500,  cac:  4_600, mrr:  6_792, nrr: 104, status: "active" as const,   country: "EE" },
-  ];
-
-  const now = new Date().toISOString();
-  return raw.map((r) => {
-    const clientCanonicalId = resolveClientCanonicalId({
-      name: r.name,
-      email: r.email,
-      cnpj: r.cnpj,
-      ownerBU: BU_ID,
-      sourceRecordId: r.id,
-    });
-    return {
-      id: makeCanonicalId(BU_ID, r.id),
-      sourceRecordId: r.id,
-      clientCanonicalId,
-      ownerBU: BU_ID,
-      clientName: r.name,
-      clientSlug: normalizeToSlug(r.name),
-      email: r.email,
-      cnpj: r.cnpj,
-      segment: r.segment,
-      country: r.country,
-      status: r.status,
-      relationshipType: "client",
-      linkedBUs: [BU_ID], // will be enriched post-union
-      ltv: r.ltv,
-      cac: r.cac,
-      mrr: r.mrr,
-      nrr: r.nrr,
-      payback: r.cac > 0 && r.mrr > 0 ? Math.round(r.cac / (r.mrr * 0.7)) : undefined,
-      sourceDatabase: SOURCE_DB,
-      sourceSystem: "notion" as const,
-      dataQualityFlag: "verified" as const,
-      reconciliationStatus: "clean" as const,
-      lastUpdated: now,
-    };
-  });
-}
+// ─── Customer Records (real Notion data) ──────────────────────────────────────
 
 // ─── Budget Records ────────────────────────────────────────────────────────────
 
@@ -228,7 +179,7 @@ export async function getJacqesFinancials(options?: { year?: number; month?: num
 }
 
 export async function getJacqesCustomers(): Promise<BUDataResult<CanonicalCustomerRecord>> {
-  return safeFetch(BU_ID, "notion", loadJacqesCustomers);
+  return safeFetch(BU_ID, "notion", queryJacqesCarteira);
 }
 
 export async function getJacqesBudgets(options?: { year?: number }): Promise<BUDataResult<CanonicalBudgetRecord>> {
