@@ -25,7 +25,7 @@ export const notion = new Client({
 export const NOTION_DB = {
   // ── Caza Vision ─────────────────────────────────────────────
   CAZA_FINANCEIRO:  "9a8329e9-6d19-4bdc-8e80-2d59a2658be7",
-  CAZA_CLIENTES:    "ca1ba0fe-3d47-4356-8643-23a223a4e710",
+  CAZA_CLIENTES:    "2a58b3e6-fc37-80ce-bb78-c33f19ee1829",
   CAZA_PROJETOS:    "308e2d13-dfa9-433e-a0f6-8439b5181845",
 
   // ── JACQES ───────────────────────────────────────────────────
