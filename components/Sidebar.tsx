@@ -3,45 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, TrendingUp, Building2, Settings,
-  ChevronRight, Zap, LogOut, BarChart3,
+  LayoutDashboard, Settings,
+  ChevronRight, Zap, LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { JACQES_URL } from "@/lib/config";
 
 const awqNav = [
-  { label: "Visão Geral",    href: "/",               icon: LayoutDashboard },
-  { label: "Business Units", href: "/business-units", icon: Building2 },
-];
-
-const businessUnits = [
-  {
-    id: "jacqes",
-    label: "JACQES",
-    sub: "Agência · AWQ Group",
-    href: JACQES_URL,
-    external: true,
-    icon: BarChart3,
-    color: "bg-brand-600",
-  },
-  {
-    id: "caza",
-    label: "Caza Vision",
-    sub: "Tecnologia · AWQ Group",
-    href: "/caza-vision",
-    external: false,
-    icon: Building2,
-    color: "bg-emerald-600",
-  },
-  {
-    id: "venture",
-    label: "AWQ Venture",
-    sub: "Investimentos · AWQ Group",
-    href: "/awq-venture",
-    external: false,
-    icon: TrendingUp,
-    color: "bg-amber-600",
-  },
+  { label: "Visão Geral", href: "/", icon: LayoutDashboard },
 ];
 
 const sistemaNav = [
@@ -118,35 +86,6 @@ export default function Sidebar() {
           {awqNav.map((item) => (
             <NavItem key={item.href} {...item} active={isActive(item.href)} />
           ))}
-        </div>
-
-        <SectionLabel>Business Units</SectionLabel>
-        <div className="space-y-2 mt-1">
-          {businessUnits.map((bu) => {
-            const isExternal = bu.external;
-            const Tag = isExternal ? "a" : Link;
-            const tagProps = isExternal
-              ? { href: bu.href, target: "_blank", rel: "noopener noreferrer" }
-              : { href: bu.href };
-            return (
-              <Tag
-                key={bu.id}
-                {...(tagProps as any)}
-                className="flex items-center gap-3 px-3 py-3 rounded-xl border border-gray-200 hover:border-brand-200 hover:bg-brand-50 transition-all group"
-              >
-                <div className={`w-8 h-8 rounded-lg ${bu.color} flex items-center justify-center shrink-0`}>
-                  <bu.icon size={14} className="text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-gray-800 group-hover:text-brand-700">
-                    {bu.label}
-                  </div>
-                  <div className="text-[10px] text-gray-400">{bu.sub}</div>
-                </div>
-                <ChevronRight size={14} className="text-gray-300 group-hover:text-brand-400" />
-              </Tag>
-            );
-          })}
         </div>
 
         <SectionLabel>Sistema</SectionLabel>
