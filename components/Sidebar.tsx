@@ -10,6 +10,7 @@ import {
   Settings,
   ChevronRight,
   Zap,
+  Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,21 +19,33 @@ const navItems = [
     label: "Overview",
     href: "/",
     icon: LayoutDashboard,
+    group: "analytics",
   },
   {
     label: "Revenue",
     href: "/revenue",
     icon: TrendingUp,
+    group: "analytics",
   },
   {
     label: "Customers",
     href: "/customers",
     icon: Users,
+    group: "analytics",
   },
   {
     label: "Reports",
     href: "/reports",
     icon: FileBarChart,
+    group: "analytics",
+  },
+];
+
+const holdingNavItems = [
+  {
+    label: "AWQ Consolidado",
+    href: "/awq",
+    icon: Building2,
   },
 ];
 
@@ -89,6 +102,40 @@ export default function Sidebar() {
               {isActive && (
                 <ChevronRight size={14} className="text-brand-500" />
               )}
+            </Link>
+          );
+        })}
+
+        {/* Holding layer */}
+        <div className="px-3 mt-5 mb-3">
+          <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">
+            Holding
+          </span>
+        </div>
+
+        {holdingNavItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group",
+                isActive
+                  ? "bg-amber-600/20 text-amber-300 border border-amber-500/20"
+                  : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+              )}
+            >
+              <Icon
+                size={16}
+                className={cn(
+                  "transition-colors",
+                  isActive ? "text-amber-300" : "text-gray-500 group-hover:text-gray-300"
+                )}
+              />
+              <span className="flex-1">{item.label}</span>
+              {isActive && <ChevronRight size={14} className="text-amber-400" />}
             </Link>
           );
         })}
