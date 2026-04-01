@@ -5,23 +5,19 @@ import { cn } from "@/lib/utils";
 const alertConfig = {
   warning: {
     Icon: AlertTriangle,
-    classes: "border-yellow-500/30 bg-yellow-500/5 text-yellow-400",
-    dot: "bg-yellow-400",
+    classes: "border-yellow-300 bg-yellow-50 text-yellow-700",
   },
   info: {
     Icon: Info,
-    classes: "border-blue-500/30 bg-blue-500/5 text-blue-400",
-    dot: "bg-blue-400",
+    classes: "border-blue-300 bg-blue-50 text-blue-700",
   },
   success: {
     Icon: CheckCircle,
-    classes: "border-emerald-500/30 bg-emerald-500/5 text-emerald-400",
-    dot: "bg-emerald-400",
+    classes: "border-emerald-300 bg-emerald-50 text-emerald-700",
   },
   error: {
     Icon: XCircle,
-    classes: "border-red-500/30 bg-red-500/5 text-red-400",
-    dot: "bg-red-400",
+    classes: "border-red-300 bg-red-50 text-red-700",
   },
 };
 

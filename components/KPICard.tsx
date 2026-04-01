@@ -18,10 +18,10 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 const colorMap: Record<string, string> = {
-  brand: "text-brand-400 bg-brand-500/10 border-brand-500/20",
-  emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-  blue: "text-blue-400 bg-blue-500/10 border-blue-500/20",
-  purple: "text-purple-400 bg-purple-500/10 border-purple-500/20",
+  brand: "text-brand-600 bg-brand-50 border-brand-200",
+  emerald: "text-emerald-600 bg-emerald-50 border-emerald-200",
+  blue: "text-blue-600 bg-blue-50 border-blue-200",
+  purple: "text-purple-600 bg-purple-50 border-purple-200",
 };
 
 function formatValue(kpi: KPI): string {
@@ -50,8 +50,8 @@ export default function KPICard({ kpi }: KPICardProps) {
           className={cn(
             "flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full",
             isPositive
-              ? "text-emerald-400 bg-emerald-500/10"
-              : "text-red-400 bg-red-500/10"
+              ? "text-emerald-700 bg-emerald-100"
+              : "text-red-700 bg-red-100"
           )}
         >
           {isPositive ? (
@@ -64,16 +64,16 @@ export default function KPICard({ kpi }: KPICardProps) {
       </div>
 
       <div className="space-y-1">
-        <div className="text-2xl font-bold text-white tabular-nums">
+        <div className="text-2xl font-bold text-gray-900 tabular-nums">
           {formatValue(kpi)}
         </div>
         <div className="text-sm text-gray-500">{kpi.label}</div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-gray-800">
-        <span className="text-xs text-gray-600">
+      <div className="mt-4 pt-4 border-t border-gray-100">
+        <span className="text-xs text-gray-400">
           vs prev period:{" "}
-          <span className={cn("font-medium", isPositive ? "text-emerald-500" : "text-red-500")}>
+          <span className={cn("font-medium", isPositive ? "text-emerald-600" : "text-red-600")}>
             {isPositive ? "+" : ""}
             {kpi.unit === "currency"
               ? formatCurrency(kpi.value - kpi.previousValue, "USD", true)

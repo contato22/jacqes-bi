@@ -8,7 +8,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 import { revenueData } from "@/lib/data";
 
@@ -30,8 +29,8 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
     }).format(v);
 
   return (
-    <div className="bg-gray-900 border border-gray-700 rounded-xl p-3.5 shadow-xl shadow-black/40 min-w-[160px]">
-      <div className="text-xs font-semibold text-gray-400 mb-2">{label} 2025</div>
+    <div className="bg-white border border-gray-200 rounded-xl p-3.5 shadow-lg min-w-[160px]">
+      <div className="text-xs font-semibold text-gray-500 mb-2">{label} 2025</div>
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center justify-between gap-4 text-xs py-0.5">
           <div className="flex items-center gap-2">
@@ -39,9 +38,9 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-gray-400 capitalize">{entry.name}</span>
+            <span className="text-gray-500 capitalize">{entry.name}</span>
           </div>
-          <span className="font-semibold text-white">{fmt(entry.value)}</span>
+          <span className="font-semibold text-gray-900">{fmt(entry.value)}</span>
         </div>
       ))}
     </div>
@@ -53,7 +52,7 @@ export default function RevenueChart() {
     <div className="card p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-sm font-semibold text-white">Revenue Overview</h2>
+          <h2 className="text-sm font-semibold text-gray-900">Revenue Overview</h2>
           <p className="text-xs text-gray-500 mt-0.5">Monthly P&amp;L — FY 2025</p>
         </div>
         <div className="flex gap-1">
@@ -62,8 +61,8 @@ export default function RevenueChart() {
               key={range}
               className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
                 i === 2
-                  ? "bg-brand-600/20 text-brand-400 border border-brand-500/20"
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "bg-brand-100 text-brand-700 border border-brand-200"
+                  : "text-gray-400 hover:text-gray-700"
               }`}
             >
               {range}
@@ -79,32 +78,32 @@ export default function RevenueChart() {
         >
           <defs>
             <linearGradient id="gradRevenue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.25} />
+              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2} />
               <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="gradProfit" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.2} />
+              <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.15} />
               <stop offset="95%" stopColor="#22d3ee" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="gradExpenses" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.15} />
+              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.12} />
               <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
             </linearGradient>
           </defs>
 
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke="#1f2937"
+            stroke="#e5e7eb"
             vertical={false}
           />
           <XAxis
             dataKey="month"
-            tick={{ fill: "#6b7280", fontSize: 11 }}
+            tick={{ fill: "#9ca3af", fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: "#6b7280", fontSize: 11 }}
+            tick={{ fill: "#9ca3af", fontSize: 11 }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(v) =>
@@ -116,7 +115,7 @@ export default function RevenueChart() {
               }).format(v)
             }
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#374151", strokeWidth: 1 }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }} />
 
           <Area
             type="monotone"

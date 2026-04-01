@@ -12,11 +12,11 @@ function SettingsSection({ icon: Icon, title, description, children }: SettingsS
   return (
     <div className="card p-6">
       <div className="flex items-start gap-4 mb-5">
-        <div className="w-9 h-9 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 shrink-0">
           <Icon size={16} />
         </div>
         <div>
-          <div className="font-semibold text-gray-200">{title}</div>
+          <div className="font-semibold text-gray-800">{title}</div>
           <div className="text-xs text-gray-500 mt-0.5">{description}</div>
         </div>
       </div>
@@ -35,12 +35,12 @@ function ToggleRow({ label, description, defaultChecked = false }: ToggleRowProp
   return (
     <div className="flex items-center justify-between py-2">
       <div>
-        <div className="text-sm text-gray-300">{label}</div>
-        {description && <div className="text-xs text-gray-600 mt-0.5">{description}</div>}
+        <div className="text-sm text-gray-700">{label}</div>
+        {description && <div className="text-xs text-gray-400 mt-0.5">{description}</div>}
       </div>
       <div
         className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${
-          defaultChecked ? "bg-brand-600" : "bg-gray-700"
+          defaultChecked ? "bg-brand-500" : "bg-gray-200"
         }`}
       >
         <div
@@ -66,30 +66,30 @@ export default function SettingsPage() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1.5">
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">
                 Nome do Workspace
               </label>
               <input
                 type="text"
                 defaultValue="AWQ Group"
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1.5">
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">
                 Moeda Padrão
               </label>
-              <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
+              <select className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:border-brand-500">
                 <option>USD — US Dollar</option>
                 <option>EUR — Euro</option>
                 <option>BRL — Real Brasileiro</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1.5">
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">
                 Fuso Horário
               </label>
-              <select className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:border-brand-500">
+              <select className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:border-brand-500">
                 <option>UTC-3 — Brasília</option>
                 <option>UTC+0 — Londres</option>
                 <option>UTC-5 — Nova York</option>
@@ -118,13 +118,13 @@ export default function SettingsPage() {
               { name: "Alex Whitmore", email: "alex@awqgroup.com", role: "Owner" },
               { name: "Sam Chen", email: "s.chen@awqgroup.com", role: "Admin" },
             ].map((member) => (
-              <div key={member.email} className="flex items-center gap-3 py-2 border-b border-gray-800 last:border-0">
+              <div key={member.email} className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-awq-gold to-amber-600 flex items-center justify-center text-[10px] font-bold text-white">
                   {member.name.split(" ").map((n) => n[0]).join("")}
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-gray-300">{member.name}</div>
-                  <div className="text-xs text-gray-600">{member.email}</div>
+                  <div className="text-sm font-medium text-gray-700">{member.name}</div>
+                  <div className="text-xs text-gray-400">{member.email}</div>
                 </div>
                 <span className="badge badge-blue">{member.role}</span>
               </div>
@@ -141,14 +141,12 @@ export default function SettingsPage() {
           {[
             { name: "JACQES BI", status: "Conectado", lastSync: "2 min atrás" },
           ].map((source) => (
-            <div key={source.name} className="flex items-center justify-between py-2 border-b border-gray-800 last:border-0">
+            <div key={source.name} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
               <div>
-                <div className="text-sm font-medium text-gray-300">{source.name}</div>
-                <div className="text-xs text-gray-600">Última sync: {source.lastSync}</div>
+                <div className="text-sm font-medium text-gray-700">{source.name}</div>
+                <div className="text-xs text-gray-400">Última sync: {source.lastSync}</div>
               </div>
-              <span className={`badge ${source.status === "Conectado" ? "badge-green" : "badge-yellow"}`}>
-                {source.status}
-              </span>
+              <span className="badge badge-green">{source.status}</span>
             </div>
           ))}
         </SettingsSection>

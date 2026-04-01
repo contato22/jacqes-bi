@@ -3,13 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, Settings,
+  LayoutDashboard, DollarSign, Users, FileBarChart, Settings,
   ChevronRight, Zap, LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const awqNav = [
-  { label: "Visão Geral", href: "/", icon: LayoutDashboard },
+const jacqesNav = [
+  { label: "Visão Geral",  href: "/",          icon: LayoutDashboard },
+  { label: "Financial",    href: "/revenue",    icon: DollarSign },
+  { label: "Customers",    href: "/customers",  icon: Users },
+  { label: "Reports",      href: "/reports",    icon: FileBarChart },
 ];
 
 const sistemaNav = [
@@ -63,7 +66,7 @@ export default function Sidebar() {
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <aside className="w-[260px] flex-shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
+    <aside className="w-[240px] flex-shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
       {/* Header */}
       <div className="px-5 py-5 border-b border-gray-100">
         <div className="flex items-center gap-3">
@@ -71,9 +74,9 @@ export default function Sidebar() {
             <Zap size={17} className="text-white" />
           </div>
           <div>
-            <div className="text-sm font-bold text-gray-900">AWQ Group</div>
+            <div className="text-sm font-bold text-gray-900">JACQES BI</div>
             <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-              Plataforma Central
+              AWQ Group
             </div>
           </div>
         </div>
@@ -81,9 +84,9 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-2">
-        <SectionLabel>AWQ Group</SectionLabel>
+        <SectionLabel>JACQES</SectionLabel>
         <div className="space-y-0.5">
-          {awqNav.map((item) => (
+          {jacqesNav.map((item) => (
             <NavItem key={item.href} {...item} active={isActive(item.href)} />
           ))}
         </div>
