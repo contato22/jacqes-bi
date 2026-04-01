@@ -1,9 +1,14 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 /**
- * Legacy route — redirects to JACQES scoped customers page.
- * Customer data is now accessed through the isolated BU view.
+ * Legacy route — client-side redirect to JACQES scoped customers page.
+ * Server-side redirect() is incompatible with static export.
  */
 export default function CustomersPage() {
-  redirect("/jacqes/customers");
+  const router = useRouter();
+  useEffect(() => { router.replace("/jacqes/customers"); }, [router]);
+  return <div className="min-h-screen bg-gray-950" />;
 }

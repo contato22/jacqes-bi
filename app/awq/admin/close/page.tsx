@@ -1,3 +1,4 @@
+import React from "react";
 import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatPercent } from "@/lib/utils";
@@ -73,8 +74,7 @@ const CHECKLIST: CloseItem[] = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const STATUS_CONFIG: Record<CloseItemStatus, { icon: any; label: string; style: string }> = {
+const STATUS_CONFIG: Record<CloseItemStatus, { icon: React.ReactNode; label: string; style: string }> = {
   completed: {
     icon: <CheckCircle2 size={16} />,
     label: "Completed",
