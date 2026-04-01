@@ -171,6 +171,30 @@ export function extractRollupNumber(prop: unknown): number | null {
   }
 }
 
+// ── Email ─────────────────────────────────────────────────────────────────────
+
+export function extractEmail(prop: unknown): string | null {
+  try {
+    const p = prop as RawProp
+    if (p?.type !== 'email') return null
+    return (p.email as string | null) ?? null
+  } catch {
+    return null
+  }
+}
+
+// ── Phone number ──────────────────────────────────────────────────────────────
+
+export function extractPhoneNumber(prop: unknown): string | null {
+  try {
+    const p = prop as RawProp
+    if (p?.type !== 'phone_number') return null
+    return (p.phone_number as string | null) ?? null
+  } catch {
+    return null
+  }
+}
+
 // ── Date parsing ───────────────────────────────────────────────────────────────
 //
 // Supported formats:

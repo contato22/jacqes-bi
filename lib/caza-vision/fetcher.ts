@@ -1,45 +1,30 @@
-// ─── CAZA VISION — Notion Fetcher + Domain Aggregators ─────────────────────────
-//
-// fetchCazaVisionRecords()  — full paginated fetch, returns FetchResult<ProjectRecord>
-// deriveFinancialMonths()   — aggregates records by competência month
-// deriveOverviewMetrics()   — computes Visão Geral KPIs
-// deriveUnitEconomics()     — computes Unit Economics metrics
-//
-// IMPORTANT: This module runs server-side (Next.js Server Components / Route Handlers).
-// process.env is safe here. No credentials are exposed to the client.
+// ─── CAZA VISION — Fetchers + Overview Metrics ─────────────────────────────────
+// Server-side only. process.env is safe here (Next.js Server Components).
 
-import { CAZA_VISION_CONFIG, hasCredentials } from './config'
-import { adaptNotionPages } from './adapter'
+import { CAZA_VISION_CONFIG, hasCredentials, missingCredentials } from './config'
+import { adaptProjetos, adaptFinanceiros, adaptClientes } from './adapter'
 import type {
-  ProjectRecord,
-  FetchResult,
-  FinancialMonth,
-  OverviewMetrics,
-  UnitEconomicsMetrics,
+  ProjetoRecord, FinanceiroRecord, ClienteRecord,
+  FetchResult, OverviewMetrics, PipelineGroup, ProjetoStatus,
 } from './types'
 
-// ── Notion page shape (minimal) ────────────────────────────────────────────────
+// ── Internal: raw Notion page shape ───────────────────────────────────────────
 
-type NotionPage = {
-  id: string
-  properties: Record<string, unknown>
-}
-
+type NotionPage = { id: string; properties: Record<string, unknown> }
 type NotionQueryResponse = {
   results:     NotionPage[]
   has_more:    boolean
   next_cursor: string | null
 }
 
-// ── Internal: single Notion database query ─────────────────────────────────────
+// ── Internal: paginated query ──────────────────────────────────────────────────
 
-async function queryDatabase(cursor?: string): Promise<NotionQueryResponse> {
-  const { databaseId, notionToken, notionVersion, baseUrl } = CAZA_VISION_CONFIG
-
+async function queryDatabase(dbId: string, cursor?: string): Promise<NotionQueryResponse> {
+  const { notionToken, notionVersion, baseUrl } = CAZA_VISION_CONFIG
   const body: Record<string, unknown> = { page_size: 100 }
   if (cursor) body.start_cursor = cursor
 
-  const res = await fetch(`${baseUrl}/databases/${databaseId}/query`, {
+  const res = await fetch(`${baseUrl}/databases/${dbId}/query`, {
     method: 'POST',
     headers: {
       Authorization:    `Bearer ${notionToken}`,
@@ -47,295 +32,238 @@ async function queryDatabase(cursor?: string): Promise<NotionQueryResponse> {
       'Content-Type':   'application/json',
     },
     body: JSON.stringify(body),
-    // No cache — always fetch fresh data on each request
     cache: 'no-store',
   })
 
   if (!res.ok) {
-    const body = await res.text().catch(() => '(sem corpo de resposta)')
-    throw new Error(`Notion API respondeu ${res.status}: ${body}`)
+    const text = await res.text().catch(() => '(sem corpo)')
+    throw new Error(`Notion API ${res.status} para database ${dbId}: ${text}`)
   }
 
   return res.json() as Promise<NotionQueryResponse>
 }
 
-// ── Internal: paginate through all records ────────────────────────────────────
-
-async function fetchAllPages(): Promise<NotionPage[]> {
+async function fetchAll(dbId: string): Promise<NotionPage[]> {
   const pages: NotionPage[] = []
   let cursor: string | undefined
 
   do {
-    const result = await queryDatabase(cursor)
+    const result = await queryDatabase(dbId, cursor)
     pages.push(...result.results)
-    cursor =
-      result.has_more && result.next_cursor
-        ? result.next_cursor
-        : undefined
+    cursor = result.has_more && result.next_cursor ? result.next_cursor : undefined
   } while (cursor)
 
   return pages
 }
 
-// ── Public: fetch all CAZA VISION records ─────────────────────────────────────
+// ── No-credentials guard helper ────────────────────────────────────────────────
 
-export async function fetchCazaVisionRecords(): Promise<FetchResult<ProjectRecord>> {
-  const fetchedAt = new Date().toISOString()
-
-  // Guard: no credentials — return structured empty state, no mock fallback
-  if (!hasCredentials()) {
-    console.warn(
-      '[CAZA VISION] Credenciais ausentes: NOTION_TOKEN e/ou CAZA_VISION_DB_ID não configurados'
-    )
-    return {
-      status:           'no_credentials',
-      data:             [],
-      recordsTotal:     0,
-      recordsValid:     0,
-      recordsDiscarded: 0,
-      missingFields:    [],
-      fallbackActive:   false,
-      errorMessage:
-        'Configure NOTION_TOKEN e CAZA_VISION_DB_ID no arquivo .env.local para conectar à base real.',
-      fetchedAt,
-    }
+function noCredsResult<T>(fetchedAt: string): FetchResult<T> {
+  const missing = missingCredentials()
+  return {
+    status: 'no_credentials',
+    data: [],
+    total: 0,
+    errorMessage: `Configure no .env.local: ${missing.join(', ')}`,
+    fetchedAt,
   }
+}
+
+// ── Public fetchers ────────────────────────────────────────────────────────────
+
+export async function fetchProjetos(): Promise<FetchResult<ProjetoRecord>> {
+  const fetchedAt = new Date().toISOString()
+  if (!hasCredentials()) return noCredsResult(fetchedAt)
 
   try {
-    console.log(
-      `[CAZA VISION] Consultando database: ${CAZA_VISION_CONFIG.databaseId}`
-    )
-
-    const rawPages = await fetchAllPages()
-    console.log(`[CAZA VISION] ${rawPages.length} registros brutos retornados`)
-
-    const records = adaptNotionPages(rawPages)
-
-    const valid     = records.filter((r) => r.valor !== null)
-    const discarded = records.filter((r) => r.valor === null)
-
-    if (discarded.length > 0) {
-      console.warn(
-        `[CAZA VISION] ${discarded.length} registros sem campo "Valor" — excluídos dos cálculos de receita`
-      )
-    }
-
-    const allFlags    = records.flatMap((r) => r.dataQualityFlags)
-    const missingFields = [...new Set(allFlags)]
-
-    console.log(
-      `[CAZA VISION] ${valid.length} válidos, ${discarded.length} descartados`
-    )
-    if (missingFields.length) {
-      console.warn('[CAZA VISION] Problemas de qualidade:', missingFields)
-    }
-
-    return {
-      status:           records.length === 0 ? 'empty' : 'ok',
-      data:             records,
-      recordsTotal:     rawPages.length,
-      recordsValid:     valid.length,
-      recordsDiscarded: discarded.length,
-      missingFields,
-      fallbackActive:   false,
-      errorMessage:     null,
-      fetchedAt,
-    }
+    const raw = await fetchAll(CAZA_VISION_CONFIG.databases.projetos)
+    const data = adaptProjetos(raw)
+    console.log(`[CAZA VISION] Projetos: ${data.length} registros`)
+    return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    console.error('[CAZA VISION] Erro ao buscar dados da Notion API:', msg)
-    return {
-      status:           'api_error',
-      data:             [],
-      recordsTotal:     0,
-      recordsValid:     0,
-      recordsDiscarded: 0,
-      missingFields:    [],
-      fallbackActive:   false,
-      errorMessage:     msg,
-      fetchedAt,
-    }
+    console.error('[CAZA VISION] Erro ao buscar Projetos:', msg)
+    return { status: 'api_error', data: [], total: 0, errorMessage: msg, fetchedAt }
   }
 }
 
-// ── Aggregation: financial months ──────────────────────────────────────────────
+export async function fetchFinanceiro(): Promise<FetchResult<FinanceiroRecord>> {
+  const fetchedAt = new Date().toISOString()
+  if (!hasCredentials()) return noCredsResult(fetchedAt)
 
-export function deriveFinancialMonths(records: ProjectRecord[]): FinancialMonth[] {
-  const monthMap = new Map<string, FinancialMonth>()
-
-  for (const r of records) {
-    const date = r.competencia.date
-    const key = date
-      ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-      : '__sem_competencia__'
-
-    const label = date
-      ? date
-          .toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })
-          .replace(/^\w/, (c) => c.toUpperCase())
-          .replace('.', '')
-      : 'Sem Competência'
-
-    if (!monthMap.has(key)) {
-      monthMap.set(key, {
-        competencia:      label,
-        competenciaRaw:   date,
-        receita:          0,
-        alimentacao:      0,
-        gasolina:         0,
-        totalDespesas:    0,
-        lucro:            0,
-        margem:           null,
-        projetosCount:    0,
-        dataQualityFlags: [],
-      })
-    }
-
-    const m = monthMap.get(key)!
-    m.projetosCount++
-    m.receita       += r.valor        ?? 0
-    m.alimentacao   += r.alimentacao  ?? 0
-    m.gasolina      += r.gasolina     ?? 0
-    m.totalDespesas += r.totalExpenses ?? 0
-    m.lucro          = m.receita - m.totalDespesas
-
-    // Month margin: only compute if at least one project in the month has expense data
-    const monthHasExpenses = Array.from(monthMap.values())
-      .some(() => {
-        // Re-check: if this month has any project with expenses
-        return r.hasExpenses
-      })
-    m.margem = m.receita > 0 && monthHasExpenses
-      ? (m.lucro / m.receita) * 100
-      : null
-
-    if (r.dataQualityFlags.length) {
-      m.dataQualityFlags.push(...r.dataQualityFlags)
-    }
+  try {
+    const raw = await fetchAll(CAZA_VISION_CONFIG.databases.financeiro)
+    const data = adaptFinanceiros(raw)  // already sorted by mesOrder
+    console.log(`[CAZA VISION] Financeiro: ${data.length} meses`)
+    return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[CAZA VISION] Erro ao buscar Financeiro:', msg)
+    return { status: 'api_error', data: [], total: 0, errorMessage: msg, fetchedAt }
   }
-
-  // Sort chronologically; unknown competência goes last
-  return Array.from(monthMap.entries())
-    .sort(([a], [b]) => {
-      if (a === '__sem_competencia__') return 1
-      if (b === '__sem_competencia__') return -1
-      return a.localeCompare(b)
-    })
-    .map(([, v]) => ({
-      ...v,
-      dataQualityFlags: [...new Set(v.dataQualityFlags)],
-    }))
 }
 
-// ── Aggregation: overview metrics ──────────────────────────────────────────────
+export async function fetchClientes(): Promise<FetchResult<ClienteRecord>> {
+  const fetchedAt = new Date().toISOString()
+  if (!hasCredentials()) return noCredsResult(fetchedAt)
 
-export function deriveOverviewMetrics(records: ProjectRecord[]): OverviewMetrics {
-  if (!records.length) {
-    return {
-      totalProjetos:     0,
-      projetosRecebidos: 0,
-      projetosPendentes: 0,
-      receitaTotal:      0,
-      despesasTotal:     null,
-      lucroTotal:        null,
-      margemMedia:       null,
-      ticketMedio:       null,
-      dataQualityFlags:  ['Nenhum registro encontrado na base'],
-    }
+  try {
+    const raw = await fetchAll(CAZA_VISION_CONFIG.databases.clientes)
+    const data = adaptClientes(raw)
+    console.log(`[CAZA VISION] Clientes: ${data.length} registros`)
+    return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[CAZA VISION] Erro ao buscar Clientes:', msg)
+    return { status: 'api_error', data: [], total: 0, errorMessage: msg, fetchedAt }
   }
+}
 
-  const recebidos = records.filter((r) =>  r.recebido)
-  const pendentes = records.filter((r) => !r.recebido)
+// ── Fetch all three in parallel ────────────────────────────────────────────────
 
-  const comValor = records.filter((r) => r.valor !== null)
-  const receitaTotal = comValor.reduce((sum, r) => sum + r.valor!, 0)
+export async function fetchAll3() {
+  const [projetos, financeiro, clientes] = await Promise.all([
+    fetchProjetos(),
+    fetchFinanceiro(),
+    fetchClientes(),
+  ])
+  return { projetos, financeiro, clientes }
+}
 
-  const comDespesas = records.filter((r) => r.hasExpenses)
-  const despesasTotal = comDespesas.length > 0
-    ? records.reduce((sum, r) => sum + (r.totalExpenses ?? 0), 0)
-    : null
+// ── Overview metrics (cross-database) ─────────────────────────────────────────
 
-  const lucroTotal = despesasTotal !== null
-    ? receitaTotal - despesasTotal
-    : null
+export function deriveOverviewMetrics(
+  projetos:   ProjetoRecord[],
+  financeiro: FinanceiroRecord[],
+  clientes:   ClienteRecord[]
+): OverviewMetrics {
+  // Projetos
+  const statusAtivo: ProjetoStatus[] = ['Em Produção', 'Em Edição', 'Aguardando Aprovação']
+  const projetosAtivos    = projetos.filter((p) => p.status && statusAtivo.includes(p.status))
+  const projetosEntregues = projetos.filter((p) => p.status === 'Entregue')
 
-  const margemMedia = receitaTotal > 0 && lucroTotal !== null
-    ? (lucroTotal / receitaTotal) * 100
-    : null
-
+  const comValor = projetos.filter((p) => p.valor !== null)
   const ticketMedio = comValor.length > 0
-    ? receitaTotal / comValor.length
+    ? comValor.reduce((s, p) => s + p.valor!, 0) / comValor.length
     : null
 
-  const flags: string[] = []
-  const semValor = records.filter((r) => r.valor === null)
-  if (semValor.length > 0) {
-    flags.push(
-      `${semValor.length} projeto(s) sem campo "Valor" — excluídos do cálculo de receita`
-    )
-  }
-  if (comDespesas.length === 0) {
-    flags.push('Nenhum projeto com dados de despesas — lucro e margem indisponíveis')
-  } else if (comDespesas.length < records.length) {
-    flags.push(
-      `${records.length - comDespesas.length} projeto(s) sem despesas — margem parcial`
-    )
-  }
+  // Financeiro — meses com receita > 0 ordenados
+  const mesesComReceita = financeiro.filter((m) => m.receita > 0)
+  const maisRecente     = mesesComReceita.at(-1) ?? null
 
-  return {
-    totalProjetos:     records.length,
-    projetosRecebidos: recebidos.length,
-    projetosPendentes: pendentes.length,
-    receitaTotal,
-    despesasTotal,
-    lucroTotal,
-    margemMedia,
-    ticketMedio,
-    dataQualityFlags:  flags,
-  }
-}
+  // YTD: year of most recent month
+  const anoAtual = maisRecente
+    ? Math.floor(maisRecente.mesOrder / 100)
+    : new Date().getFullYear()
 
-// ── Aggregation: unit economics ────────────────────────────────────────────────
+  const ytd = financeiro.filter((m) => Math.floor(m.mesOrder / 100) === anoAtual)
+  const receitaYTD  = ytd.reduce((s, m) => s + m.receita,  0)
+  const despesasYTD = ytd.reduce((s, m) => s + m.despesas, 0)
+  const lucroYTD    = ytd.reduce((s, m) => s + m.lucro,    0)
 
-export function deriveUnitEconomics(records: ProjectRecord[]): UnitEconomicsMetrics {
-  const comValor    = records.filter((r) => r.valor !== null)
-  const comDespesas = records.filter((r) => r.hasExpenses)
-  const semDespesas = records.filter((r) => !r.hasExpenses)
-  const flags: string[] = []
-
-  const receitaMedia = comValor.length > 0
-    ? comValor.reduce((s, r) => s + r.valor!, 0) / comValor.length
-    : null
-
-  const despesaMedia = comDespesas.length > 0
-    ? comDespesas.reduce((s, r) => s + r.totalExpenses!, 0) / comDespesas.length
-    : null
-
-  const margens = records.filter((r) => r.margin !== null).map((r) => r.margin!)
-  const margemMediaPonderada = margens.length > 0
+  const margens = mesesComReceita.filter((m) => m.margem !== null).map((m) => m.margem!)
+  const margemMedia = margens.length > 0
     ? margens.reduce((s, m) => s + m, 0) / margens.length
     : null
 
-  if (comDespesas.length === 0) {
-    flags.push('Nenhum projeto com dados de despesas — métricas de custo indisponíveis')
-  } else if (semDespesas.length > 0) {
-    flags.push(
-      `${semDespesas.length} projeto(s) sem despesas — excluídos da margem média ponderada`
-    )
-  }
-  if (comValor.length < records.length) {
-    flags.push(
-      `${records.length - comValor.length} projeto(s) sem "Valor" — excluídos da receita média`
-    )
-  }
+  // Clientes
+  const clientesAtivos    = clientes.filter((c) => c.status === 'Ativo')
+  const totalBudgetAtivos = clientesAtivos.reduce((s, c) => s + (c.budgetAnual ?? 0), 0)
 
   return {
-    receitaMedia,
-    despesaMediaPorProjeto: despesaMedia,
-    margemMediaPonderada,
-    projetosComDespesas:    comDespesas.length,
-    projetosSemDespesas:    semDespesas.length,
-    totalProjetos:          records.length,
-    dataQualityFlags:       flags,
+    totalProjetos:     projetos.length,
+    projetosAtivos:    projetosAtivos.length,
+    projetosEntregues: projetosEntregues.length,
+    mesMaisRecente:    maisRecente?.mes ?? null,
+    receitaMesAtual:   maisRecente?.receita ?? null,
+    receitaYTD,
+    despesasYTD,
+    lucroYTD,
+    margemMedia,
+    clientesAtivos:    clientesAtivos.length,
+    totalBudgetAtivos,
+    ticketMedio,
   }
+}
+
+// ── Pipeline grouping ──────────────────────────────────────────────────────────
+
+const PIPELINE_ORDER: ProjetoStatus[] = [
+  'Em Produção',
+  'Em Edição',
+  'Aguardando Aprovação',
+  'Entregue',
+]
+
+export function derivePipeline(projetos: ProjetoRecord[]): PipelineGroup[] {
+  return PIPELINE_ORDER.map((status) => {
+    const group = projetos.filter((p) => p.status === status)
+    return {
+      status,
+      projetos: group,
+      total:    group.length,
+      valor:    group.reduce((s, p) => s + (p.valor ?? 0), 0),
+    }
+  })
+}
+
+// ── Unit Economics ─────────────────────────────────────────────────────────────
+
+export interface UnitEconMetrics {
+  ticketMedioPorTipo: { tipo: string; count: number; mediaValor: number; totalValor: number }[]
+  ticketMedioPorCliente: { cliente: string; count: number; totalValor: number }[]
+  margemMediaMeses:   number | null
+  orcamentoVsReceita: { mes: string; orcamento: number; receita: number; diff: number }[]
+}
+
+export function deriveUnitEconomics(
+  projetos:   ProjetoRecord[],
+  financeiro: FinanceiroRecord[]
+): UnitEconMetrics {
+  // Por tipo de projeto
+  const tipoMap = new Map<string, { count: number; total: number }>()
+  for (const p of projetos) {
+    if (p.valor === null) continue
+    const key = p.tipo ?? '(sem tipo)'
+    const cur = tipoMap.get(key) ?? { count: 0, total: 0 }
+    tipoMap.set(key, { count: cur.count + 1, total: cur.total + p.valor })
+  }
+  const ticketMedioPorTipo = Array.from(tipoMap.entries())
+    .map(([tipo, { count, total }]) => ({
+      tipo,
+      count,
+      totalValor: total,
+      mediaValor: count > 0 ? total / count : 0,
+    }))
+    .sort((a, b) => b.totalValor - a.totalValor)
+
+  // Por cliente
+  const clienteMap = new Map<string, { count: number; total: number }>()
+  for (const p of projetos) {
+    if (p.valor === null) continue
+    const key = p.cliente ?? '(sem cliente)'
+    const cur = clienteMap.get(key) ?? { count: 0, total: 0 }
+    clienteMap.set(key, { count: cur.count + 1, total: cur.total + p.valor })
+  }
+  const ticketMedioPorCliente = Array.from(clienteMap.entries())
+    .map(([cliente, { count, total }]) => ({ cliente, count, totalValor: total }))
+    .sort((a, b) => b.totalValor - a.totalValor)
+
+  // Margem média dos meses com receita
+  const mesesComReceita = financeiro.filter((m) => m.receita > 0 && m.margem !== null)
+  const margemMediaMeses = mesesComReceita.length > 0
+    ? mesesComReceita.reduce((s, m) => s + m.margem!, 0) / mesesComReceita.length
+    : null
+
+  // Orçamento vs Receita (meses com qualquer valor)
+  const orcamentoVsReceita = financeiro
+    .filter((m) => m.receita > 0 || m.orcamento > 0)
+    .map((m) => ({
+      mes:       m.mes,
+      orcamento: m.orcamento,
+      receita:   m.receita,
+      diff:      m.receita - m.orcamento,
+    }))
+
+  return { ticketMedioPorTipo, ticketMedioPorCliente, margemMediaMeses, orcamentoVsReceita }
 }

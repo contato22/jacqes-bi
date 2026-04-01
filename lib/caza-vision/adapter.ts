@@ -1,141 +1,123 @@
-// ─── CAZA VISION — Notion Page → ProjectRecord Adapter ─────────────────────────
-//
-// Rules enforced here:
-//  - Margin is null (indisponível) when expense fields are absent — NEVER 100%
-//  - Missing name generates a placeholder — record is not discarded
-//  - All quality issues are collected in dataQualityFlags[], not thrown
-//  - No mock/default values are injected for missing fields
+// ─── CAZA VISION — Notion → Domain Adapters ────────────────────────────────────
+// Three adapters matching the three real Notion databases.
 
 import { CAZA_VISION_CONFIG } from './config'
-import type { ProjectRecord } from './types'
+import type {
+  ProjetoRecord, ProjetoStatus, ProjetoTipo,
+  FinanceiroRecord,
+  ClienteRecord, ClienteStatus, ClienteTipo,
+} from './types'
 import {
   extractTitle,
   extractRichText,
   extractNumber,
-  extractCheckbox,
   extractSelect,
-  extractStatus,
-  extractPeople,
+  extractEmail,
+  extractPhoneNumber,
   extractDate,
   getProp,
 } from './notion-parser'
 
-type NotionPage = {
-  id: string
-  properties: Record<string, unknown>
+type NotionPage = { id: string; properties: Record<string, unknown> }
+
+// ── Month label → sort order ───────────────────────────────────────────────────
+// "Mar/26" → 202603  |  "Jan/25" → 202501
+
+const PT_MONTH: Record<string, number> = {
+  jan: 1, fev: 2, mar: 3, abr: 4,  mai: 5,  jun: 6,
+  jul: 7, ago: 8, set: 9, out: 10, nov: 11, dez: 12,
 }
 
-export function adaptNotionPage(page: NotionPage): ProjectRecord {
-  const props = page.properties
-  const f = CAZA_VISION_CONFIG.fieldMap
-  const flags: string[] = []
+function mesLabelToOrder(mes: string): number {
+  const [m, y] = mes.toLowerCase().split('/')
+  const month   = PT_MONTH[m] ?? 0
+  const shortYr = parseInt(y ?? '0', 10)
+  const year    = shortYr < 100 ? 2000 + shortYr : shortYr
+  return year * 100 + month
+}
 
-  // ── Name ───────────────────────────────────────────────────────────────────
-  const nameProp = getProp(props, f.name)
-  // Notion title fields report type 'title'; rich_text as fallback for variants
-  let name =
-    extractTitle(nameProp) ??
-    extractRichText(nameProp) ??
-    null
-  if (!name) {
-    flags.push(`Campo "${f.name}" ausente ou vazio`)
-    name = `[sem nome] ${page.id.slice(0, 8)}`
-  }
+// ── Projetos adapter ───────────────────────────────────────────────────────────
 
-  // ── Priority ───────────────────────────────────────────────────────────────
-  const priorityProp = getProp(props, f.priority)
-  const priority =
-    extractSelect(priorityProp) ??
-    extractStatus(priorityProp) ??
-    extractRichText(priorityProp) ??
-    null
+export function adaptProjeto(page: NotionPage): ProjetoRecord {
+  const p = page.properties
+  const f = CAZA_VISION_CONFIG.fieldMaps.projetos
 
-  // ── Responsible ────────────────────────────────────────────────────────────
-  const responsibleProp = getProp(props, f.responsible)
-  const responsible =
-    extractPeople(responsibleProp) ??
-    extractRichText(responsibleProp) ??
-    extractSelect(responsibleProp) ??
-    null
-
-  // ── Competência (billing period) ───────────────────────────────────────────
-  const competenciaProp = getProp(props, f.competencia)
-  const competencia = extractDate(competenciaProp)
-  if (competencia.dataQualityFlag) flags.push(competencia.dataQualityFlag)
-
-  // ── Recebimento (payment date) ────────────────────────────────────────────
-  const recebimentoProp = getProp(props, f.recebimento)
-  const recebimento = extractDate(recebimentoProp)
-  if (recebimento.dataQualityFlag) flags.push(recebimento.dataQualityFlag)
-
-  // ── Recebido (payment confirmed checkbox) ─────────────────────────────────
-  const recebidoProp = getProp(props, f.recebido)
-  const recebido = extractCheckbox(recebidoProp)
-
-  // ── Valor (revenue) ────────────────────────────────────────────────────────
-  const valorProp = getProp(props, f.valor)
-  const valor = extractNumber(valorProp)
-  if (valor === null) {
-    flags.push(`Campo "${f.valor}" ausente ou não numérico`)
-  }
-
-  // ── Alimentação (expense: food/meals) ─────────────────────────────────────
-  const alimentacaoProp = getProp(props, f.alimentacao)
-  const alimentacao = extractNumber(alimentacaoProp)
-  // null = not present; 0 = explicitly zero (valid)
-
-  // ── Gasolina (expense: fuel) ───────────────────────────────────────────────
-  const gasolinaProp = getProp(props, f.gasolina)
-  const gasolina = extractNumber(gasolinaProp)
-
-  // ── Derived financial metrics ──────────────────────────────────────────────
-  //
-  // RULE: Only compute totalExpenses when at least one expense field exists.
-  //       A record with zero expense fields gets margin = null, NOT 100%.
-  //       A record with all expense fields explicitly set to 0 gets margin = 100% (valid).
-
-  const hasExpenses = alimentacao !== null || gasolina !== null
-
-  const totalExpenses = hasExpenses
-    ? (alimentacao ?? 0) + (gasolina ?? 0)
-    : null
-
-  const profit =
-    valor !== null && totalExpenses !== null
-      ? valor - totalExpenses
-      : null
-
-  const margin =
-    valor !== null &&
-    valor > 0 &&
-    totalExpenses !== null
-      ? (profit! / valor) * 100
-      : null
-
-  if (!hasExpenses && valor !== null) {
-    flags.push('Despesas não informadas — margem indisponível para este projeto')
-  }
+  const tituloProp = getProp(p, f.titulo)
+  const titulo = extractTitle(tituloProp) ?? `[sem título] ${page.id.slice(0, 8)}`
 
   return {
-    id:            page.id,
-    name,
-    priority,
-    responsible,
-    competencia,
-    recebimento,
-    recebido,
-    valor,
-    alimentacao,
-    gasolina,
-    totalExpenses,
-    profit,
-    margin,
-    hasExpenses,
-    dataQualityFlags: flags,
-    notionPageId:  page.id,
+    id:      page.id,
+    titulo,
+    cliente: extractRichText(getProp(p, f.cliente)),
+    diretor: extractRichText(getProp(p, f.diretor)),
+    inicio:  extractDate(getProp(p, f.inicio)).date,
+    prazo:   extractDate(getProp(p, f.prazo)).date,
+    status:  extractSelect(getProp(p, f.status)) as ProjetoStatus | null,
+    tipo:    extractSelect(getProp(p, f.tipo))   as ProjetoTipo   | null,
+    valor:   extractNumber(getProp(p, f.valor)),
+    notionPageId: page.id,
   }
 }
 
-export function adaptNotionPages(pages: NotionPage[]): ProjectRecord[] {
-  return pages.map(adaptNotionPage)
+export function adaptProjetos(pages: NotionPage[]): ProjetoRecord[] {
+  return pages.map(adaptProjeto)
+}
+
+// ── Financeiro adapter ─────────────────────────────────────────────────────────
+
+export function adaptFinanceiro(page: NotionPage): FinanceiroRecord {
+  const p = page.properties
+  const f = CAZA_VISION_CONFIG.fieldMaps.financeiro
+
+  const mes       = extractTitle(getProp(p, f.mes)) ?? ''
+  const receita   = extractNumber(getProp(p, f.receita))   ?? 0
+  const orcamento = extractNumber(getProp(p, f.orcamento)) ?? 0
+  const despesas  = extractNumber(getProp(p, f.despesas))  ?? 0
+  const lucro     = extractNumber(getProp(p, f.lucro))     ?? 0
+  const margem    = receita > 0 ? (lucro / receita) * 100 : null
+
+  return {
+    id:      page.id,
+    mes,
+    mesOrder: mesLabelToOrder(mes),
+    receita,
+    orcamento,
+    despesas,
+    lucro,
+    margem,
+    notionPageId: page.id,
+  }
+}
+
+export function adaptFinanceiros(pages: NotionPage[]): FinanceiroRecord[] {
+  return pages
+    .map(adaptFinanceiro)
+    .sort((a, b) => a.mesOrder - b.mesOrder)
+}
+
+// ── Clientes adapter ───────────────────────────────────────────────────────────
+
+export function adaptCliente(page: NotionPage): ClienteRecord {
+  const p = page.properties
+  const f = CAZA_VISION_CONFIG.fieldMaps.clientes
+
+  const nomeProp = getProp(p, f.nome)
+  const nome = extractTitle(nomeProp) ?? `[sem nome] ${page.id.slice(0, 8)}`
+
+  return {
+    id:          page.id,
+    nome,
+    email:       extractEmail(getProp(p, f.email)),
+    segmento:    extractRichText(getProp(p, f.segmento)),
+    status:      extractSelect(getProp(p, f.status)) as ClienteStatus | null,
+    desde:       extractDate(getProp(p, f.desde)).date,
+    telefone:    extractPhoneNumber(getProp(p, f.telefone)),
+    budgetAnual: extractNumber(getProp(p, f.budgetAnual)),
+    tipo:        extractSelect(getProp(p, f.tipo)) as ClienteTipo | null,
+    notionPageId: page.id,
+  }
+}
+
+export function adaptClientes(pages: NotionPage[]): ClienteRecord[] {
+  return pages.map(adaptCliente)
 }

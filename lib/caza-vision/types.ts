@@ -1,99 +1,107 @@
-// ─── CAZA VISION — Domain Types ────────────────────────────────────────────────
+// ─── CAZA VISION — Domain Types (schema real) ─────────────────────────────────
 
-// ── Date parsing ───────────────────────────────────────────────────────────────
+// ── Projetos ───────────────────────────────────────────────────────────────────
+// Source: Caza Vision — Projetos (308e2d13-dfa9-433e-a0f6-8439b5181845)
 
-export type DateFormat = 'iso' | 'br' | 'us' | 'notion-date' | 'unknown'
+export type ProjetoStatus =
+  | 'Em Produção'
+  | 'Em Edição'
+  | 'Entregue'
+  | 'Aguardando Aprovação'
 
-export interface DateParseResult {
-  date:             Date | null
-  format:           DateFormat
-  ambiguous:        boolean
-  raw:              string | null
-  dataQualityFlag:  string | null
+export type ProjetoTipo =
+  | 'Vídeo Publicitário'
+  | 'Filme Institucional'
+  | 'Evento / Live'
+  | 'Conteúdo Digital'
+  | 'Fotografia'
+
+export interface ProjetoRecord {
+  id:      string
+  titulo:  string
+  cliente: string | null
+  diretor: string | null
+  inicio:  Date | null
+  prazo:   Date | null
+  status:  ProjetoStatus | null
+  tipo:    ProjetoTipo | null
+  valor:   number | null
+  notionPageId: string
 }
 
-// ── Core domain record ─────────────────────────────────────────────────────────
+// ── Financeiro ─────────────────────────────────────────────────────────────────
+// Source: Caza Vision — Financeiro (9a8329e9-6d19-4bdc-8e80-2d59a2658be7)
+// Nota: Lucro já existe como campo direto na base — lemos como está.
 
-export interface ProjectRecord {
-  id:           string
-  name:         string
-  priority:     string | null
-  responsible:  string | null
-  competencia:  DateParseResult
-  recebimento:  DateParseResult
-  recebido:     boolean
-  valor:        number | null   // Receita bruta
-  alimentacao:  number | null   // Despesa: alimentação
-  gasolina:     number | null   // Despesa: gasolina
+export interface FinanceiroRecord {
+  id:        string
+  mes:       string        // "Mar/26" — label original do Notion
+  mesOrder:  number        // 202603 — para ordenação cronológica
+  receita:   number
+  orcamento: number
+  despesas:  number
+  lucro:     number        // lido diretamente do campo Lucro
+  margem:    number | null // lucro / receita * 100; null se receita = 0
+  notionPageId: string
+}
 
-  // Derived — null means "indisponível", never assumed
-  totalExpenses:  number | null // null when ALL expense fields are null/missing
-  profit:         number | null // null when valor or totalExpenses is null
-  margin:         number | null // null = margem indisponível (NOT 0% or 100%)
-  hasExpenses:    boolean       // true if at least one expense field is present
+// ── Clientes ───────────────────────────────────────────────────────────────────
+// Source: Caza Vision — Clientes (ca1ba0fe-3d47-4356-8643-23a223a4e710)
 
-  dataQualityFlags: string[]
-  notionPageId:     string
+export type ClienteStatus = 'Ativo' | 'Em Proposta' | 'Convertido' | 'Perdido'
+export type ClienteTipo   = 'Marca' | 'Agência' | 'Empresa' | 'Startup'
+
+export interface ClienteRecord {
+  id:          string
+  nome:        string
+  email:       string | null
+  segmento:    string | null
+  status:      ClienteStatus | null
+  desde:       Date | null
+  telefone:    string | null
+  budgetAnual: number | null
+  tipo:        ClienteTipo | null
+  notionPageId: string
 }
 
 // ── Fetch result envelope ──────────────────────────────────────────────────────
 
-export type FetchStatus =
-  | 'ok'
-  | 'empty'
-  | 'no_credentials'
-  | 'api_error'
-  | 'parse_error'
+export type FetchStatus = 'ok' | 'empty' | 'no_credentials' | 'api_error'
 
 export interface FetchResult<T> {
-  status:           FetchStatus
-  data:             T[]
-  recordsTotal:     number
-  recordsValid:     number    // records with Valor present
-  recordsDiscarded: number    // records with Valor absent
-  missingFields:    string[]
-  fallbackActive:   boolean   // always false — no mock fallback
-  errorMessage:     string | null
-  fetchedAt:        string    // ISO timestamp
+  status:       FetchStatus
+  data:         T[]
+  total:        number
+  errorMessage: string | null
+  fetchedAt:    string
 }
 
-// ── Financial aggregation by competência month ─────────────────────────────────
-
-export interface FinancialMonth {
-  competencia:      string        // display label e.g. "Set/2025"
-  competenciaRaw:   Date | null
-  receita:          number
-  alimentacao:      number
-  gasolina:         number
-  totalDespesas:    number
-  lucro:            number
-  margem:           number | null // null when no expense data exists for this month
-  projetosCount:    number
-  dataQualityFlags: string[]
-}
-
-// ── Overview (Visão Geral) metrics ─────────────────────────────────────────────
+// ── Overview metrics (cross-database) ─────────────────────────────────────────
 
 export interface OverviewMetrics {
+  // Projetos
   totalProjetos:     number
-  projetosRecebidos: number
-  projetosPendentes: number
-  receitaTotal:      number
-  despesasTotal:     number | null // null when no expense data in the base
-  lucroTotal:        number | null
-  margemMedia:       number | null
-  ticketMedio:       number | null // null when no projects with Valor
-  dataQualityFlags:  string[]
+  projetosAtivos:    number   // Em Produção + Em Edição + Aguardando Aprovação
+  projetosEntregues: number
+  // Financeiro
+  mesMaisRecente:    string | null
+  receitaMesAtual:   number | null
+  receitaYTD:        number
+  despesasYTD:       number
+  lucroYTD:          number
+  margemMedia:       number | null  // avg margem dos meses com receita > 0
+  // Clientes
+  clientesAtivos:    number
+  totalBudgetAtivos: number
+  // Derivado
+  ticketMedio:       number | null  // avg Valor em Projetos com valor
 }
 
-// ── Unit Economics — only what the schema actually supports ────────────────────
+// ── Pipeline ───────────────────────────────────────────────────────────────────
 
-export interface UnitEconomicsMetrics {
-  receitaMedia:           number | null // avg Valor per project with Valor present
-  despesaMediaPorProjeto: number | null // avg totalExpenses for projects with expenses
-  margemMediaPonderada:   number | null // avg margin across projects with margin data
-  projetosComDespesas:    number
-  projetosSemDespesas:    number
-  totalProjetos:          number
-  dataQualityFlags:       string[]
+export interface PipelineGroup {
+  status:   ProjetoStatus
+  projetos: ProjetoRecord[]
+  total:    number
+  valor:    number
 }
