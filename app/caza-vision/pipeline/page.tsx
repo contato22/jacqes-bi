@@ -150,7 +150,6 @@ export default async function PipelinePage() {
 
         <DataQualityBanner
           status={result.status}
-          errorMessage={result.errorMessage}
           fetchedAt={result.fetchedAt}
         />
 

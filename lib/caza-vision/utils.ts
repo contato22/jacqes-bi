@@ -28,50 +28,13 @@ export function marginColorClass(margin: number | null): string {
   return 'text-red-400'
 }
 
-// ── Date display ───────────────────────────────────────────────────────────────
-
-import type { DateParseResult } from './types'
-
-export function formatDateResult(result: DateParseResult): string {
-  if (!result.date) return result.raw ? `(${result.raw})` : '—'
-  return result.date.toLocaleDateString('pt-BR', {
-    day:   '2-digit',
-    month: '2-digit',
-    year:  'numeric',
-  })
-}
-
-export function formatCompetencia(result: DateParseResult): string {
-  if (!result.date) return result.raw ? `(${result.raw})` : '—'
-  return result.date.toLocaleDateString('pt-BR', {
-    month: 'short',
-    year:  'numeric',
-  })
-    .replace(/^\w/, (c) => c.toUpperCase())
-    .replace('.', '')
-}
-
 // ── Fetch status labels ────────────────────────────────────────────────────────
 
 import type { FetchStatus } from './types'
 
 export function fetchStatusLabel(status: FetchStatus): string {
   switch (status) {
-    case 'ok':             return 'Dados carregados'
-    case 'empty':          return 'Base vazia'
-    case 'no_credentials': return 'Credenciais não configuradas'
-    case 'api_error':      return 'Erro na API do Notion'
-    case 'parse_error':    return 'Erro ao processar dados'
+    case 'ok':    return 'Dados carregados'
+    case 'empty': return 'Base vazia'
   }
-}
-
-// ── Priority badge ─────────────────────────────────────────────────────────────
-
-export function priorityBadgeClass(priority: string | null): string {
-  if (!priority) return 'badge-gray'
-  const p = priority.toLowerCase()
-  if (p.includes('alta') || p.includes('urgente') || p.includes('high')) return 'badge-red'
-  if (p.includes('média') || p.includes('media') || p.includes('medium')) return 'badge-yellow'
-  if (p.includes('baixa') || p.includes('low'))  return 'badge-green'
-  return 'badge-gray'
 }

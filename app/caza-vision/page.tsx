@@ -30,12 +30,7 @@ function KPI({
 export default async function CazaVisionOverviewPage() {
   const { projetos, financeiro, clientes } = await fetchAll3()
 
-  // Pick worst status for the banner
-  const worstStatus = [projetos, financeiro, clientes].find(
-    (r) => r.status === 'api_error' || r.status === 'no_credentials'
-  )?.status ?? (projetos.status === 'ok' ? 'ok' : projetos.status)
-
-  const errorMsg = projetos.errorMessage ?? financeiro.errorMessage ?? clientes.errorMessage
+  const worstStatus = [projetos, financeiro, clientes].some((r) => r.status === 'empty') ? 'empty' : 'ok'
 
   const m = deriveOverviewMetrics(projetos.data, financeiro.data, clientes.data)
 
@@ -49,7 +44,6 @@ export default async function CazaVisionOverviewPage() {
 
         <DataQualityBanner
           status={worstStatus}
-          errorMessage={errorMsg}
           fetchedAt={projetos.fetchedAt}
         />
 
@@ -164,8 +158,7 @@ export default async function CazaVisionOverviewPage() {
         )}
 
         {/* Empty state */}
-        {projetos.status !== 'no_credentials' && projetos.status !== 'api_error' &&
-          projetos.total === 0 && financeiro.total === 0 && (
+        {projetos.total === 0 && financeiro.total === 0 && clientes.total === 0 && (
           <div className='card p-10 text-center'>
             <AlertCircle size={24} className='text-gray-600 mx-auto mb-3' />
             <p className='text-sm text-gray-500'>Nenhum dado encontrado nas bases da CAZA VISION.</p>

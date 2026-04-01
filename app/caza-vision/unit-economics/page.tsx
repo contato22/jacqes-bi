@@ -14,9 +14,7 @@ import { formatBRL, formatMargin, marginColorClass } from '@/lib/caza-vision/uti
 export default async function UnitEconomicsPage() {
   const { projetos, financeiro, clientes } = await fetchAll3()
 
-  const worstStatus = [projetos, financeiro].find(
-    (r) => r.status === 'api_error' || r.status === 'no_credentials'
-  )?.status ?? projetos.status
+  const worstStatus = [projetos, financeiro].some((r) => r.status === 'empty') ? 'empty' : 'ok'
 
   const metrics = deriveUnitEconomics(projetos.data, financeiro.data)
 
@@ -27,7 +25,6 @@ export default async function UnitEconomicsPage() {
 
         <DataQualityBanner
           status={worstStatus}
-          errorMessage={projetos.errorMessage ?? financeiro.errorMessage}
           fetchedAt={projetos.fetchedAt}
         />
 

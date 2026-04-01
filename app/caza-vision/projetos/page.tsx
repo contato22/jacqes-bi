@@ -71,7 +71,6 @@ export default async function ProjetosPage() {
 
         <DataQualityBanner
           status={result.status}
-          errorMessage={result.errorMessage}
           fetchedAt={result.fetchedAt}
         />
 

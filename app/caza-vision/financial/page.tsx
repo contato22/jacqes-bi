@@ -29,7 +29,6 @@ export default async function FinancialPage() {
 
         <DataQualityBanner
           status={result.status}
-          errorMessage={result.errorMessage}
           fetchedAt={result.fetchedAt}
         />
 

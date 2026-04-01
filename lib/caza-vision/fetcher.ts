@@ -1,71 +1,56 @@
-// ─── CAZA VISION — Fetchers + Overview Metrics ─────────────────────────────────
-// Server-side only. process.env is safe here (Next.js Server Components).
+// ─── CAZA VISION — Fetchers (internal SQLite) ──────────────────────────────────
+// Server-side only. Reads from data/caza-vision.db via better-sqlite3.
 
-import { CAZA_VISION_CONFIG, hasCredentials, missingCredentials } from './config'
-import { adaptProjetos, adaptFinanceiros, adaptClientes } from './adapter'
+import { getDb } from '@/lib/db/client'
 import type {
   ProjetoRecord, FinanceiroRecord, ClienteRecord,
   FetchResult, OverviewMetrics, PipelineGroup, ProjetoStatus,
 } from './types'
 
-// ── Internal: raw Notion page shape ───────────────────────────────────────────
+// ── Row → domain mappers ───────────────────────────────────────────────────────
 
-type NotionPage = { id: string; properties: Record<string, unknown> }
-type NotionQueryResponse = {
-  results:     NotionPage[]
-  has_more:    boolean
-  next_cursor: string | null
-}
-
-// ── Internal: paginated query ──────────────────────────────────────────────────
-
-async function queryDatabase(dbId: string, cursor?: string): Promise<NotionQueryResponse> {
-  const { notionToken, notionVersion, baseUrl } = CAZA_VISION_CONFIG
-  const body: Record<string, unknown> = { page_size: 100 }
-  if (cursor) body.start_cursor = cursor
-
-  const res = await fetch(`${baseUrl}/databases/${dbId}/query`, {
-    method: 'POST',
-    headers: {
-      Authorization:    `Bearer ${notionToken}`,
-      'Notion-Version': notionVersion,
-      'Content-Type':   'application/json',
-    },
-    body: JSON.stringify(body),
-    cache: 'no-store',
-  })
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '(sem corpo)')
-    throw new Error(`Notion API ${res.status} para database ${dbId}: ${text}`)
-  }
-
-  return res.json() as Promise<NotionQueryResponse>
-}
-
-async function fetchAll(dbId: string): Promise<NotionPage[]> {
-  const pages: NotionPage[] = []
-  let cursor: string | undefined
-
-  do {
-    const result = await queryDatabase(dbId, cursor)
-    pages.push(...result.results)
-    cursor = result.has_more && result.next_cursor ? result.next_cursor : undefined
-  } while (cursor)
-
-  return pages
-}
-
-// ── No-credentials guard helper ────────────────────────────────────────────────
-
-function noCredsResult<T>(fetchedAt: string): FetchResult<T> {
-  const missing = missingCredentials()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toProjetoRecord(row: any): ProjetoRecord {
   return {
-    status: 'no_credentials',
-    data: [],
-    total: 0,
-    errorMessage: `Configure no .env.local: ${missing.join(', ')}`,
-    fetchedAt,
+    id:      row.id,
+    titulo:  row.titulo,
+    cliente: row.cliente   ?? null,
+    diretor: row.diretor   ?? null,
+    inicio:  row.inicio    ? new Date(row.inicio) : null,
+    prazo:   row.prazo     ? new Date(row.prazo)  : null,
+    status:  row.status    ?? null,
+    tipo:    row.tipo      ?? null,
+    valor:   row.valor     ?? null,
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toFinanceiroRecord(row: any): FinanceiroRecord {
+  const margem = row.receita > 0 ? (row.lucro / row.receita) * 100 : null
+  return {
+    id:        row.id,
+    mes:       row.mes,
+    mesOrder:  row.mes_order,
+    receita:   row.receita,
+    orcamento: row.orcamento,
+    despesas:  row.despesas,
+    lucro:     row.lucro,
+    margem,
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toClienteRecord(row: any): ClienteRecord {
+  return {
+    id:          row.id,
+    nome:        row.nome,
+    email:       row.email        ?? null,
+    segmento:    row.segmento     ?? null,
+    status:      row.status       ?? null,
+    desde:       row.desde        ? new Date(row.desde) : null,
+    telefone:    row.telefone     ?? null,
+    budgetAnual: row.budget_anual ?? null,
+    tipo:        row.tipo         ?? null,
   }
 }
 
@@ -73,53 +58,24 @@ function noCredsResult<T>(fetchedAt: string): FetchResult<T> {
 
 export async function fetchProjetos(): Promise<FetchResult<ProjetoRecord>> {
   const fetchedAt = new Date().toISOString()
-  if (!hasCredentials()) return noCredsResult(fetchedAt)
-
-  try {
-    const raw = await fetchAll(CAZA_VISION_CONFIG.databases.projetos)
-    const data = adaptProjetos(raw)
-    console.log(`[CAZA VISION] Projetos: ${data.length} registros`)
-    return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.error('[CAZA VISION] Erro ao buscar Projetos:', msg)
-    return { status: 'api_error', data: [], total: 0, errorMessage: msg, fetchedAt }
-  }
+  const rows = getDb().prepare('SELECT * FROM projetos ORDER BY created_at ASC').all()
+  const data = rows.map(toProjetoRecord)
+  return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
 }
 
 export async function fetchFinanceiro(): Promise<FetchResult<FinanceiroRecord>> {
   const fetchedAt = new Date().toISOString()
-  if (!hasCredentials()) return noCredsResult(fetchedAt)
-
-  try {
-    const raw = await fetchAll(CAZA_VISION_CONFIG.databases.financeiro)
-    const data = adaptFinanceiros(raw)  // already sorted by mesOrder
-    console.log(`[CAZA VISION] Financeiro: ${data.length} meses`)
-    return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.error('[CAZA VISION] Erro ao buscar Financeiro:', msg)
-    return { status: 'api_error', data: [], total: 0, errorMessage: msg, fetchedAt }
-  }
+  const rows = getDb().prepare('SELECT * FROM financeiro ORDER BY mes_order ASC').all()
+  const data = rows.map(toFinanceiroRecord)
+  return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
 }
 
 export async function fetchClientes(): Promise<FetchResult<ClienteRecord>> {
   const fetchedAt = new Date().toISOString()
-  if (!hasCredentials()) return noCredsResult(fetchedAt)
-
-  try {
-    const raw = await fetchAll(CAZA_VISION_CONFIG.databases.clientes)
-    const data = adaptClientes(raw)
-    console.log(`[CAZA VISION] Clientes: ${data.length} registros`)
-    return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.error('[CAZA VISION] Erro ao buscar Clientes:', msg)
-    return { status: 'api_error', data: [], total: 0, errorMessage: msg, fetchedAt }
-  }
+  const rows = getDb().prepare('SELECT * FROM clientes ORDER BY nome ASC').all()
+  const data = rows.map(toClienteRecord)
+  return { status: data.length ? 'ok' : 'empty', data, total: data.length, errorMessage: null, fetchedAt }
 }
-
-// ── Fetch all three in parallel ────────────────────────────────────────────────
 
 export async function fetchAll3() {
   const [projetos, financeiro, clientes] = await Promise.all([
@@ -130,14 +86,13 @@ export async function fetchAll3() {
   return { projetos, financeiro, clientes }
 }
 
-// ── Overview metrics (cross-database) ─────────────────────────────────────────
+// ── Overview metrics ───────────────────────────────────────────────────────────
 
 export function deriveOverviewMetrics(
   projetos:   ProjetoRecord[],
   financeiro: FinanceiroRecord[],
   clientes:   ClienteRecord[]
 ): OverviewMetrics {
-  // Projetos
   const statusAtivo: ProjetoStatus[] = ['Em Produção', 'Em Edição', 'Aguardando Aprovação']
   const projetosAtivos    = projetos.filter((p) => p.status && statusAtivo.includes(p.status))
   const projetosEntregues = projetos.filter((p) => p.status === 'Entregue')
@@ -147,11 +102,9 @@ export function deriveOverviewMetrics(
     ? comValor.reduce((s, p) => s + p.valor!, 0) / comValor.length
     : null
 
-  // Financeiro — meses com receita > 0 ordenados
   const mesesComReceita = financeiro.filter((m) => m.receita > 0)
   const maisRecente     = mesesComReceita.at(-1) ?? null
 
-  // YTD: year of most recent month
   const anoAtual = maisRecente
     ? Math.floor(maisRecente.mesOrder / 100)
     : new Date().getFullYear()
@@ -166,7 +119,6 @@ export function deriveOverviewMetrics(
     ? margens.reduce((s, m) => s + m, 0) / margens.length
     : null
 
-  // Clientes
   const clientesAtivos    = clientes.filter((c) => c.status === 'Ativo')
   const totalBudgetAtivos = clientesAtivos.reduce((s, c) => s + (c.budgetAnual ?? 0), 0)
 
@@ -186,7 +138,7 @@ export function deriveOverviewMetrics(
   }
 }
 
-// ── Pipeline grouping ──────────────────────────────────────────────────────────
+// ── Pipeline ───────────────────────────────────────────────────────────────────
 
 const PIPELINE_ORDER: ProjetoStatus[] = [
   'Em Produção',
@@ -210,17 +162,16 @@ export function derivePipeline(projetos: ProjetoRecord[]): PipelineGroup[] {
 // ── Unit Economics ─────────────────────────────────────────────────────────────
 
 export interface UnitEconMetrics {
-  ticketMedioPorTipo: { tipo: string; count: number; mediaValor: number; totalValor: number }[]
+  ticketMedioPorTipo:    { tipo: string; count: number; mediaValor: number; totalValor: number }[]
   ticketMedioPorCliente: { cliente: string; count: number; totalValor: number }[]
-  margemMediaMeses:   number | null
-  orcamentoVsReceita: { mes: string; orcamento: number; receita: number; diff: number }[]
+  margemMediaMeses:      number | null
+  orcamentoVsReceita:    { mes: string; orcamento: number; receita: number; diff: number }[]
 }
 
 export function deriveUnitEconomics(
   projetos:   ProjetoRecord[],
   financeiro: FinanceiroRecord[]
 ): UnitEconMetrics {
-  // Por tipo de projeto
   const tipoMap = new Map<string, { count: number; total: number }>()
   for (const p of projetos) {
     if (p.valor === null) continue
@@ -229,15 +180,9 @@ export function deriveUnitEconomics(
     tipoMap.set(key, { count: cur.count + 1, total: cur.total + p.valor })
   }
   const ticketMedioPorTipo = Array.from(tipoMap.entries())
-    .map(([tipo, { count, total }]) => ({
-      tipo,
-      count,
-      totalValor: total,
-      mediaValor: count > 0 ? total / count : 0,
-    }))
+    .map(([tipo, { count, total }]) => ({ tipo, count, totalValor: total, mediaValor: count > 0 ? total / count : 0 }))
     .sort((a, b) => b.totalValor - a.totalValor)
 
-  // Por cliente
   const clienteMap = new Map<string, { count: number; total: number }>()
   for (const p of projetos) {
     if (p.valor === null) continue
@@ -249,21 +194,14 @@ export function deriveUnitEconomics(
     .map(([cliente, { count, total }]) => ({ cliente, count, totalValor: total }))
     .sort((a, b) => b.totalValor - a.totalValor)
 
-  // Margem média dos meses com receita
   const mesesComReceita = financeiro.filter((m) => m.receita > 0 && m.margem !== null)
   const margemMediaMeses = mesesComReceita.length > 0
     ? mesesComReceita.reduce((s, m) => s + m.margem!, 0) / mesesComReceita.length
     : null
 
-  // Orçamento vs Receita (meses com qualquer valor)
   const orcamentoVsReceita = financeiro
     .filter((m) => m.receita > 0 || m.orcamento > 0)
-    .map((m) => ({
-      mes:       m.mes,
-      orcamento: m.orcamento,
-      receita:   m.receita,
-      diff:      m.receita - m.orcamento,
-    }))
+    .map((m) => ({ mes: m.mes, orcamento: m.orcamento, receita: m.receita, diff: m.receita - m.orcamento }))
 
   return { ticketMedioPorTipo, ticketMedioPorCliente, margemMediaMeses, orcamentoVsReceita }
 }

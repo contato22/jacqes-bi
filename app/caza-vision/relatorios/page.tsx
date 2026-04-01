@@ -42,9 +42,7 @@ function ReportCard({
 export default async function RelatoriosPage() {
   const { projetos, financeiro, clientes } = await fetchAll3()
 
-  const worstStatus = [projetos, financeiro, clientes].find(
-    (r) => r.status === 'api_error' || r.status === 'no_credentials',
-  )?.status ?? projetos.status
+  const worstStatus = [projetos, financeiro, clientes].some((r) => r.status === 'empty') ? 'empty' : 'ok'
 
   const m = deriveOverviewMetrics(projetos.data, financeiro.data, clientes.data)
 
@@ -82,7 +80,6 @@ export default async function RelatoriosPage() {
 
         <DataQualityBanner
           status={worstStatus}
-          errorMessage={projetos.errorMessage ?? financeiro.errorMessage ?? clientes.errorMessage}
           fetchedAt={projetos.fetchedAt}
         />
 
