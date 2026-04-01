@@ -302,6 +302,48 @@ export const channelData: ChannelData[] = [
   { channel: "Email", sessions: 14_700, conversions: 588, revenue: 531_500, cac: 12 },
 ];
 
+// ─── Projects (Base de Dados Interna) ────────────────────────────────────────
+
+export interface ProjectRecord {
+  id: string;
+  nome_projeto: string;
+  fee: number; // em BRL
+  status: "ativo" | "pausado" | "encerrado";
+}
+
+export const projects: ProjectRecord[] = [
+  {
+    id: "PRJ001",
+    nome_projeto: "CEM",
+    fee: 3200,
+    status: "ativo",
+  },
+  {
+    id: "PRJ002",
+    nome_projeto: "ANDRÉ VIEIRA",
+    fee: 1500,
+    status: "ativo",
+  },
+  {
+    id: "PRJ003",
+    nome_projeto: "CAROL BERTOLINI",
+    fee: 1790,
+    status: "ativo",
+  },
+  {
+    id: "PRJ004",
+    nome_projeto: "TATI SIMÕES",
+    fee: 1790,
+    status: "ativo",
+  },
+  {
+    id: "PRJ005",
+    nome_projeto: "LUIS VIEIRA",
+    fee: 1500,
+    status: "ativo",
+  },
+];
+
 // ─── Alerts ───────────────────────────────────────────────────────────────────
 
 export const alerts: Alert[] = [
