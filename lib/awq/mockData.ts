@@ -145,6 +145,8 @@ const forecasts: ForecastEntity[] = [
   { id: "J-FOR-01", business_unit_id: "jacqes", period: "2026-04", revenue_forecast: 4_950_000, expense_forecast: 1_600_000, confidence: "high", ...AUDIT, ...GOV_HOLDING },
   { id: "J-FOR-02", business_unit_id: "jacqes", period: "2026-05", revenue_forecast: 5_100_000, expense_forecast: 1_640_000, confidence: "medium", ...AUDIT, ...GOV_HOLDING },
   { id: "CV-FOR-01", business_unit_id: "caza-vision", period: "2026-04", revenue_forecast: 1_180_000, expense_forecast: 530_000, confidence: "medium", ...AUDIT, ...GOV_HOLDING },
+  { id: "CV-FOR-02", business_unit_id: "caza-vision", period: "2026-05", revenue_forecast: 1_240_000, expense_forecast: 550_000, confidence: "medium", ...AUDIT, ...GOV_HOLDING },
+  { id: "CV-FOR-03", business_unit_id: "caza-vision", period: "2026-06", revenue_forecast: 1_310_000, expense_forecast: 570_000, confidence: "low", ...AUDIT, ...GOV_HOLDING },
   { id: "AD-FOR-01", business_unit_id: "advisor", period: "2026-04", revenue_forecast: 440_000, expense_forecast: 115_000, confidence: "high", ...AUDIT, ...GOV_HOLDING },
   { id: "AV-FOR-01", business_unit_id: "awq-venture", period: "2026-04", revenue_forecast: 1_550_000, expense_forecast: 160_000, confidence: "low", ...AUDIT, ...GOV_HOLDING },
 ];
@@ -170,7 +172,7 @@ const kpi_snapshots: KPISnapshotEntity[] = [
   // Caza Vision
   { id: "CV-KPI-01", business_unit_id: "caza-vision", kpi_key: "revenue", label: "Total Revenue", value: 1_130_000, previous_value: 1_090_000, period: "2026-03", unit: "currency", icon: "DollarSign", color: "brand", ...AUDIT, ...GOV_INTERNAL },
   { id: "CV-KPI-02", business_unit_id: "caza-vision", kpi_key: "customers", label: "Active Clients", value: 47, previous_value: 43, period: "2026-03", unit: "number", icon: "Users", color: "emerald", ...AUDIT, ...GOV_INTERNAL },
-  { id: "CV-KPI-03", business_unit_id: "caza-vision", kpi_key: "projects", label: "Active Projects", value: 18, previous_value: 15, period: "2026-03", unit: "number", icon: "ShoppingCart", color: "blue", ...AUDIT, ...GOV_INTERNAL },
+  { id: "CV-KPI-03", business_unit_id: "caza-vision", kpi_key: "projects", label: "Active Projects", value: 18, previous_value: 15, period: "2026-03", unit: "number", icon: "Briefcase", color: "blue", ...AUDIT, ...GOV_INTERNAL },
   { id: "CV-KPI-04", business_unit_id: "caza-vision", kpi_key: "margin", label: "Gross Margin", value: 54.4, previous_value: 51.8, period: "2026-03", unit: "percent", icon: "TrendingUp", color: "purple", ...AUDIT, ...GOV_INTERNAL },
   // Advisor
   { id: "AD-KPI-01", business_unit_id: "advisor", kpi_key: "revenue", label: "Total Revenue", value: 420_000, previous_value: 390_000, period: "2026-03", unit: "currency", icon: "DollarSign", color: "brand", ...AUDIT, ...GOV_INTERNAL },
@@ -209,6 +211,7 @@ const contracts: ContractEntity[] = [
   { id: "J-CON-001", business_unit_id: "jacqes", customer_id: "J-C001", value: 120_000, start_date: "2026-01-01", end_date: "2026-12-31", status: "active", type: "recurring", ...AUDIT, ...GOV_INTERNAL },
   { id: "J-CON-002", business_unit_id: "jacqes", customer_id: "J-C004", value: 240_000, start_date: "2026-01-01", end_date: "2026-12-31", status: "active", type: "recurring", ...AUDIT, ...GOV_INTERNAL },
   { id: "CV-CON-001", business_unit_id: "caza-vision", customer_id: "CV-C003", value: 85_000, start_date: "2026-02-01", end_date: "2026-07-31", status: "active", type: "retainer", ...AUDIT, ...GOV_INTERNAL },
+  { id: "CV-CON-002", business_unit_id: "caza-vision", customer_id: "CV-C001", value: 48_000, start_date: "2026-01-01", end_date: "2026-12-31", status: "active", type: "recurring", ...AUDIT, ...GOV_INTERNAL },
   { id: "AD-CON-001", business_unit_id: "advisor", customer_id: "AD-C001", value: 300_000, start_date: "2026-01-01", end_date: "2026-12-31", status: "active", type: "retainer", ...AUDIT, ...GOV_INTERNAL },
   { id: "AV-CON-001", business_unit_id: "awq-venture", customer_id: "AV-C001", value: 5_000_000, start_date: "2025-06-01", end_date: "2027-05-31", status: "active", type: "one-time", ...AUDIT, ...GOV_HOLDING },
   { id: "AV-CON-002", business_unit_id: "awq-venture", customer_id: "AV-C002", value: 3_200_000, start_date: "2025-09-01", end_date: "2027-08-31", status: "active", type: "one-time", ...AUDIT, ...GOV_HOLDING },
