@@ -207,13 +207,18 @@ const audit_logs: AuditLogEntity[] = [
 
 const contracts: ContractEntity[] = [
   { id: "J-CON-001", business_unit_id: "jacqes", customer_id: "J-C001", value: 120_000, start_date: "2026-01-01", end_date: "2026-12-31", status: "active", type: "recurring", ...AUDIT, ...GOV_INTERNAL },
+  { id: "J-CON-002", business_unit_id: "jacqes", customer_id: "J-C004", value: 240_000, start_date: "2026-01-01", end_date: "2026-12-31", status: "active", type: "recurring", ...AUDIT, ...GOV_INTERNAL },
   { id: "CV-CON-001", business_unit_id: "caza-vision", customer_id: "CV-C003", value: 85_000, start_date: "2026-02-01", end_date: "2026-07-31", status: "active", type: "retainer", ...AUDIT, ...GOV_INTERNAL },
   { id: "AD-CON-001", business_unit_id: "advisor", customer_id: "AD-C001", value: 300_000, start_date: "2026-01-01", end_date: "2026-12-31", status: "active", type: "retainer", ...AUDIT, ...GOV_INTERNAL },
+  { id: "AV-CON-001", business_unit_id: "awq-venture", customer_id: "AV-C001", value: 5_000_000, start_date: "2025-06-01", end_date: "2027-05-31", status: "active", type: "one-time", ...AUDIT, ...GOV_HOLDING },
+  { id: "AV-CON-002", business_unit_id: "awq-venture", customer_id: "AV-C002", value: 3_200_000, start_date: "2025-09-01", end_date: "2027-08-31", status: "active", type: "one-time", ...AUDIT, ...GOV_HOLDING },
 ];
 
 const projects: ProjectEntity[] = [
+  { id: "J-PRJ-001", business_unit_id: "jacqes", name: "BI Platform v3.0", customer_id: "J-C001", budget: 180_000, spent: 94_000, status: "on-track", due_date: "2026-09-30", ...AUDIT, ...GOV_INTERNAL },
   { id: "CV-PRJ-001", business_unit_id: "caza-vision", name: "Gulf AI Rollout", customer_id: "CV-C003", budget: 85_000, spent: 62_000, status: "on-track", due_date: "2026-07-31", ...AUDIT, ...GOV_INTERNAL },
   { id: "AD-PRJ-001", business_unit_id: "advisor", name: "Portfolio Restructuring", customer_id: "AD-C001", budget: 200_000, spent: 95_000, status: "on-track", due_date: "2026-06-30", ...AUDIT, ...GOV_INTERNAL },
+  { id: "AV-PRJ-001", business_unit_id: "awq-venture", name: "Series A Deployment Q2", customer_id: "AV-C001", budget: 5_000_000, spent: 3_800_000, status: "on-track", due_date: "2026-06-30", ...AUDIT, ...GOV_HOLDING },
 ];
 
 // ─── Export ───────────────────────────────────────────────────────────────────

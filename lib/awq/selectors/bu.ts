@@ -66,10 +66,20 @@ export function getBusinessUnitFinancialView(businessUnitId: BusinessUnitId) {
 
 // ─── Cash Flow ────────────────────────────────────────────────────────────────
 
+export function getBusinessUnitReceivables(businessUnitId: BusinessUnitId) {
+  assertBU(businessUnitId);
+  return awqStore.receivables.filter((r) => r.business_unit_id === businessUnitId);
+}
+
+export function getBusinessUnitPayables(businessUnitId: BusinessUnitId) {
+  assertBU(businessUnitId);
+  return awqStore.payables.filter((p) => p.business_unit_id === businessUnitId);
+}
+
 export function getBusinessUnitCashflow(businessUnitId: BusinessUnitId) {
   assertBU(businessUnitId);
-  const receivables = awqStore.receivables.filter((r) => r.business_unit_id === businessUnitId);
-  const payables = awqStore.payables.filter((p) => p.business_unit_id === businessUnitId);
+  const receivables = getBusinessUnitReceivables(businessUnitId);
+  const payables = getBusinessUnitPayables(businessUnitId);
 
   const totalReceivable = receivables.filter((r) => r.status !== "paid").reduce((s, r) => s + r.amount, 0);
   const totalPayable = payables.filter((p) => p.status !== "paid").reduce((s, p) => s + p.amount, 0);
