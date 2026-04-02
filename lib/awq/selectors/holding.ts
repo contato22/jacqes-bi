@@ -156,6 +156,27 @@ export function getHoldingAuditLog() {
   return awqStore.audit_logs.sort((a, b) => b.performed_at.localeCompare(a.performed_at));
 }
 
+// ─── Budgets (all BUs, holding-level view) ────────────────────────────────────
+
+export function getHoldingBudgets() {
+  return awqStore.budgets;
+}
+
+// ─── Forecasts (all BUs, holding-level view) ─────────────────────────────────
+
+export function getHoldingForecasts() {
+  return awqStore.forecasts;
+}
+
+// ─── Cash Flow: Receivables & Payables (all BUs) ─────────────────────────────
+
+export function getHoldingCashFlow() {
+  return {
+    receivables: awqStore.receivables,
+    payables: awqStore.payables,
+  };
+}
+
 // ─── Overhead Allocation ──────────────────────────────────────────────────────
 
 export function getHoldingOverheadAllocation() {

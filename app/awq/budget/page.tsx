@@ -1,13 +1,11 @@
 import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatPercent } from "@/lib/utils";
-import { getHoldingConsolidatedFinancials } from "@/lib/awq/selectors/holding";
-import { awqStore } from "@/lib/awq/mockData";
+import { getHoldingConsolidatedFinancials, getHoldingBudgets } from "@/lib/awq/selectors/holding";
 
 export default function AWQBudgetPage() {
-  // Holding layer — getHoldingConsolidatedFinancials for group context
   const fin = getHoldingConsolidatedFinancials();
-  const budgets = awqStore.budgets;
+  const budgets = getHoldingBudgets();
   const totalPlanned = budgets.reduce((s, b) => s + b.planned_amount, 0);
   const totalActual = budgets.reduce((s, b) => s + b.actual_amount, 0);
   const variance = totalActual - totalPlanned;

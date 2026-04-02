@@ -1,10 +1,8 @@
 import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils";
-import { getHoldingRiskOverview } from "@/lib/awq/selectors/holding";
-import { awqStore } from "@/lib/awq/mockData";
+import { getHoldingRiskOverview, getHoldingCashFlow } from "@/lib/awq/selectors/holding";
 
-// Holding layer — aggregates all BU receivables/payables directly
 function groupByBU<T extends { business_unit_id: string; amount: number }>(items: T[]) {
   const map = new Map<string, { total: number; count: number }>();
   for (const item of items) {
@@ -18,9 +16,7 @@ function groupByBU<T extends { business_unit_id: string; amount: number }>(items
 
 export default function AWQCashFlowPage() {
   const risk = getHoldingRiskOverview();
-
-  const allReceivables = awqStore.receivables;
-  const allPayables = awqStore.payables;
+  const { receivables: allReceivables, payables: allPayables } = getHoldingCashFlow();
 
   const totalReceivable = allReceivables.reduce((s, r) => s + r.amount, 0);
   const totalPayable = allPayables.reduce((s, p) => s + p.amount, 0);

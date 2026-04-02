@@ -1,10 +1,10 @@
 import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils";
-import { awqStore } from "@/lib/awq/mockData";
+import { getHoldingForecasts } from "@/lib/awq/selectors/holding";
 
 export default function AWQForecastPage() {
-  const forecasts = awqStore.forecasts;
+  const forecasts = getHoldingForecasts();
   const totalRevForecast = forecasts.reduce((s, f) => s + f.revenue_forecast, 0);
   const totalExpForecast = forecasts.reduce((s, f) => s + f.expense_forecast, 0);
   const totalProfitForecast = totalRevForecast - totalExpForecast;
